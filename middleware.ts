@@ -1,10 +1,28 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-
-export function middleware(request: NextRequest) {
-  return NextResponse.next()
-}
+import { NextRequest, NextResponse } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: ['/admin/:path*'],
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  if (pathname.startsWith('/admin')) {
+    try {
+      const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+        cookieName: 'next-auth.session-token', // MUST match
+      })
+
+      if (!token && pathname !== '/admin') {
+        return NextResponse.redirect(new URL('/admin', request.url))
+      }
+    } catch {
+      return NextResponse.redirect(new URL('/admin', request.url))
+    }
+  }
+
+  return NextResponse.next()
 }
