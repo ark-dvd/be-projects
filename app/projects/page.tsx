@@ -1,7 +1,73 @@
-export default function ProjectsPage() {
+import { Metadata } from 'next'
+import { getProjects, getServices, getSiteSettings } from '@/lib/data-fetchers'
+import { sanityImageUrl } from '@/lib/sanity-helpers'
+import ProjectCard from '@/components/ProjectCard'
+import CTASection from '@/components/CTASection'
+import ProjectsFilter from './ProjectsFilter'
+
+export const metadata: Metadata = {
+  title: 'Our Projects | Portfolio',
+  description: 'Browse our portfolio of completed and in-progress construction and renovation projects.',
+}
+
+export default async function ProjectsPage() {
+  const [projects, services, settings] = await Promise.all([
+    getProjects(),
+    getServices(),
+    getSiteSettings(),
+  ])
+
+  // Get unique project types for filtering
+  const projectTypes = Array.from(new Set(projects.map((p) => p.projectType).filter((t): t is string => Boolean(t))))
+
+  // Transform projects for client component
+  const transformedProjects = projects.map((project) => ({
+    _id: project._id,
+    slug: project.slug.current,
+    title: project.title,
+    heroImage: sanityImageUrl(project.heroImage),
+    projectType: project.projectType,
+    shortDescription: project.shortDescription,
+    status: project.status,
+    serviceRef: project.service?._ref,
+  }))
+
+  // Transform services for filter
+  const serviceOptions = services.map((s) => ({
+    _id: s._id,
+    name: s.name,
+  }))
+
+  const companyName = settings.contractorName || 'Contractor'
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">Projects</h1>
-    </main>
+    <>
+      {/* Hero Section */}
+      <section className="bg-slate-900 py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+            Our Projects
+          </h1>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            Browse our portfolio of completed and in-progress work. Each project
+            represents our commitment to quality craftsmanship.
+          </p>
+        </div>
+      </section>
+
+      {/* Projects Grid with Filters */}
+      <section className="py-12 lg:py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ProjectsFilter
+            projects={transformedProjects}
+            projectTypes={projectTypes}
+            services={serviceOptions}
+          />
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <CTASection companyName={companyName} phone={settings.phone} />
+    </>
   )
 }
