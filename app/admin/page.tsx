@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import ProjectsTab from '@/components/admin/ProjectsTab'
+import ServicesTab from '@/components/admin/ServicesTab'
 
 // Tab configuration
 const TABS = [
@@ -153,7 +154,7 @@ function AdminShell() {
       case 'projects':
         return <ProjectsTab />
       case 'services':
-        return <PlaceholderTab name="Services Management" />
+        return <ServicesTab />
       case 'testimonials':
         return <PlaceholderTab name="Testimonials Management" />
       case 'jobs':
