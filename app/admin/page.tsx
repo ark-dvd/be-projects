@@ -21,6 +21,7 @@ import ProjectsTab from '@/components/admin/ProjectsTab'
 import ServicesTab from '@/components/admin/ServicesTab'
 import TestimonialsTab from '@/components/admin/TestimonialsTab'
 import ActiveJobsTab from '@/components/admin/ActiveJobsTab'
+import SiteSettingsTab from '@/components/admin/SiteSettingsTab'
 
 // Tab configuration
 const TABS = [
@@ -162,7 +163,7 @@ function AdminShell() {
       case 'jobs':
         return <ActiveJobsTab />
       case 'settings':
-        return <PlaceholderTab name="Site Settings" />
+        return <SiteSettingsTab />
       default:
         return null
     }
