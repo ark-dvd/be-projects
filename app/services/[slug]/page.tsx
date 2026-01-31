@@ -7,13 +7,17 @@ import { getServiceBySlug, getServices, getProjects, getSiteSettings } from '@/l
 import { sanityImageUrl } from '@/lib/sanity-helpers'
 import ProjectCard from '@/components/ProjectCard'
 import ServiceGallery from './ServiceGallery'
+import { StructuredData } from '@/components/StructuredData'
 
 interface Props {
   params: { slug: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const service = await getServiceBySlug(params.slug)
+  const [service, settings] = await Promise.all([
+    getServiceBySlug(params.slug),
+    getSiteSettings(),
+  ])
 
   if (!service) {
     return {
@@ -21,9 +25,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  const description = service.tagline || service.description?.slice(0, 160) || `Learn about our ${service.name} services.`
+
   return {
-    title: `${service.name} | Services`,
-    description: service.tagline || service.description?.slice(0, 160) || `Learn about our ${service.name} services.`,
+    title: service.name,
+    description,
+    openGraph: {
+      title: `${service.name} | ${settings.contractorName || 'Contractor'}`,
+      description,
+      type: 'website',
+    },
   }
 }
 
@@ -53,8 +64,23 @@ export default async function ServiceDetailPage({ params }: Props) {
   const mainImageUrl = sanityImageUrl(service.image)
   const companyName = settings.contractorName || 'Contractor'
 
+  // Structured data for SEO
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.name,
+    description: service.description || service.tagline || `${service.name} services`,
+    provider: {
+      '@type': 'HomeImprovement',
+      name: companyName,
+    },
+    areaServed: settings.serviceArea || undefined,
+  }
+
   return (
     <>
+      <StructuredData data={structuredData} />
+
       {/* Hero Section */}
       <section className="relative h-[40vh] min-h-[300px] max-h-[500px]">
         {mainImageUrl ? (

@@ -13,6 +13,7 @@ import ProjectCard from '@/components/ProjectCard'
 import ServiceCard from '@/components/ServiceCard'
 import TestimonialCard from '@/components/TestimonialCard'
 import CTASection from '@/components/CTASection'
+import { StructuredData } from '@/components/StructuredData'
 
 export default async function HomePage() {
   // Fetch all data in parallel
@@ -54,8 +55,32 @@ export default async function HomePage() {
   // Company name
   const companyName = settings.contractorName || 'Contractor'
 
+  // Build LocalBusiness structured data
+  const logoUrl = sanityImageUrl(settings.logo)
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'HomeImprovement',
+    name: companyName,
+    description: settings.aboutText?.slice(0, 300) || `Professional contractor services in ${settings.serviceArea || 'your area'}`,
+    telephone: settings.phone || undefined,
+    email: settings.email || undefined,
+    address: settings.address
+      ? {
+          '@type': 'PostalAddress',
+          streetAddress: settings.address,
+        }
+      : undefined,
+    areaServed: settings.serviceArea || undefined,
+    url: process.env.NEXTAUTH_URL || 'https://example.com',
+    logo: logoUrl || undefined,
+    image: photoUrl || undefined,
+    priceRange: '$$',
+  }
+
   return (
     <>
+      <StructuredData data={structuredData} />
+
       {/* Hero Section */}
       <HeroSection
         mediaType={settings.heroMediaType === 'video' ? 'video' : 'slider'}

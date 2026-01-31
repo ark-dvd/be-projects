@@ -5,9 +5,10 @@ import { Quote, Star, ArrowRight } from 'lucide-react'
 import { getTestimonials, getProjects, getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
 import CTASection from '@/components/CTASection'
+import { StructuredData } from '@/components/StructuredData'
 
 export const metadata: Metadata = {
-  title: 'Client Testimonials | What Our Customers Say',
+  title: 'Client Testimonials',
   description: 'Read testimonials from homeowners who trusted us with their construction and renovation projects. See why our clients recommend us.',
 }
 
@@ -72,8 +73,40 @@ export default async function TestimonialsPage() {
 
   const companyName = settings.contractorName || 'Contractor'
 
+  // Build structured data for reviews
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'HomeImprovement',
+    name: companyName,
+    aggregateRating: totalReviews > 0
+      ? {
+          '@type': 'AggregateRating',
+          ratingValue: averageRating.toFixed(1),
+          reviewCount: totalReviews,
+          bestRating: 5,
+        }
+      : undefined,
+    review: sortedTestimonials.slice(0, 10).map((t) => ({
+      '@type': 'Review',
+      author: {
+        '@type': 'Person',
+        name: t.clientName,
+      },
+      reviewRating: t.rating
+        ? {
+            '@type': 'Rating',
+            ratingValue: t.rating,
+          }
+        : undefined,
+      reviewBody: t.quote,
+      datePublished: t.date || undefined,
+    })),
+  }
+
   return (
     <>
+      <StructuredData data={structuredData} />
+
       {/* Hero Section */}
       <section className="bg-slate-900 py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -4,9 +4,45 @@ import { isSanityConfigured } from '@/lib/sanity'
 import PublicLayout from '@/components/PublicLayout'
 import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'ContractorsGWS',
-  description: 'Professional contracting services',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const contractorName = settings.contractorName || 'Professional Contractor'
+  const description = settings.aboutText?.slice(0, 160) || 'Professional contractor services'
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://yourdomain.com'
+
+  return {
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: settings.siteTitle || contractorName,
+      template: `%s | ${contractorName}`,
+    },
+    description,
+    keywords: [
+      'contractor',
+      'renovation',
+      'remodeling',
+      'construction',
+      'home improvement',
+      settings.serviceArea || '',
+    ].filter(Boolean),
+    authors: [{ name: contractorName }],
+    openGraph: {
+      type: 'website',
+      locale: 'en_US',
+      siteName: contractorName,
+      title: settings.siteTitle || contractorName,
+      description,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: settings.siteTitle || contractorName,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  }
 }
 
 export default async function RootLayout({

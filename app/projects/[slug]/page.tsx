@@ -17,13 +17,17 @@ import { getProjectBySlug, getProjects, getServices, getSiteSettings } from '@/l
 import { sanityImageUrl } from '@/lib/sanity-helpers'
 import ProjectCard from '@/components/ProjectCard'
 import ProjectGallery from './ProjectGallery'
+import { StructuredData } from '@/components/StructuredData'
 
 interface Props {
   params: { slug: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = await getProjectBySlug(params.slug)
+  const [project, settings] = await Promise.all([
+    getProjectBySlug(params.slug),
+    getSiteSettings(),
+  ])
 
   if (!project) {
     return {
@@ -31,9 +35,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  const title = project.seoTitle || project.title
+  const description = project.seoDescription || project.shortDescription || `View our ${project.title} project.`
+
   return {
-    title: project.seoTitle || `${project.title} | Project`,
-    description: project.seoDescription || project.shortDescription || `View our ${project.title} project.`,
+    title,
+    description,
+    openGraph: {
+      title: `${title} | ${settings.contractorName || 'Contractor'}`,
+      description,
+      type: 'article',
+    },
   }
 }
 
@@ -101,8 +113,24 @@ export default async function ProjectDetailPage({ params }: Props) {
     upcoming: 'bg-blue-500',
   }
 
+  // Structured data for SEO
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    description: project.description || project.shortDescription || `${project.title} project by ${companyName}`,
+    image: heroImageUrl || undefined,
+    dateCreated: project.completionDate || undefined,
+    creator: {
+      '@type': 'Organization',
+      name: companyName,
+    },
+  }
+
   return (
     <>
+      <StructuredData data={structuredData} />
+
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] max-h-[600px]">
         {heroImageUrl ? (

@@ -6,7 +6,7 @@ import CTASection from '@/components/CTASection'
 import ProjectsFilter from './ProjectsFilter'
 
 export const metadata: Metadata = {
-  title: 'Our Projects | Portfolio',
+  title: 'Our Projects',
   description: 'Browse our portfolio of completed and in-progress construction and renovation projects.',
 }
 

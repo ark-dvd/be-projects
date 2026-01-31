@@ -7,7 +7,7 @@ import { sanityImageUrl } from '@/lib/sanity-helpers'
 import CTASection from '@/components/CTASection'
 
 export const metadata: Metadata = {
-  title: 'Our Services | Professional Craftsmanship',
+  title: 'Our Services',
   description: 'Explore our full range of construction and renovation services. From kitchens to bathrooms, decks to whole-home remodels.',
 }
 
