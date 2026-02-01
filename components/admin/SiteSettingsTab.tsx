@@ -26,7 +26,7 @@ import {
   Linkedin,
   Youtube,
 } from 'lucide-react'
-import { adminFetch, adminPut } from '@/lib/admin-api'
+import { adminFetch, adminPost, adminPut } from '@/lib/admin-api'
 import ImageUpload from './ImageUpload'
 
 // Types
@@ -377,6 +377,7 @@ export default function SiteSettingsTab() {
   const [error, setError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [savingSection, setSavingSection] = useState<SectionId | null>(null)
+  const [settingsExist, setSettingsExist] = useState(false)
 
   // Accordion state - hero expanded by default
   const [openSections, setOpenSections] = useState<Set<SectionId>>(() => new Set<SectionId>(['hero']))
@@ -393,12 +394,16 @@ export default function SiteSettingsTab() {
     setError(null)
     try {
       const data = await adminFetch<SiteSettings>('settings')
+      // Check if settings exist (has _id or any meaningful data)
+      const exists = !!(data && data._id)
+      setSettingsExist(exists)
       const merged = { ...DEFAULT_SETTINGS, ...data }
       setSettings(merged)
       setOriginalSettings(merged)
     } catch (e) {
       // Settings might not exist yet, that's OK
       if (e instanceof Error && e.message.includes('404')) {
+        setSettingsExist(false)
         setSettings(DEFAULT_SETTINGS)
         setOriginalSettings(DEFAULT_SETTINGS)
       } else {
@@ -492,7 +497,13 @@ export default function SiteSettingsTab() {
   const handleSaveAll = async () => {
     setIsSaving(true)
     try {
-      await adminPut('settings', settings)
+      // Use POST for first-time creation, PUT for updates
+      if (settingsExist) {
+        await adminPut('settings', settings)
+      } else {
+        await adminPost('settings', settings)
+        setSettingsExist(true) // Now settings exist
+      }
       setOriginalSettings(settings)
       setToast({ message: 'All settings saved successfully', type: 'success' })
     } catch (e) {
@@ -509,7 +520,13 @@ export default function SiteSettingsTab() {
   const handleSaveSection = async (sectionId: SectionId) => {
     setSavingSection(sectionId)
     try {
-      await adminPut('settings', settings)
+      // Use POST for first-time creation, PUT for updates
+      if (settingsExist) {
+        await adminPut('settings', settings)
+      } else {
+        await adminPost('settings', settings)
+        setSettingsExist(true) // Now settings exist
+      }
       setOriginalSettings(settings)
       setToast({
         message: `${SECTIONS.find((s) => s.id === sectionId)?.name} saved`,
