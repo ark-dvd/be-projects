@@ -43,18 +43,18 @@ interface Stat {
 interface SiteSettings {
   _id?: string
   // Hero Section
-  heroMediaType: 'slider' | 'video'
+  heroMediaType: 'images' | 'video'
   heroImages: HeroImage[]
   heroVideoUrl?: string
   heroHeadline: string
   heroSubheadline: string
   // About / Company
-  companyName: string
-  title: string
-  photo?: string
+  contractorName: string
+  contractorTitle: string
+  contractorPhoto?: string
   aboutHeadline: string
   aboutText: string
-  stats: Stat[]
+  aboutStats: Stat[]
   // Contact
   phone: string
   email: string
@@ -65,14 +65,14 @@ interface SiteSettings {
   logo?: string
   favicon?: string
   // Social Media
-  instagramUrl: string
-  facebookUrl: string
-  linkedinUrl: string
-  youtubeUrl: string
-  yelpUrl: string
-  googleBusinessUrl: string
-  houzzUrl: string
-  nextdoorUrl: string
+  instagram: string
+  facebook: string
+  linkedin: string
+  youtube: string
+  yelp: string
+  google: string
+  houzz: string
+  nextdoor: string
   // Legal
   licenseNumber: string
   licenseState: string
@@ -81,17 +81,17 @@ interface SiteSettings {
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
-  heroMediaType: 'slider',
+  heroMediaType: 'images',
   heroImages: [],
   heroVideoUrl: '',
   heroHeadline: '',
   heroSubheadline: '',
-  companyName: '',
-  title: '',
-  photo: '',
+  contractorName: '',
+  contractorTitle: '',
+  contractorPhoto: '',
   aboutHeadline: '',
   aboutText: '',
-  stats: [],
+  aboutStats: [],
   phone: '',
   email: '',
   address: '',
@@ -99,14 +99,14 @@ const DEFAULT_SETTINGS: SiteSettings = {
   officeHours: '',
   logo: '',
   favicon: '',
-  instagramUrl: '',
-  facebookUrl: '',
-  linkedinUrl: '',
-  youtubeUrl: '',
-  yelpUrl: '',
-  googleBusinessUrl: '',
-  houzzUrl: '',
-  nextdoorUrl: '',
+  instagram: '',
+  facebook: '',
+  linkedin: '',
+  youtube: '',
+  yelp: '',
+  google: '',
+  houzz: '',
+  nextdoor: '',
   licenseNumber: '',
   licenseState: '',
   insuranceInfo: '',
@@ -432,12 +432,12 @@ export default function SiteSettingsTab() {
           )
         case 'about':
           return (
-            settings.companyName !== originalSettings.companyName ||
-            settings.title !== originalSettings.title ||
-            settings.photo !== originalSettings.photo ||
+            settings.contractorName !== originalSettings.contractorName ||
+            settings.contractorTitle !== originalSettings.contractorTitle ||
+            settings.contractorPhoto !== originalSettings.contractorPhoto ||
             settings.aboutHeadline !== originalSettings.aboutHeadline ||
             settings.aboutText !== originalSettings.aboutText ||
-            JSON.stringify(settings.stats) !== JSON.stringify(originalSettings.stats)
+            JSON.stringify(settings.aboutStats) !== JSON.stringify(originalSettings.aboutStats)
           )
         case 'contact':
           return (
@@ -454,14 +454,14 @@ export default function SiteSettingsTab() {
           )
         case 'social':
           return (
-            settings.instagramUrl !== originalSettings.instagramUrl ||
-            settings.facebookUrl !== originalSettings.facebookUrl ||
-            settings.linkedinUrl !== originalSettings.linkedinUrl ||
-            settings.youtubeUrl !== originalSettings.youtubeUrl ||
-            settings.yelpUrl !== originalSettings.yelpUrl ||
-            settings.googleBusinessUrl !== originalSettings.googleBusinessUrl ||
-            settings.houzzUrl !== originalSettings.houzzUrl ||
-            settings.nextdoorUrl !== originalSettings.nextdoorUrl
+            settings.instagram !== originalSettings.instagram ||
+            settings.facebook !== originalSettings.facebook ||
+            settings.linkedin !== originalSettings.linkedin ||
+            settings.youtube !== originalSettings.youtube ||
+            settings.yelp !== originalSettings.yelp ||
+            settings.google !== originalSettings.google ||
+            settings.houzz !== originalSettings.houzz ||
+            settings.nextdoor !== originalSettings.nextdoor
           )
         case 'legal':
           return (
@@ -567,21 +567,21 @@ export default function SiteSettingsTab() {
   const addStat = () => {
     setSettings((prev) => ({
       ...prev,
-      stats: [...prev.stats, { value: '', label: '' }],
+      aboutStats: [...prev.aboutStats, { value: '', label: '' }],
     }))
   }
 
   const removeStat = (index: number) => {
     setSettings((prev) => ({
       ...prev,
-      stats: prev.stats.filter((_, i) => i !== index),
+      aboutStats: prev.aboutStats.filter((_, i) => i !== index),
     }))
   }
 
   const updateStat = (index: number, field: 'value' | 'label', value: string) => {
     setSettings((prev) => ({
       ...prev,
-      stats: prev.stats.map((stat, i) =>
+      aboutStats: prev.aboutStats.map((stat, i) =>
         i === index ? { ...stat, [field]: value } : stat
       ),
     }))
@@ -590,18 +590,18 @@ export default function SiteSettingsTab() {
   const moveStatUp = (index: number) => {
     if (index === 0) return
     setSettings((prev) => {
-      const newStats = [...prev.stats]
+      const newStats = [...prev.aboutStats]
       ;[newStats[index - 1], newStats[index]] = [newStats[index], newStats[index - 1]]
-      return { ...prev, stats: newStats }
+      return { ...prev, aboutStats: newStats }
     })
   }
 
   const moveStatDown = (index: number) => {
-    if (index === settings.stats.length - 1) return
+    if (index === settings.aboutStats.length - 1) return
     setSettings((prev) => {
-      const newStats = [...prev.stats]
+      const newStats = [...prev.aboutStats]
       ;[newStats[index], newStats[index + 1]] = [newStats[index + 1], newStats[index]]
-      return { ...prev, stats: newStats }
+      return { ...prev, aboutStats: newStats }
     })
   }
 
@@ -650,7 +650,7 @@ export default function SiteSettingsTab() {
           <div className="flex gap-4">
             <label
               className={`flex-1 flex items-center justify-center gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                settings.heroMediaType === 'slider'
+                settings.heroMediaType === 'images'
                   ? 'border-amber-500 bg-amber-50'
                   : 'border-gray-200 hover:border-gray-300'
               }`}
@@ -659,22 +659,22 @@ export default function SiteSettingsTab() {
                 type="radio"
                 name="heroMediaType"
                 value="slider"
-                checked={settings.heroMediaType === 'slider'}
+                checked={settings.heroMediaType === 'images'}
                 onChange={() =>
-                  setSettings((prev) => ({ ...prev, heroMediaType: 'slider' }))
+                  setSettings((prev) => ({ ...prev, heroMediaType: 'images' }))
                 }
                 className="sr-only"
               />
               <ImageIcon
                 className={`h-6 w-6 ${
-                  settings.heroMediaType === 'slider'
+                  settings.heroMediaType === 'images'
                     ? 'text-amber-600'
                     : 'text-gray-400'
                 }`}
               />
               <span
                 className={`font-medium ${
-                  settings.heroMediaType === 'slider'
+                  settings.heroMediaType === 'images'
                     ? 'text-amber-900'
                     : 'text-gray-600'
                 }`}
@@ -720,7 +720,7 @@ export default function SiteSettingsTab() {
         </div>
 
         {/* Image Slider Options */}
-        {settings.heroMediaType === 'slider' && (
+        {settings.heroMediaType === 'images' && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Hero Images
@@ -873,9 +873,9 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="text"
-              value={settings.companyName}
+              value={settings.contractorName}
               onChange={(e) =>
-                setSettings((prev) => ({ ...prev, companyName: e.target.value }))
+                setSettings((prev) => ({ ...prev, contractorName: e.target.value }))
               }
               placeholder="e.g., Smith Construction"
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
@@ -888,9 +888,9 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="text"
-              value={settings.title}
+              value={settings.contractorTitle}
               onChange={(e) =>
-                setSettings((prev) => ({ ...prev, title: e.target.value }))
+                setSettings((prev) => ({ ...prev, contractorTitle: e.target.value }))
               }
               placeholder="e.g., General Contractor | Kitchen & Bath Specialist"
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
@@ -899,11 +899,11 @@ export default function SiteSettingsTab() {
         </div>
 
         <ImageUpload
-          value={settings.photo || null}
+          value={settings.contractorPhoto || null}
           onUpload={(assetId, url) =>
-            setSettings((prev) => ({ ...prev, photo: url }))
+            setSettings((prev) => ({ ...prev, contractorPhoto: url }))
           }
-          onRemove={() => setSettings((prev) => ({ ...prev, photo: '' }))}
+          onRemove={() => setSettings((prev) => ({ ...prev, contractorPhoto: '' }))}
           label="Photo (Headshot or Team)"
           className="max-w-md"
         />
@@ -948,7 +948,7 @@ export default function SiteSettingsTab() {
           </p>
 
           <div className="space-y-3">
-            {settings.stats.map((stat, index) => (
+            {settings.aboutStats.map((stat, index) => (
               <div key={index} className="flex items-center gap-3">
                 <div className="flex flex-col gap-1">
                   <button
@@ -962,7 +962,7 @@ export default function SiteSettingsTab() {
                   <button
                     type="button"
                     onClick={() => moveStatDown(index)}
-                    disabled={index === settings.stats.length - 1}
+                    disabled={index === settings.aboutStats.length - 1}
                     className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
                   >
                     <ArrowDown className="h-3 w-3" />
@@ -1176,72 +1176,72 @@ export default function SiteSettingsTab() {
           <SocialField
             icon={Instagram}
             label="Instagram"
-            value={settings.instagramUrl}
+            value={settings.instagram}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, instagramUrl: value }))
+              setSettings((prev) => ({ ...prev, instagram: value }))
             }
             placeholder="https://instagram.com/yourcompany"
           />
           <SocialField
             icon={Facebook}
             label="Facebook"
-            value={settings.facebookUrl}
+            value={settings.facebook}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, facebookUrl: value }))
+              setSettings((prev) => ({ ...prev, facebook: value }))
             }
             placeholder="https://facebook.com/yourcompany"
           />
           <SocialField
             icon={Linkedin}
             label="LinkedIn"
-            value={settings.linkedinUrl}
+            value={settings.linkedin}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, linkedinUrl: value }))
+              setSettings((prev) => ({ ...prev, linkedin: value }))
             }
             placeholder="https://linkedin.com/company/yourcompany"
           />
           <SocialField
             icon={Youtube}
             label="YouTube"
-            value={settings.youtubeUrl}
+            value={settings.youtube}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, youtubeUrl: value }))
+              setSettings((prev) => ({ ...prev, youtube: value }))
             }
             placeholder="https://youtube.com/@yourcompany"
           />
           <SocialField
             icon={YelpIcon}
             label="Yelp"
-            value={settings.yelpUrl}
+            value={settings.yelp}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, yelpUrl: value }))
+              setSettings((prev) => ({ ...prev, yelp: value }))
             }
             placeholder="https://yelp.com/biz/yourcompany"
           />
           <SocialField
             icon={GoogleIcon}
             label="Google Business"
-            value={settings.googleBusinessUrl}
+            value={settings.google}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, googleBusinessUrl: value }))
+              setSettings((prev) => ({ ...prev, google: value }))
             }
             placeholder="https://g.page/yourcompany"
           />
           <SocialField
             icon={HouzzIcon}
             label="Houzz"
-            value={settings.houzzUrl}
+            value={settings.houzz}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, houzzUrl: value }))
+              setSettings((prev) => ({ ...prev, houzz: value }))
             }
             placeholder="https://houzz.com/pro/yourcompany"
           />
           <SocialField
             icon={NextdoorIcon}
             label="Nextdoor"
-            value={settings.nextdoorUrl}
+            value={settings.nextdoor}
             onChange={(value) =>
-              setSettings((prev) => ({ ...prev, nextdoorUrl: value }))
+              setSettings((prev) => ({ ...prev, nextdoor: value }))
             }
             placeholder="https://nextdoor.com/pages/yourcompany"
           />
