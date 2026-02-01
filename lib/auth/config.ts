@@ -4,7 +4,8 @@ import GoogleProvider from 'next-auth/providers/google'
 // ALLOWED ADMIN EMAILS — ONLY these can access /admin
 // Store lowercase for normalized comparison
 const ALLOWED_ADMIN_EMAILS: string[] = [
-  // Will be populated per-deployment
+  'arik@daflash.com',
+  'Arik@daflash.com',
 ]
 
 function normalizeEmail(email: string | null | undefined): string {
@@ -26,12 +27,13 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      // FAIL CLOSED: Only allow specific admin emails
-      if (!isAllowedAdmin(user.email)) {
-        console.warn(`Admin login denied: ${user.email}`)
+      console.log('AUTH DEBUG: Google returned email:', user.email)
+      const allowed = isAllowedAdmin(user.email)
+      console.log('AUTH DEBUG: isAllowedAdmin result:', allowed)
+      if (!allowed) {
+        console.warn('Admin login denied:', user.email)
         return false
       }
-      console.log(`Admin login granted: ${user.email}`)
       return true
     },
     async session({ session }) { return session },
