@@ -29,7 +29,7 @@ export default function DemoModeBanner({ isDemo }: DemoModeBannerProps) {
 
   return (
     <div
-      className={`bg-amber-500 text-white transition-all duration-300 ${
+      className={`bg-accent text-dark transition-all duration-300 ${
         isDismissed ? 'opacity-0 -translate-y-full' : 'opacity-100 translate-y-0'
       }`}
     >
@@ -43,7 +43,7 @@ export default function DemoModeBanner({ isDemo }: DemoModeBannerProps) {
           </div>
           <button
             onClick={handleDismiss}
-            className="p-1 hover:bg-amber-600 rounded transition-colors flex-shrink-0"
+            className="p-1 hover:bg-accent-600 rounded transition-colors flex-shrink-0"
             aria-label="Dismiss banner"
           >
             <X className="h-4 w-4" />

@@ -9,6 +9,7 @@ interface HeaderProps {
   logo?: string
   companyName: string
   phone?: string
+  isTransparent?: boolean
 }
 
 const NAV_LINKS = [
@@ -20,20 +21,20 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ]
 
-export default function Header({ logo, companyName, phone }: HeaderProps) {
+export default function Header({ logo, companyName, phone, isTransparent = false }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
-  // Handle scroll for shadow effect
+  // Handle scroll for background change
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
+      setIsScrolled(window.scrollY > 50)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close menu on route change or escape key
+  // Close menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setIsMenuOpen(false)
@@ -54,11 +55,18 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
     }
   }, [isMenuOpen])
 
+  // Determine header styling based on transparency and scroll state
+  const showSolidBg = !isTransparent || isScrolled
+  const headerBg = showSolidBg
+    ? 'bg-white shadow-md'
+    : 'bg-transparent'
+  const textColor = showSolidBg ? 'text-dark' : 'text-white'
+  const textHover = showSolidBg ? 'hover:text-primary' : 'hover:text-accent'
+  const logoFilter = showSolidBg ? '' : 'brightness-0 invert'
+
   return (
     <header
-      className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${
-        isScrolled ? 'shadow-md' : ''
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBg}`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
@@ -70,11 +78,11 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
                 alt={companyName}
                 width={160}
                 height={48}
-                className="h-10 lg:h-12 w-auto object-contain"
+                className={`h-10 lg:h-12 w-auto object-contain transition-all ${logoFilter}`}
                 priority
               />
             ) : (
-              <span className="text-xl lg:text-2xl font-bold text-gray-900">
+              <span className={`text-xl lg:text-2xl font-bold font-heading ${textColor}`}>
                 {companyName}
               </span>
             )}
@@ -86,7 +94,7 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                className={`font-medium transition-colors ${textColor} ${textHover}`}
               >
                 {link.label}
               </Link>
@@ -98,7 +106,7 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
             {phone && (
               <a
                 href={`tel:${phone.replace(/\D/g, '')}`}
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium"
+                className={`flex items-center gap-2 font-medium transition-colors ${textColor} ${textHover}`}
               >
                 <Phone className="h-4 w-4" />
                 {phone}
@@ -106,7 +114,7 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
             )}
             <Link
               href="/contact"
-              className="px-5 py-2.5 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors shadow-sm"
+              className="px-5 py-2.5 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-colors shadow-sm"
             >
               Get a Free Quote
             </Link>
@@ -115,7 +123,7 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 text-gray-700 hover:text-gray-900 transition-colors"
+            className={`lg:hidden p-2 transition-colors ${textColor} ${textHover}`}
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           >
             {isMenuOpen ? (
@@ -148,7 +156,7 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
           }`}
         >
           {/* Menu Header */}
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100">
             {logo ? (
               <Image
                 src={logo}
@@ -158,13 +166,13 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
                 className="h-8 w-auto object-contain"
               />
             ) : (
-              <span className="text-lg font-bold text-gray-900">
+              <span className="text-lg font-bold text-dark font-heading">
                 {companyName}
               </span>
             )}
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="p-2 text-gray-500 hover:text-gray-700"
+              className="p-2 text-secondary hover:text-dark"
               aria-label="Close menu"
             >
               <X className="h-6 w-6" />
@@ -178,7 +186,7 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="block px-6 py-3 text-lg font-medium text-gray-700 hover:bg-gray-50 hover:text-amber-600 transition-colors"
+                className="block px-6 py-3 text-lg font-medium text-dark hover:bg-light hover:text-primary transition-colors"
               >
                 {link.label}
               </Link>
@@ -186,20 +194,20 @@ export default function Header({ logo, companyName, phone }: HeaderProps) {
           </div>
 
           {/* Menu Footer */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 border-t bg-gray-50">
+          <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100 bg-light">
             {phone && (
               <a
                 href={`tel:${phone.replace(/\D/g, '')}`}
-                className="flex items-center justify-center gap-2 mb-4 text-gray-700 font-medium"
+                className="flex items-center justify-center gap-2 mb-4 text-dark font-medium"
               >
-                <Phone className="h-5 w-5" />
+                <Phone className="h-5 w-5 text-primary" />
                 {phone}
               </a>
             )}
             <Link
               href="/contact"
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors text-center"
+              className="block w-full py-3 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-colors text-center"
             >
               Get a Free Quote
             </Link>

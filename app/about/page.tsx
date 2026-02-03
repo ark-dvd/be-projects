@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `About ${name} | Our Story`,
-    description: settings.aboutHeadline || `Learn about ${name} and our commitment to quality craftsmanship and exceptional service.`,
+    description: settings.aboutHeadline || `Learn about ${name} and our commitment to quality landscaping and exceptional service.`,
   }
 }
 
@@ -63,28 +63,28 @@ export default async function AboutPage() {
                   />
                 </div>
               ) : (
-                <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center shadow-xl">
-                  <span className="text-8xl font-bold text-white/20">
+                <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-primary-700 to-primary-900 flex items-center justify-center shadow-xl">
+                  <span className="text-8xl font-bold text-white/20 font-heading">
                     {companyName.charAt(0)}
                   </span>
                 </div>
               )}
               {/* Decorative element */}
-              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-amber-500 rounded-2xl -z-10" />
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-accent rounded-2xl -z-10" />
             </div>
 
             {/* Text Content */}
             <div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
+              <h1 className="text-4xl lg:text-5xl font-bold text-dark mb-3 font-heading">
                 {companyName}
               </h1>
               {settings.contractorTitle && (
-                <p className="text-xl text-amber-600 font-medium mb-6">
+                <p className="text-xl text-primary font-medium mb-6">
                   {settings.contractorTitle}
                 </p>
               )}
               {settings.aboutHeadline && (
-                <p className="text-2xl text-gray-700 leading-relaxed">
+                <p className="text-2xl text-secondary leading-relaxed">
                   {settings.aboutHeadline}
                 </p>
               )}
@@ -95,18 +95,18 @@ export default async function AboutPage() {
 
       {/* Stats Section */}
       {settings.aboutStats && settings.aboutStats.length > 0 && (
-        <section className="bg-amber-50 py-12 lg:py-16">
+        <section className="bg-primary-50 py-12 lg:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               {settings.aboutStats.map((stat, index) => {
                 const Icon = getStatIcon(stat.label)
                 return (
                   <div key={index} className="text-center">
-                    <Icon className="h-8 w-8 text-amber-500 mx-auto mb-3" />
-                    <p className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
+                    <Icon className="h-8 w-8 text-accent mx-auto mb-3" />
+                    <p className="text-4xl lg:text-5xl font-bold text-dark mb-2 font-heading">
                       {stat.value}
                     </p>
-                    <p className="text-gray-600 font-medium">{stat.label}</p>
+                    <p className="text-secondary font-medium">{stat.label}</p>
                   </div>
                 )
               })}
@@ -123,7 +123,7 @@ export default async function AboutPage() {
               {settings.aboutText.split('\n\n').map((paragraph, index) => (
                 <p
                   key={index}
-                  className="text-lg text-gray-600 leading-relaxed mb-6 last:mb-0"
+                  className="text-lg text-secondary leading-relaxed mb-6 last:mb-0"
                 >
                   {paragraph}
                 </p>
@@ -135,9 +135,9 @@ export default async function AboutPage() {
 
       {/* Why Choose Us Section */}
       {settings.aboutStats && settings.aboutStats.length > 0 && (
-        <section className="py-16 lg:py-20 bg-gray-50">
+        <section className="py-16 lg:py-20 bg-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-3xl font-bold text-dark text-center mb-12 font-heading">
               Why Choose {companyName}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -145,8 +145,8 @@ export default async function AboutPage() {
                 const Icon = getStatIcon(stat.label)
                 // Generate value proposition based on stat
                 const descriptions: Record<string, string> = {
-                  experience: 'Decades of hands-on expertise in residential construction and remodeling.',
-                  projects: 'Hundreds of happy homeowners and beautiful transformations.',
+                  experience: 'Decades of hands-on expertise in landscape design and outdoor living spaces.',
+                  projects: 'Hundreds of happy homeowners and beautiful landscape transformations.',
                   insured: 'Complete peace of mind with comprehensive coverage.',
                   rating: 'Consistently earning top reviews from our clients.',
                   default: 'Committed to excellence in every project we undertake.',
@@ -168,13 +168,13 @@ export default async function AboutPage() {
                     key={index}
                     className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mb-4">
-                      <Icon className="h-6 w-6 text-amber-600" />
+                    <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
+                      <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
+                    <h3 className="font-semibold text-dark mb-2 font-heading">
                       {stat.value} {stat.label}
                     </h3>
-                    <p className="text-gray-600 text-sm">{description}</p>
+                    <p className="text-secondary text-sm">{description}</p>
                   </div>
                 )
               })}
@@ -185,19 +185,19 @@ export default async function AboutPage() {
 
       {/* Service Area Section */}
       {settings.serviceArea && (
-        <section className="py-16 lg:py-20 bg-slate-900 relative overflow-hidden">
+        <section className="py-16 lg:py-20 bg-primary relative overflow-hidden">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent via-transparent to-transparent" />
           </div>
 
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <MapPin className="h-12 w-12 text-amber-500 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <MapPin className="h-12 w-12 text-accent mx-auto mb-6" />
+            <h2 className="text-3xl font-bold text-white mb-4 font-heading">
               Service Area
             </h2>
-            <p className="text-2xl text-gray-300">
-              Proudly serving the <span className="text-amber-400 font-semibold">{settings.serviceArea}</span>
+            <p className="text-2xl text-white/80">
+              Proudly serving the <span className="text-accent font-semibold">{settings.serviceArea}</span>
             </p>
           </div>
         </section>
@@ -207,20 +207,20 @@ export default async function AboutPage() {
       {(settings.licenseNumber || settings.insuranceInfo || settings.bondInfo) && (
         <section className="py-16 lg:py-20 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-3xl font-bold text-dark text-center mb-12 font-heading">
               Licensed & Insured
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* License */}
               {settings.licenseNumber && (
-                <div className="bg-gray-50 rounded-xl p-6 text-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <BadgeCheck className="h-8 w-8 text-green-600" />
+                <div className="bg-light rounded-xl p-6 text-center">
+                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <BadgeCheck className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-semibold text-dark mb-2 font-heading">
                     Licensed Contractor
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-secondary">
                     #{settings.licenseNumber}
                     {settings.licenseState && ` — ${settings.licenseState}`}
                   </p>
@@ -229,25 +229,25 @@ export default async function AboutPage() {
 
               {/* Insurance */}
               {settings.insuranceInfo && (
-                <div className="bg-gray-50 rounded-xl p-6 text-center">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Shield className="h-8 w-8 text-blue-600" />
+                <div className="bg-light rounded-xl p-6 text-center">
+                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-semibold text-dark mb-2 font-heading">
                     Fully Insured
                   </h3>
-                  <p className="text-gray-600">{settings.insuranceInfo}</p>
+                  <p className="text-secondary">{settings.insuranceInfo}</p>
                 </div>
               )}
 
               {/* Bond */}
               {settings.bondInfo && (
-                <div className="bg-gray-50 rounded-xl p-6 text-center">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Award className="h-8 w-8 text-purple-600" />
+                <div className="bg-light rounded-xl p-6 text-center">
+                  <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Award className="h-8 w-8 text-accent" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Bonded</h3>
-                  <p className="text-gray-600">{settings.bondInfo}</p>
+                  <h3 className="font-semibold text-dark mb-2 font-heading">Bonded</h3>
+                  <p className="text-secondary">{settings.bondInfo}</p>
                 </div>
               )}
             </div>

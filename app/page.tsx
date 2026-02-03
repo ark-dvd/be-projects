@@ -63,7 +63,7 @@ export default async function HomePage() {
     '@context': 'https://schema.org',
     '@type': 'HomeImprovement',
     name: companyName,
-    description: settings.aboutText?.slice(0, 300) || `Professional contractor services in ${settings.serviceArea || 'your area'}`,
+    description: settings.aboutText?.slice(0, 300) || `Professional landscaping services in ${settings.serviceArea || 'your area'}`,
     telephone: settings.phone || undefined,
     email: settings.email || undefined,
     address: settings.address
@@ -88,7 +88,7 @@ export default async function HomePage() {
         mediaType={settings.heroMediaType === 'video' ? 'video' : 'slider'}
         images={heroImages}
         videoUrl={heroVideoUrl}
-        headline={settings.heroHeadline || 'Building Dreams, One Project at a Time'}
+        headline={settings.heroHeadline || 'Transform Your Outdoor Living Space'}
         subheadline={settings.heroSubheadline}
       />
 
@@ -97,12 +97,12 @@ export default async function HomePage() {
         <section className="py-16 lg:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-4 font-heading">
                 Our Work
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="text-lg text-secondary max-w-2xl mx-auto">
                 Explore our portfolio of completed projects and see the quality
-                craftsmanship we bring to every job.
+                craftsmanship we bring to every landscape.
               </p>
             </div>
 
@@ -122,7 +122,7 @@ export default async function HomePage() {
             <div className="text-center mt-12">
               <Link
                 href="/projects"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
               >
                 View All Projects
                 <ArrowRight className="h-5 w-5" />
@@ -134,15 +134,15 @@ export default async function HomePage() {
 
       {/* Services Overview Section */}
       {activeServices.length > 0 && (
-        <section className="py-16 lg:py-24 bg-gray-50">
+        <section className="py-16 lg:py-24 bg-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-4 font-heading">
                 Our Services
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                From concept to completion, we offer a full range of construction
-                and renovation services.
+              <p className="text-lg text-secondary max-w-2xl mx-auto">
+                From design to installation, we offer a full range of landscaping
+                and outdoor living services.
               </p>
             </div>
 
@@ -161,7 +161,7 @@ export default async function HomePage() {
             <div className="text-center mt-12">
               <Link
                 href="/services"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
               >
                 View All Services
                 <ArrowRight className="h-5 w-5" />
@@ -176,10 +176,10 @@ export default async function HomePage() {
         <section className="py-16 lg:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-4 font-heading">
                 What Our Clients Say
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="text-lg text-secondary max-w-2xl mx-auto">
                 Don&apos;t just take our word for it — hear from our satisfied
                 customers.
               </p>
@@ -202,7 +202,7 @@ export default async function HomePage() {
             <div className="text-center mt-12">
               <Link
                 href="/testimonials"
-                className="inline-flex items-center gap-2 text-amber-600 font-semibold hover:text-amber-700 transition-colors"
+                className="inline-flex items-center gap-2 text-primary font-semibold hover:text-primary-700 transition-colors"
               >
                 Read More Reviews
                 <ArrowRight className="h-5 w-5" />
@@ -213,7 +213,7 @@ export default async function HomePage() {
       )}
 
       {/* About Preview Section */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-16 lg:py-24 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Image */}
@@ -227,8 +227,8 @@ export default async function HomePage() {
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-amber-600">
+                <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+                  <span className="text-4xl font-bold text-primary">
                     {companyName.charAt(0)}
                   </span>
                 </div>
@@ -238,12 +238,12 @@ export default async function HomePage() {
             {/* Content */}
             <div>
               {settings.aboutHeadline && (
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-6 font-heading">
                   {settings.aboutHeadline}
                 </h2>
               )}
               {settings.aboutText && (
-                <div className="prose prose-lg text-gray-600 mb-8">
+                <div className="prose prose-lg text-secondary mb-8">
                   <p>
                     {settings.aboutText.slice(0, 400)}
                     {settings.aboutText.length > 400 ? '...' : ''}
@@ -256,10 +256,10 @@ export default async function HomePage() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8">
                   {stats.slice(0, 3).map((stat, index) => (
                     <div key={index}>
-                      <div className="text-3xl lg:text-4xl font-bold text-amber-500">
+                      <div className="text-3xl lg:text-4xl font-bold text-accent">
                         {stat.value}
                       </div>
-                      <div className="text-sm text-gray-600">{stat.label}</div>
+                      <div className="text-sm text-secondary">{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -267,7 +267,7 @@ export default async function HomePage() {
 
               <Link
                 href="/about"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
               >
                 Learn More About Us
                 <ArrowRight className="h-5 w-5" />

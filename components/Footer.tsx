@@ -112,7 +112,7 @@ export default function Footer({
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-slate-900 text-white">
+    <footer className="bg-primary-900 text-white">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -127,10 +127,10 @@ export default function Footer({
                 className="h-10 w-auto object-contain mb-4 brightness-0 invert"
               />
             ) : (
-              <h3 className="text-xl font-bold mb-4">{companyName}</h3>
+              <h3 className="text-xl font-bold mb-4 font-heading">{companyName}</h3>
             )}
             {truncatedAbout && (
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-white/70 text-sm leading-relaxed">
                 {truncatedAbout}
               </p>
             )}
@@ -138,13 +138,13 @@ export default function Footer({
 
           {/* Column 2: Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-lg font-semibold mb-4 font-heading">Quick Links</h4>
             <ul className="space-y-2">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-white/70 hover:text-accent transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -155,13 +155,13 @@ export default function Footer({
 
           {/* Column 3: Contact Info */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
+            <h4 className="text-lg font-semibold mb-4 font-heading">Contact Us</h4>
             <ul className="space-y-3">
               {phone && (
                 <li>
                   <a
                     href={`tel:${phone.replace(/\D/g, '')}`}
-                    className="flex items-start gap-3 text-gray-400 hover:text-white transition-colors"
+                    className="flex items-start gap-3 text-white/70 hover:text-accent transition-colors"
                   >
                     <Phone className="h-5 w-5 flex-shrink-0 mt-0.5" />
                     <span>{phone}</span>
@@ -172,7 +172,7 @@ export default function Footer({
                 <li>
                   <a
                     href={`mailto:${email}`}
-                    className="flex items-start gap-3 text-gray-400 hover:text-white transition-colors"
+                    className="flex items-start gap-3 text-white/70 hover:text-accent transition-colors"
                   >
                     <Mail className="h-5 w-5 flex-shrink-0 mt-0.5" />
                     <span>{email}</span>
@@ -180,13 +180,13 @@ export default function Footer({
                 </li>
               )}
               {address && (
-                <li className="flex items-start gap-3 text-gray-400">
+                <li className="flex items-start gap-3 text-white/70">
                   <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5" />
                   <span className="whitespace-pre-line">{address}</span>
                 </li>
               )}
               {serviceArea && (
-                <li className="text-gray-400 text-sm mt-4">
+                <li className="text-white/70 text-sm mt-4">
                   Serving: {serviceArea}
                 </li>
               )}
@@ -196,7 +196,7 @@ export default function Footer({
           {/* Column 4: Social Media */}
           {socialLinks.length > 0 && (
             <div>
-              <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
+              <h4 className="text-lg font-semibold mb-4 font-heading">Follow Us</h4>
               <div className="flex flex-wrap gap-3">
                 {socialLinks.map((social) => {
                   const Icon = social.icon
@@ -206,7 +206,7 @@ export default function Footer({
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2.5 bg-slate-800 rounded-lg text-gray-400 hover:text-white hover:bg-slate-700 transition-colors"
+                      className="p-2.5 bg-primary-800 rounded-lg text-white/70 hover:text-white hover:bg-primary-700 transition-colors"
                       aria-label={social.label}
                     >
                       <Icon className="h-5 w-5" />
@@ -220,9 +220,9 @@ export default function Footer({
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-slate-800">
+      <div className="border-t border-primary-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 text-sm text-white/60">
             {/* Copyright */}
             <div>
               &copy; {currentYear} {companyName}. All rights reserved.
@@ -244,7 +244,7 @@ export default function Footer({
                 href="https://daflash.co.il"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-amber-400 hover:text-amber-300 transition-colors"
+                className="font-medium text-accent hover:text-accent-400 transition-colors"
               >
                 daflash
               </a>

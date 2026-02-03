@@ -7,7 +7,7 @@ import ProjectsFilter from './ProjectsFilter'
 
 export const metadata: Metadata = {
   title: 'Our Projects',
-  description: 'Browse our portfolio of completed and in-progress construction and renovation projects.',
+  description: 'Browse our portfolio of completed landscaping and outdoor living projects.',
 }
 
 export default async function ProjectsPage() {
@@ -43,20 +43,20 @@ export default async function ProjectsPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-slate-900 py-16 lg:py-24">
+      <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
             Our Projects
           </h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Browse our portfolio of completed and in-progress work. Each project
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
+            Browse our portfolio of completed and in-progress landscaping work. Each project
             represents our commitment to quality craftsmanship.
           </p>
         </div>
       </section>
 
       {/* Projects Grid with Filters */}
-      <section className="py-12 lg:py-16 bg-gray-50">
+      <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ProjectsFilter
             projects={transformedProjects}

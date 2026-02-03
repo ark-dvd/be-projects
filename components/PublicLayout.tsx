@@ -20,6 +20,7 @@ export default function PublicLayout({
 }: PublicLayoutProps) {
   const pathname = usePathname()
   const isAdminPage = pathname.startsWith('/admin')
+  const isHomePage = pathname === '/'
 
   if (isAdminPage) {
     return <>{children}</>
@@ -34,7 +35,7 @@ export default function PublicLayout({
       {/* Skip to content link for accessibility */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-amber-500 focus:text-white focus:rounded-lg focus:font-semibold"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-accent focus:text-dark focus:rounded-lg focus:font-semibold"
       >
         Skip to main content
       </a>
@@ -43,8 +44,11 @@ export default function PublicLayout({
         logo={logoUrl}
         companyName={companyName}
         phone={settings.phone}
+        isTransparent={isHomePage}
       />
-      <main id="main-content" className="min-h-screen" role="main">{children}</main>
+      <main id="main-content" className={isHomePage ? '' : 'pt-16 lg:pt-20 min-h-screen'} role="main">
+        {children}
+      </main>
       <Footer
         logo={logoUrl}
         companyName={companyName}

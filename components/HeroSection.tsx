@@ -54,8 +54,8 @@ export default function HeroSection({
   }
 
   return (
-    <section className="relative h-[80vh] min-h-[500px] max-h-[900px] overflow-hidden">
-      {/* Background Media */}
+    <section className="relative h-screen w-full overflow-hidden">
+      {/* Background Media - Full screen including behind nav */}
       {mediaType === 'video' && videoUrl ? (
         <video
           autoPlay
@@ -89,51 +89,53 @@ export default function HeroSection({
           ))}
         </div>
       ) : (
-        // Fallback gradient background
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900" />
+        // Fallback gradient background with earthy colors
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-700 to-primary-900" />
       )}
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+      {/* Dark Overlay with gradient for better text readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
 
-      {/* Content */}
-      <div className="relative h-full flex items-center justify-center text-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-lg">
-            {headline}
-          </h1>
-          {subheadline && (
-            <p className="text-lg sm:text-xl lg:text-2xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow">
-              {subheadline}
-            </p>
-          )}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/projects"
-              className="w-full sm:w-auto px-8 py-4 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors shadow-lg hover:shadow-xl"
-            >
-              View Our Projects
-            </Link>
-            <Link
-              href="/contact"
-              className="w-full sm:w-auto px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl"
-            >
-              Get a Free Quote
-            </Link>
+      {/* Content - Left aligned */}
+      <div className="relative h-full flex items-center">
+        <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 drop-shadow-lg font-heading leading-tight">
+              {headline}
+            </h1>
+            {subheadline && (
+              <p className="text-lg sm:text-xl lg:text-2xl text-white/90 mb-10 drop-shadow max-w-xl leading-relaxed">
+                {subheadline}
+              </p>
+            )}
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <Link
+                href="/projects"
+                className="w-full sm:w-auto px-8 py-4 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-all shadow-lg hover:shadow-xl hover:scale-105 text-center"
+              >
+                View Our Projects
+              </Link>
+              <Link
+                href="/contact"
+                className="w-full sm:w-auto px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white hover:text-dark transition-all shadow-lg hover:shadow-xl text-center"
+              >
+                Get a Free Quote
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Slide Navigation Dots */}
+      {/* Slide Navigation Dots - Bottom left aligned with content */}
       {mediaType === 'slider' && images.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-8 left-6 sm:left-8 lg:left-12 flex gap-3">
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-3 h-3 rounded-full transition-all ${
                 index === currentSlide
-                  ? 'bg-white scale-110'
+                  ? 'bg-accent scale-125'
                   : 'bg-white/50 hover:bg-white/75'
               }`}
               aria-label={`Go to slide ${index + 1}`}
@@ -141,6 +143,12 @@ export default function HeroSection({
           ))}
         </div>
       )}
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-8 right-8 hidden lg:flex flex-col items-center gap-2 text-white/70">
+        <span className="text-sm font-medium tracking-wider uppercase">Scroll</span>
+        <div className="w-px h-12 bg-gradient-to-b from-white/70 to-transparent" />
+      </div>
     </section>
   )
 }

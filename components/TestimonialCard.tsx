@@ -20,7 +20,7 @@ function InitialsAvatar({ name }: { name: string }) {
     .slice(0, 2)
 
   return (
-    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-semibold text-lg">
+    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-400 to-primary flex items-center justify-center text-white font-semibold text-lg">
       {initials}
     </div>
   )
@@ -35,7 +35,7 @@ function StarRating({ rating }: { rating: number }) {
           key={star}
           className={`h-4 w-4 ${
             star <= rating
-              ? 'fill-amber-400 text-amber-400'
+              ? 'fill-accent text-accent'
               : 'fill-none text-gray-300'
           }`}
         />
@@ -56,11 +56,11 @@ export default function TestimonialCard({
     <div className="bg-white rounded-xl p-6 shadow-sm h-full flex flex-col">
       {/* Quote Icon */}
       <div className="mb-4">
-        <Quote className="h-8 w-8 text-amber-500/30" />
+        <Quote className="h-8 w-8 text-primary/30" />
       </div>
 
       {/* Quote Text */}
-      <blockquote className="text-gray-700 flex-1 mb-6 leading-relaxed">
+      <blockquote className="text-dark flex-1 mb-6 leading-relaxed">
         &ldquo;{quote}&rdquo;
       </blockquote>
 
@@ -83,8 +83,8 @@ export default function TestimonialCard({
           <InitialsAvatar name={clientName} />
         )}
         <div>
-          <p className="font-semibold text-gray-900">{clientName}</p>
-          <div className="text-sm text-gray-500">
+          <p className="font-semibold text-dark">{clientName}</p>
+          <div className="text-sm text-secondary">
             {clientLocation && <span>{clientLocation}</span>}
             {clientLocation && projectType && <span> • </span>}
             {projectType && <span>{projectType}</span>}

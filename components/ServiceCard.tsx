@@ -31,8 +31,8 @@ export default function ServiceCard({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
-            <span className="text-amber-600 text-sm font-medium">
+          <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+            <span className="text-primary text-3xl font-bold font-heading">
               {title.charAt(0)}
             </span>
           </div>
@@ -41,7 +41,7 @@ export default function ServiceCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         {/* Title on Image */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-xl font-semibold text-white">
+          <h3 className="text-xl font-semibold text-white font-heading">
             {title}
           </h3>
         </div>
@@ -50,11 +50,11 @@ export default function ServiceCard({
       {/* Content */}
       <div className="p-5">
         {tagline && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+          <p className="text-secondary text-sm mb-4 line-clamp-2">
             {tagline}
           </p>
         )}
-        <span className="inline-flex items-center gap-1 text-amber-600 font-medium text-sm group-hover:gap-2 transition-all">
+        <span className="inline-flex items-center gap-1 text-primary font-medium text-sm group-hover:gap-2 transition-all">
           Learn More
           <ArrowRight className="h-4 w-4" />
         </span>

@@ -1,3 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Landscaping Contractor Color Palette */
+    --color-primary: #2D5A3D;
+    --color-primary-dark: #1E3D29;
+    --color-secondary: #8B7355;
+    --color-accent: #D4A84B;
+    --color-light: #F5F5F0;
+    --color-dark: #1A1A1A;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Open Sans', system-ui, sans-serif;
+    background-color: var(--color-light);
+    color: var(--color-dark);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  /* Primary button style */
+  .btn-primary {
+    @apply px-6 py-3 bg-accent text-dark font-semibold rounded-lg
+           hover:bg-accent-600 transition-colors shadow-lg hover:shadow-xl;
+  }
+
+  /* Secondary button style */
+  .btn-secondary {
+    @apply px-6 py-3 bg-primary text-white font-semibold rounded-lg
+           hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl;
+  }
+
+  /* Section headings */
+  .section-heading {
+    @apply text-3xl lg:text-4xl font-bold text-dark mb-4;
+  }
+
+  /* Section subheadings */
+  .section-subheading {
+    @apply text-lg text-secondary max-w-2xl mx-auto;
+  }
+}

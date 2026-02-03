@@ -9,33 +9,59 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Custom branding colors - to be configured
+        // Landscaping Contractor Branding - Earthy, Natural, Professional
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-          950: '#082f49',
+          DEFAULT: '#2D5A3D', // Forest green
+          50: '#E8F0EB',
+          100: '#D1E1D7',
+          200: '#A3C4AF',
+          300: '#75A687',
+          400: '#47895F',
+          500: '#2D5A3D',
+          600: '#244B32',
+          700: '#1E3D29', // Primary dark - hover
+          800: '#152E1E',
+          900: '#0C1F13',
+          950: '#06100A',
         },
         secondary: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617',
+          DEFAULT: '#8B7355', // Earthy brown
+          50: '#F5F2EF',
+          100: '#EBE5DF',
+          200: '#D7CBC0',
+          300: '#C3B1A0',
+          400: '#AF9780',
+          500: '#8B7355',
+          600: '#6F5C44',
+          700: '#534533',
+          800: '#372E22',
+          900: '#1B1711',
+          950: '#0E0B09',
         },
+        accent: {
+          DEFAULT: '#D4A84B', // Golden/amber for CTAs
+          50: '#FBF6EB',
+          100: '#F7EDD7',
+          200: '#EFD9AF',
+          300: '#E7C687',
+          400: '#DFB35F',
+          500: '#D4A84B',
+          600: '#B8893A',
+          700: '#8C692C',
+          800: '#60491E',
+          900: '#342810',
+          950: '#1A1408',
+        },
+        light: {
+          DEFAULT: '#F5F5F0', // Off-white/cream background
+        },
+        dark: {
+          DEFAULT: '#1A1A1A', // Near black for text
+        },
+      },
+      fontFamily: {
+        heading: ['Montserrat', 'system-ui', 'sans-serif'],
+        body: ['Open Sans', 'system-ui', 'sans-serif'],
       },
     },
   },

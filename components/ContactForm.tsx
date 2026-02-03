@@ -108,15 +108,15 @@ export default function ContactForm({ services }: ContactFormProps) {
 
   if (submitStatus === 'success') {
     return (
-      <div className="bg-green-50 rounded-xl p-8 text-center">
-        <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
-        <p className="text-gray-600 mb-6">
+      <div className="bg-primary-50 rounded-xl p-8 text-center">
+        <CheckCircle className="h-16 w-16 text-primary mx-auto mb-4" />
+        <h3 className="text-2xl font-bold text-dark mb-2 font-heading">Thank You!</h3>
+        <p className="text-secondary mb-6">
           We&apos;ve received your message and will be in touch within 24 hours.
         </p>
         <button
           onClick={() => setSubmitStatus('idle')}
-          className="text-amber-600 font-medium hover:text-amber-700 transition-colors"
+          className="text-primary font-medium hover:text-primary-700 transition-colors"
         >
           Send another message
         </button>
@@ -140,7 +140,7 @@ export default function ContactForm({ services }: ContactFormProps) {
 
       {/* Name */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-dark mb-1">
           Full Name <span className="text-red-500">*</span>
         </label>
         <input
@@ -150,7 +150,7 @@ export default function ContactForm({ services }: ContactFormProps) {
           value={formData.name}
           onChange={handleChange}
           className={`w-full px-4 py-3 rounded-lg border ${
-            errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-amber-500'
+            errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary'
           } focus:outline-none focus:ring-2 focus:border-transparent transition-colors`}
           placeholder="John Smith"
         />
@@ -161,7 +161,7 @@ export default function ContactForm({ services }: ContactFormProps) {
 
       {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="email" className="block text-sm font-medium text-dark mb-1">
           Email Address <span className="text-red-500">*</span>
         </label>
         <input
@@ -171,7 +171,7 @@ export default function ContactForm({ services }: ContactFormProps) {
           value={formData.email}
           onChange={handleChange}
           className={`w-full px-4 py-3 rounded-lg border ${
-            errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-amber-500'
+            errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary'
           } focus:outline-none focus:ring-2 focus:border-transparent transition-colors`}
           placeholder="john@example.com"
         />
@@ -182,7 +182,7 @@ export default function ContactForm({ services }: ContactFormProps) {
 
       {/* Phone */}
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="phone" className="block text-sm font-medium text-dark mb-1">
           Phone Number
         </label>
         <input
@@ -191,14 +191,14 @@ export default function ContactForm({ services }: ContactFormProps) {
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
           placeholder="(555) 123-4567"
         />
       </div>
 
       {/* Service */}
       <div>
-        <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="service" className="block text-sm font-medium text-dark mb-1">
           Service Interested In
         </label>
         <select
@@ -206,7 +206,7 @@ export default function ContactForm({ services }: ContactFormProps) {
           name="service"
           value={formData.service}
           onChange={handleChange}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors bg-white"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors bg-white"
         >
           <option value="">Select a service...</option>
           {services.map((service) => (
@@ -220,7 +220,7 @@ export default function ContactForm({ services }: ContactFormProps) {
 
       {/* Message */}
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="message" className="block text-sm font-medium text-dark mb-1">
           Project Description <span className="text-red-500">*</span>
         </label>
         <textarea
@@ -230,9 +230,9 @@ export default function ContactForm({ services }: ContactFormProps) {
           onChange={handleChange}
           rows={5}
           className={`w-full px-4 py-3 rounded-lg border ${
-            errors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-amber-500'
+            errors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary'
           } focus:outline-none focus:ring-2 focus:border-transparent transition-colors resize-none`}
-          placeholder="Tell us about your project, timeline, and any specific requirements..."
+          placeholder="Tell us about your landscaping project, timeline, and any specific requirements..."
         />
         {errors.message && (
           <p className="mt-1 text-sm text-red-500">{errors.message}</p>
@@ -241,7 +241,7 @@ export default function ContactForm({ services }: ContactFormProps) {
 
       {/* Contact Method */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+        <label className="block text-sm font-medium text-dark mb-3">
           Preferred Contact Method
         </label>
         <div className="flex flex-wrap gap-4">
@@ -260,9 +260,9 @@ export default function ContactForm({ services }: ContactFormProps) {
                 value={option.value}
                 checked={formData.contactMethod === option.value}
                 onChange={handleChange}
-                className="w-4 h-4 text-amber-500 border-gray-300 focus:ring-amber-500"
+                className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
               />
-              <span className="text-gray-700">{option.label}</span>
+              <span className="text-dark">{option.label}</span>
             </label>
           ))}
         </div>
@@ -272,7 +272,7 @@ export default function ContactForm({ services }: ContactFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-4 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full py-4 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {isSubmitting ? (
           <>
@@ -284,7 +284,7 @@ export default function ContactForm({ services }: ContactFormProps) {
         )}
       </button>
 
-      <p className="text-xs text-gray-500 text-center">
+      <p className="text-xs text-secondary text-center">
         By submitting this form, you agree to be contacted about your project.
       </p>
     </form>

@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `Contact ${name} | Get a Free Quote`,
-    description: `Ready to start your project? Contact ${name} for a free consultation and estimate. We serve the ${settings.serviceArea || 'local area'}.`,
+    description: `Ready to start your landscaping project? Contact ${name} for a free consultation and estimate. We serve the ${settings.serviceArea || 'local area'}.`,
   }
 }
 
@@ -107,24 +107,24 @@ export default async function ContactPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-slate-900 py-16 lg:py-24">
+      <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
             Get In Touch
           </h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Ready to start your project? We&apos;d love to hear from you.
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
+            Ready to start your landscaping project? We&apos;d love to hear from you.
           </p>
         </div>
       </section>
 
       {/* Main Content */}
-      <section className="py-12 lg:py-16 bg-gray-50">
+      <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Left Column - Contact Form */}
             <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-bold text-dark mb-6 font-heading">
                 Send Us a Message
               </h2>
               <ContactForm services={serviceOptions} />
@@ -134,22 +134,22 @@ export default async function ContactPage() {
             <div className="space-y-8">
               {/* Contact Details Card */}
               <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                <h2 className="text-2xl font-bold text-dark mb-6 font-heading">
                   Contact Information
                 </h2>
                 <dl className="space-y-6">
                   {/* Phone */}
                   {settings.phone && (
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-5 w-5 text-amber-600" />
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Phone className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-500 mb-1">Phone</dt>
+                        <dt className="text-sm text-secondary mb-1">Phone</dt>
                         <dd>
                           <a
                             href={`tel:${settings.phone.replace(/\D/g, '')}`}
-                            className="text-lg font-medium text-gray-900 hover:text-amber-600 transition-colors"
+                            className="text-lg font-medium text-dark hover:text-primary transition-colors"
                           >
                             {settings.phone}
                           </a>
@@ -161,15 +161,15 @@ export default async function ContactPage() {
                   {/* Email */}
                   {settings.email && (
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Mail className="h-5 w-5 text-amber-600" />
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Mail className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-500 mb-1">Email</dt>
+                        <dt className="text-sm text-secondary mb-1">Email</dt>
                         <dd>
                           <a
                             href={`mailto:${settings.email}`}
-                            className="text-lg font-medium text-gray-900 hover:text-amber-600 transition-colors break-all"
+                            className="text-lg font-medium text-dark hover:text-primary transition-colors break-all"
                           >
                             {settings.email}
                           </a>
@@ -181,12 +181,12 @@ export default async function ContactPage() {
                   {/* Address */}
                   {settings.address && (
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-5 w-5 text-amber-600" />
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-500 mb-1">Address</dt>
-                        <dd className="text-lg font-medium text-gray-900 whitespace-pre-line">
+                        <dt className="text-sm text-secondary mb-1">Address</dt>
+                        <dd className="text-lg font-medium text-dark whitespace-pre-line">
                           {settings.address}
                         </dd>
                       </div>
@@ -196,12 +196,12 @@ export default async function ContactPage() {
                   {/* Service Area */}
                   {settings.serviceArea && (
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-5 w-5 text-amber-600" />
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-500 mb-1">Service Area</dt>
-                        <dd className="text-lg font-medium text-gray-900">
+                        <dt className="text-sm text-secondary mb-1">Service Area</dt>
+                        <dd className="text-lg font-medium text-dark">
                           {settings.serviceArea}
                         </dd>
                       </div>
@@ -211,12 +211,12 @@ export default async function ContactPage() {
                   {/* Office Hours */}
                   {settings.officeHours && (
                     <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-5 w-5 text-amber-600" />
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Clock className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-500 mb-1">Office Hours</dt>
-                        <dd className="text-gray-900 whitespace-pre-line">
+                        <dt className="text-sm text-secondary mb-1">Office Hours</dt>
+                        <dd className="text-dark whitespace-pre-line">
                           {settings.officeHours}
                         </dd>
                       </div>
@@ -227,7 +227,7 @@ export default async function ContactPage() {
                 {/* Social Links */}
                 {socialLinks.length > 0 && (
                   <div className="mt-8 pt-6 border-t border-gray-100">
-                    <h3 className="text-sm font-medium text-gray-500 mb-4">
+                    <h3 className="text-sm font-medium text-secondary mb-4">
                       Follow Us
                     </h3>
                     <div className="flex flex-wrap gap-3">
@@ -237,7 +237,7 @@ export default async function ContactPage() {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-amber-100 hover:text-amber-600 transition-colors"
+                          className="w-10 h-10 bg-light rounded-full flex items-center justify-center text-secondary hover:bg-primary-100 hover:text-primary transition-colors"
                           aria-label={link.label}
                         >
                           <link.icon className="h-5 w-5" />
@@ -249,13 +249,13 @@ export default async function ContactPage() {
               </div>
 
               {/* Map Placeholder */}
-              <div className="bg-gray-200 rounded-xl p-8 min-h-[200px] flex flex-col items-center justify-center text-center">
-                <MapPin className="h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-gray-600 font-medium mb-1">Map</p>
-                <p className="text-sm text-gray-500">
+              <div className="bg-primary-100 rounded-xl p-8 min-h-[200px] flex flex-col items-center justify-center text-center">
+                <MapPin className="h-12 w-12 text-primary mb-4" />
+                <p className="text-dark font-medium mb-1">Map</p>
+                <p className="text-sm text-secondary">
                   Service Area: {settings.serviceArea || companyName}
                 </p>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-secondary mt-2">
                   Google Maps integration coming soon
                 </p>
               </div>

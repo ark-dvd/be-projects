@@ -18,11 +18,12 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description,
     keywords: [
+      'landscaping',
+      'lawn care',
+      'garden design',
+      'outdoor living',
+      'hardscaping',
       'contractor',
-      'renovation',
-      'remodeling',
-      'construction',
-      'home improvement',
       settings.serviceArea || '',
     ].filter(Boolean),
     authors: [{ name: contractorName }],
@@ -55,7 +56,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className="bg-gray-50 text-gray-900 antialiased">
+      <body className="bg-light text-dark antialiased font-body">
         <PublicLayout settings={settings} isDemo={isDemo}>
           {children}
         </PublicLayout>
