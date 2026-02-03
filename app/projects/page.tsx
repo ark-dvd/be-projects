@@ -1,5 +1,8 @@
 import { Metadata } from 'next'
 import { getProjects, getServices, getSiteSettings } from '@/lib/data-fetchers'
+
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
 import { sanityImageUrl } from '@/lib/sanity-helpers'
 import ProjectCard from '@/components/ProjectCard'
 import CTASection from '@/components/CTASection'

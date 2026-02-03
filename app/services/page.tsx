@@ -6,6 +6,9 @@ import { getServices, getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
 import CTASection from '@/components/CTASection'
 
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
+
 export const metadata: Metadata = {
   title: 'Our Services',
   description: 'Explore our full range of construction and renovation services. From kitchens to bathrooms, decks to whole-home remodels.',

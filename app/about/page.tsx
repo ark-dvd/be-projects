@@ -1,6 +1,9 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import {
+
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
   Wrench,
   Shield,
   Clock,

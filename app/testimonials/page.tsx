@@ -7,6 +7,9 @@ import { sanityImageUrl } from '@/lib/sanity-helpers'
 import CTASection from '@/components/CTASection'
 import { StructuredData } from '@/components/StructuredData'
 
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
+
 export const metadata: Metadata = {
   title: 'Client Testimonials',
   description: 'Read testimonials from homeowners who trusted us with their construction and renovation projects. See why our clients recommend us.',

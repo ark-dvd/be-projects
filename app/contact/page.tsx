@@ -1,5 +1,8 @@
 import { Metadata } from 'next'
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
+
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
 import { getServices, getSiteSettings } from '@/lib/data-fetchers'
 import ContactForm from '@/components/ContactForm'
 

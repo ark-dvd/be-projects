@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
+
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
 import {
   getSiteSettings,
   getProjects,

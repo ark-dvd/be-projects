@@ -19,6 +19,9 @@ import ProjectCard from '@/components/ProjectCard'
 import ProjectGallery from './ProjectGallery'
 import { StructuredData } from '@/components/StructuredData'
 
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
+
 interface Props {
   params: { slug: string }
 }
