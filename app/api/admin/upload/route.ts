@@ -1,9 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth/middleware'
-import { getSanityWriteClient } from '@/lib/sanity'
+import { createClient } from '@sanity/client'
 
 // Disable Next.js body parsing - we handle formData manually
 export const runtime = 'nodejs'
+
+// Create write client inline (no caching) for serverless reliability
+function createWriteClient() {
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
+  const token = process.env.SANITY_API_TOKEN
+
+  console.log('[Upload] Creating Sanity client with:', {
+    projectId: projectId ? `${projectId.substring(0, 4)}...` : 'MISSING',
+    dataset,
+    hasToken: !!token,
+    tokenLength: token?.length || 0,
+  })
+
+  if (!projectId) {
+    throw new Error('Missing NEXT_PUBLIC_SANITY_PROJECT_ID')
+  }
+  if (!token) {
+    throw new Error('Missing SANITY_API_TOKEN')
+  }
+
+  return createClient({
+    projectId,
+    dataset,
+    apiVersion: '2024-01-01',
+    token,
+    useCdn: false, // Must be false for mutations
+  })
+}
 
 // GET endpoint for testing route accessibility
 export async function GET() {
@@ -71,28 +100,6 @@ export async function POST(request: NextRequest) {
   try {
     console.log('[Upload] Starting file processing...')
 
-    // Check environment variables first
-    const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
-    const apiToken = process.env.SANITY_API_TOKEN
-
-    console.log('[Upload] Environment check:', {
-      hasProjectId: !!projectId,
-      projectId: projectId ? `${projectId.substring(0, 4)}...` : 'MISSING',
-      hasApiToken: !!apiToken,
-      tokenLength: apiToken?.length || 0,
-    })
-
-    if (!projectId || !apiToken) {
-      console.error('[Upload] Missing environment variables:', {
-        NEXT_PUBLIC_SANITY_PROJECT_ID: projectId ? 'set' : 'MISSING',
-        SANITY_API_TOKEN: apiToken ? 'set' : 'MISSING',
-      })
-      return NextResponse.json(
-        { error: 'Server configuration error: Missing Sanity credentials' },
-        { status: 500 }
-      )
-    }
-
     const formData = await request.formData()
     const file = formData.get('file')
 
@@ -133,18 +140,45 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer())
     console.log('[Upload] Buffer created, size:', buffer.length)
 
-    console.log('[Upload] Getting Sanity write client...')
-    const client = getSanityWriteClient()
-    console.log('[Upload] Sanity client obtained')
+    console.log('[Upload] Creating Sanity write client...')
+    let client
+    try {
+      client = createWriteClient()
+      console.log('[Upload] Sanity client created successfully')
+    } catch (clientError) {
+      console.error('[Upload] Failed to create Sanity client:', clientError)
+      return NextResponse.json(
+        { error: 'Server configuration error', details: String(clientError) },
+        { status: 500 }
+      )
+    }
 
     // Upload as 'image' for images, 'file' for videos
     const assetType = isImage ? 'image' : 'file'
-    console.log('[Upload] Uploading to Sanity as:', assetType)
+    console.log('[Upload] Uploading to Sanity as:', assetType, 'filename:', file.name)
 
-    const asset = await client.assets.upload(assetType, buffer, {
-      filename: file.name,
-      contentType: file.type,
-    })
+    let asset
+    try {
+      asset = await client.assets.upload(assetType, buffer, {
+        filename: file.name,
+        contentType: file.type,
+      })
+    } catch (uploadError: unknown) {
+      const err = uploadError as Error & { statusCode?: number; response?: { body?: unknown } }
+      console.error('[Upload] Sanity upload failed:', {
+        message: err.message,
+        statusCode: err.statusCode,
+        response: err.response?.body,
+      })
+      return NextResponse.json(
+        {
+          error: 'Sanity upload failed',
+          details: err.message,
+          statusCode: err.statusCode,
+        },
+        { status: err.statusCode || 500 }
+      )
+    }
 
     console.log('[Upload] Upload successful:', {
       assetId: asset._id,
