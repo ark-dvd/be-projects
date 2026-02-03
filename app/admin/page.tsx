@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { SessionProvider, useSession, signIn, signOut } from 'next-auth/react'
 import {
@@ -15,6 +15,11 @@ import {
   X,
   HardHat,
   Loader2,
+  Users,
+  UserCheck,
+  Briefcase,
+  Kanban,
+  Cog,
 } from 'lucide-react'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import ProjectsTab from '@/components/admin/ProjectsTab'
@@ -23,8 +28,19 @@ import TestimonialsTab from '@/components/admin/TestimonialsTab'
 import ActiveJobsTab from '@/components/admin/ActiveJobsTab'
 import SiteSettingsTab from '@/components/admin/SiteSettingsTab'
 
-// Tab configuration
-const TABS = [
+// CRM Components
+import {
+  CrmDashboard,
+  LeadTable,
+  ClientTable,
+  DealTable,
+  PipelineView,
+  CrmSettings,
+  GlobalSearch,
+} from '@/components/admin/crm'
+
+// Tab configuration - Website section
+const WEBSITE_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'projects', label: 'Projects', icon: FolderKanban },
   { id: 'services', label: 'Services', icon: Wrench },
@@ -32,6 +48,19 @@ const TABS = [
   { id: 'jobs', label: 'Active Jobs', icon: ClipboardList },
   { id: 'settings', label: 'Settings', icon: Settings },
 ] as const
+
+// Tab configuration - CRM section
+const CRM_TABS = [
+  { id: 'crm-dashboard', label: 'CRM Overview', icon: LayoutDashboard },
+  { id: 'crm-leads', label: 'Leads', icon: Users },
+  { id: 'crm-clients', label: 'Clients', icon: UserCheck },
+  { id: 'crm-deals', label: 'Projects', icon: Briefcase },
+  { id: 'crm-pipeline', label: 'Pipeline', icon: Kanban },
+  { id: 'crm-settings', label: 'CRM Settings', icon: Cog },
+] as const
+
+// Combined TABS for backward compatibility
+const TABS = [...WEBSITE_TABS, ...CRM_TABS] as const
 
 type TabId = typeof TABS[number]['id']
 
@@ -136,6 +165,29 @@ function AdminShell() {
   const { data: session, status } = useSession()
   const [activeTab, setActiveTab] = useState<TabId>('dashboard')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [newLeadsCount, setNewLeadsCount] = useState(0)
+
+  // Fetch new leads count
+  useEffect(() => {
+    const fetchNewLeadsCount = async () => {
+      try {
+        const res = await fetch('/api/crm/leads?status=new&limit=1')
+        if (res.ok) {
+          const data = await res.json()
+          setNewLeadsCount(data.statusCounts?.new || 0)
+        }
+      } catch (e) {
+        console.error('Failed to fetch new leads count:', e)
+      }
+    }
+
+    if (session) {
+      fetchNewLeadsCount()
+      // Refresh every 60 seconds
+      const interval = setInterval(fetchNewLeadsCount, 60000)
+      return () => clearInterval(interval)
+    }
+  }, [session])
 
   if (status === 'loading') {
     return <LoadingScreen />
@@ -152,6 +204,7 @@ function AdminShell() {
 
   const renderTabContent = () => {
     switch (activeTab) {
+      // Website tabs
       case 'dashboard':
         return <AdminDashboard onNavigate={handleNavigate} />
       case 'projects':
@@ -164,6 +217,28 @@ function AdminShell() {
         return <ActiveJobsTab />
       case 'settings':
         return <SiteSettingsTab />
+      // CRM tabs
+      case 'crm-dashboard':
+        return <CrmDashboard onNavigate={handleNavigate} />
+      case 'crm-leads':
+        return <LeadTable onLeadConverted={() => {}} />
+      case 'crm-clients':
+        return (
+          <ClientTable
+            onCreateDeal={() => setActiveTab('crm-deals')}
+            onViewDeal={() => setActiveTab('crm-deals')}
+          />
+        )
+      case 'crm-deals':
+        return (
+          <DealTable
+            onViewClient={() => setActiveTab('crm-clients')}
+          />
+        )
+      case 'crm-pipeline':
+        return <PipelineView />
+      case 'crm-settings':
+        return <CrmSettings />
       default:
         return null
     }
@@ -218,8 +293,23 @@ function AdminShell() {
       <div className="flex">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 bg-slate-900 min-h-[calc(100vh-4rem)] sticky top-16">
-          <nav className="flex-1 p-4 space-y-1">
-            {TABS.map(tab => {
+          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+            {/* Global Search */}
+            <div className="mb-4">
+              <GlobalSearch
+                onSelectLead={() => setActiveTab('crm-leads')}
+                onSelectClient={() => setActiveTab('crm-clients')}
+                onSelectDeal={() => setActiveTab('crm-deals')}
+              />
+            </div>
+
+            {/* Website Section */}
+            <div className="mb-2">
+              <span className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Website
+              </span>
+            </div>
+            {WEBSITE_TABS.map(tab => {
               const Icon = tab.icon
               const isActive = activeTab === tab.id
               return (
@@ -234,6 +324,39 @@ function AdminShell() {
                 >
                   <Icon className="h-5 w-5" />
                   <span className="font-medium">{tab.label}</span>
+                </button>
+              )
+            })}
+
+            {/* CRM Section */}
+            <div className="mt-6 mb-2 pt-4 border-t border-slate-700">
+              <span className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                CRM
+              </span>
+            </div>
+            {CRM_TABS.map(tab => {
+              const Icon = tab.icon
+              const isActive = activeTab === tab.id
+              const showBadge = tab.id === 'crm-leads' && newLeadsCount > 0
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
+                    isActive
+                      ? 'bg-[#fe5557] text-white shadow-lg'
+                      : 'text-gray-300 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span className="font-medium flex-1">{tab.label}</span>
+                  {showBadge && (
+                    <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-[#fe5557] text-white'
+                    }`}>
+                      {newLeadsCount}
+                    </span>
+                  )}
                 </button>
               )
             })}
@@ -270,8 +393,14 @@ function AdminShell() {
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-30 lg:hidden">
             <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-            <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg p-4 space-y-2">
-              {TABS.map(tab => {
+            <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg p-4 space-y-2 max-h-[calc(100vh-4rem)] overflow-y-auto">
+              {/* Website Section */}
+              <div className="mb-1">
+                <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Website
+                </span>
+              </div>
+              {WEBSITE_TABS.map(tab => {
                 const Icon = tab.icon
                 const isActive = activeTab === tab.id
                 return (
@@ -289,6 +418,40 @@ function AdminShell() {
                   </button>
                 )
               })}
+
+              {/* CRM Section */}
+              <div className="mt-4 mb-1 pt-3 border-t border-gray-200">
+                <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  CRM
+                </span>
+              </div>
+              {CRM_TABS.map(tab => {
+                const Icon = tab.icon
+                const isActive = activeTab === tab.id
+                const showBadge = tab.id === 'crm-leads' && newLeadsCount > 0
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleNavigate(tab.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
+                      isActive
+                        ? 'bg-[#fe5557] text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="font-medium flex-1">{tab.label}</span>
+                    {showBadge && (
+                      <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
+                        isActive ? 'bg-white/20 text-white' : 'bg-[#fe5557] text-white'
+                      }`}>
+                        {newLeadsCount}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+
               <hr className="my-2" />
               <div className="flex items-center gap-3 px-4 py-2">
                 {session.user?.image && (
@@ -330,22 +493,54 @@ function AdminShell() {
       {/* Mobile Bottom Tab Bar */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 lg:hidden z-40">
         <div className="flex items-center justify-around h-16">
-          {TABS.slice(0, 5).map(tab => {
-            const Icon = tab.icon
-            const isActive = activeTab === tab.id
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
-                  isActive ? 'text-amber-500' : 'text-gray-400'
-                }`}
-              >
-                <Icon className="h-5 w-5" />
-                <span className="text-xs mt-1 font-medium">{tab.label.split(' ')[0]}</span>
-              </button>
-            )
-          })}
+          {/* Website Dashboard */}
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+              activeTab === 'dashboard' ? 'text-amber-500' : 'text-gray-400'
+            }`}
+          >
+            <LayoutDashboard className="h-5 w-5" />
+            <span className="text-xs mt-1 font-medium">Home</span>
+          </button>
+          {/* CRM Dashboard */}
+          <button
+            onClick={() => setActiveTab('crm-dashboard')}
+            className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+              activeTab === 'crm-dashboard' ? 'text-[#fe5557]' : 'text-gray-400'
+            }`}
+          >
+            <Users className="h-5 w-5" />
+            <span className="text-xs mt-1 font-medium">CRM</span>
+          </button>
+          {/* Leads */}
+          <button
+            onClick={() => setActiveTab('crm-leads')}
+            className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+              activeTab === 'crm-leads' ? 'text-[#fe5557]' : 'text-gray-400'
+            }`}
+          >
+            <Users className="h-5 w-5" />
+            <span className="text-xs mt-1 font-medium">Leads</span>
+          </button>
+          {/* Deals/Projects */}
+          <button
+            onClick={() => setActiveTab('crm-deals')}
+            className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+              activeTab === 'crm-deals' ? 'text-[#fe5557]' : 'text-gray-400'
+            }`}
+          >
+            <Briefcase className="h-5 w-5" />
+            <span className="text-xs mt-1 font-medium">Projects</span>
+          </button>
+          {/* Settings (opens mobile menu) */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className={`flex flex-col items-center justify-center flex-1 h-full transition-colors text-gray-400`}
+          >
+            <Menu className="h-5 w-5" />
+            <span className="text-xs mt-1 font-medium">More</span>
+          </button>
         </div>
       </nav>
     </div>

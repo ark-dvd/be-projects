@@ -126,3 +126,107 @@ export const SiteSettingsInputSchema = z.object({
   insuranceInfo: z.string().optional().default(''),
   bondInfo: z.string().optional().default(''),
 })
+
+// ============================================
+// CRM VALIDATION SCHEMAS
+// ============================================
+
+// Lead Input Schema (for website form auto-creation)
+export const LeadWebFormSchema = z.object({
+  fullName: z.string().min(1, 'Name is required'),
+  email: z.string().email('Valid email required').optional().or(z.literal('')),
+  phone: z.string().optional().default(''),
+  message: z.string().optional().default(''),
+  serviceType: z.string().optional().default(''),
+  formId: z.string().optional().default('contact-page'),
+})
+
+// Lead Input Schema (for admin CRUD)
+export const LeadInputSchema = z.object({
+  _id: z.string().optional(),
+  fullName: z.string().min(1, 'Full name is required'),
+  email: z.string().email().optional().or(z.literal('')),
+  phone: z.string().optional().default(''),
+  origin: z.enum(['auto_website_form', 'auto_landing_page', 'manual']).default('manual'),
+  source: z.string().optional().default(''),
+  serviceType: z.string().optional().default(''),
+  estimatedValue: z.number().optional(),
+  priority: z.enum(['high', 'medium', 'low']).default('medium'),
+  status: z.enum(['new', 'contacted', 'site_visit', 'quoted', 'negotiating', 'won', 'lost']).default('new'),
+  referredBy: z.string().optional().default(''),
+  originalMessage: z.string().optional().default(''),
+  description: z.string().optional().default(''),
+  internalNotes: z.string().optional().default(''),
+})
+
+// Client Input Schema
+export const ClientInputSchema = z.object({
+  _id: z.string().optional(),
+  fullName: z.string().min(1, 'Full name is required'),
+  email: z.string().email().optional().or(z.literal('')),
+  phone: z.string().optional().default(''),
+  address: z.string().optional().default(''),
+  status: z.enum(['active', 'past']).default('active'),
+  preferredContact: z.enum(['phone', 'email', 'text']).optional(),
+  internalNotes: z.string().optional().default(''),
+  propertyType: z.string().optional().default(''),
+  sourceLeadId: z.string().optional(), // Reference to source lead
+})
+
+// Deal Input Schema
+export const DealInputSchema = z.object({
+  _id: z.string().optional(),
+  title: z.string().min(1, 'Project title is required'),
+  clientId: z.string().min(1, 'Client is required'), // Reference to client
+  dealType: z.string().optional().default(''),
+  value: z.number().optional(),
+  status: z.enum(['planning', 'permitting', 'in_progress', 'inspection', 'completed', 'warranty', 'paused', 'cancelled']).default('planning'),
+  projectAddress: z.string().optional().default(''),
+  permitNumber: z.string().optional().default(''),
+  estimatedDuration: z.string().optional().default(''),
+  scope: z.array(z.string()).optional().default([]),
+  contractSignedDate: z.string().optional().default(''),
+  startDate: z.string().optional().default(''),
+  expectedEndDate: z.string().optional().default(''),
+  actualEndDate: z.string().optional().default(''),
+  description: z.string().optional().default(''),
+  internalNotes: z.string().optional().default(''),
+})
+
+// Activity Input Schema
+export const ActivityInputSchema = z.object({
+  _id: z.string().optional(),
+  type: z.string().min(1, 'Activity type is required'),
+  description: z.string().optional().default(''),
+  leadId: z.string().optional(),
+  clientId: z.string().optional(),
+  dealId: z.string().optional(),
+  performedBy: z.string().optional().default('admin'),
+  metadata: z.object({
+    oldStatus: z.string().optional(),
+    newStatus: z.string().optional(),
+    callDuration: z.number().optional(),
+    quoteAmount: z.number().optional(),
+  }).optional(),
+})
+
+// CRM Settings Input Schema
+export const CrmSettingsInputSchema = z.object({
+  pipelineStages: z.array(z.object({
+    key: z.string(),
+    label: z.string(),
+    color: z.string(),
+  })).optional(),
+  dealStatuses: z.array(z.object({
+    key: z.string(),
+    label: z.string(),
+    color: z.string(),
+  })).optional(),
+  leadSources: z.array(z.string()).optional(),
+  serviceTypes: z.array(z.string()).optional(),
+  defaultPriority: z.enum(['high', 'medium', 'low']).optional(),
+  currency: z.string().optional().default('$'),
+  industryLabel: z.string().optional().default('Contractor'),
+  dealLabel: z.string().optional().default('Project'),
+  leadsPageSize: z.number().optional().default(20),
+})
