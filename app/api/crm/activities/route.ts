@@ -109,6 +109,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// PHASE 3: Activities are immutable audit records (DOC-030 § 3.5)
+// DELETE is explicitly forbidden - activities must never be deleted
 export async function DELETE(request: NextRequest) {
   const rateLimitError = withRateLimit(request, RATE_LIMITS.admin)
   if (rateLimitError) return rateLimitError
@@ -116,16 +118,9 @@ export async function DELETE(request: NextRequest) {
   const auth = await requireAdmin(request)
   if ('error' in auth) return auth.error
 
-  try {
-    const id = new URL(request.url).searchParams.get('id')
-    if (!id || !/^[a-zA-Z0-9._-]+$/.test(id)) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
-    }
-
-    await getSanityWriteClient().delete(id)
-    return NextResponse.json({ success: true })
-  } catch (e) {
-    console.error('Delete activity error:', e)
-    return NextResponse.json({ error: 'Failed to delete activity' }, { status: 500 })
-  }
+  // Activities are immutable audit records - deletion is forbidden by design
+  return NextResponse.json(
+    { error: 'Activities are immutable audit records and cannot be deleted. This is by design per DOC-030 § 3.5.' },
+    { status: 403 }
+  )
 }

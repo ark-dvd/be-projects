@@ -336,9 +336,14 @@ export async function createActivity(data: {
   return handleResponse<Activity>(res)
 }
 
-export async function deleteActivity(id: string): Promise<{ success: boolean }> {
-  const res = await fetch(`/api/crm/activities?id=${id}`, { method: 'DELETE' })
-  return handleResponse<{ success: boolean }>(res)
+// PHASE 3: Activities are immutable audit records - deletion is forbidden (DOC-030 § 3.5)
+// This function is intentionally disabled. Calling it will result in a 403 error.
+export async function deleteActivity(_id: string): Promise<never> {
+  throw new CrmAPIError(
+    'Activities are immutable audit records and cannot be deleted',
+    403,
+    ['DOC-030 § 3.5: Activities must never be modified or deleted after creation']
+  )
 }
 
 // ============================================

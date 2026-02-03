@@ -213,17 +213,32 @@ export async function POST(request: NextRequest) {
       receivedAt: now,
     }
 
-    const result = await client.create(doc)
+    // PHASE 3: Atomic transaction - entity + Activity commit together or not at all (DOC-030, DOC-040)
+    const leadId = `lead.${crypto.randomUUID()}`
+    const activityId = `activity.${crypto.randomUUID()}`
 
-    // Create activity log
-    await client.create({
+    const transaction = client.transaction()
+    transaction.create({
+      ...doc,
+      _id: leadId,
+    })
+    transaction.create({
+      _id: activityId,
       _type: 'activity' as const,
       type: 'lead_created_manual',
       description: `Lead manually created by ${auth.user.email}`,
       timestamp: now,
-      lead: { _type: 'reference' as const, _ref: result._id },
+      lead: { _type: 'reference' as const, _ref: leadId },
       performedBy: auth.user.email,
     })
+
+    await transaction.commit()
+
+    // Fetch and return created lead
+    const result = await readClient.fetch(
+      `*[_type == "lead" && _id == $id][0]`,
+      { id: leadId }
+    )
 
     return NextResponse.json(result)
   } catch (e) {
@@ -288,12 +303,16 @@ export async function PUT(request: NextRequest) {
       { id: d._id }
     )
 
+    const statusChanged = currentLead && currentLead.status !== d.status
     const fields = buildLeadFields(d)
-    const result = await client.patch(d._id).set(fields).commit()
 
-    // Log activity if status changed
-    if (currentLead && currentLead.status !== d.status) {
-      await client.create({
+    // PHASE 3: Atomic transaction - patch + Activity commit together or not at all (DOC-030, DOC-040)
+    if (statusChanged) {
+      const activityId = `activity.${crypto.randomUUID()}`
+      const transaction = client.transaction()
+      transaction.patch(d._id, { set: fields })
+      transaction.create({
+        _id: activityId,
         _type: 'activity' as const,
         type: 'status_changed',
         description: `Status changed from "${currentLead.status}" to "${d.status}"`,
@@ -305,7 +324,17 @@ export async function PUT(request: NextRequest) {
           newStatus: d.status,
         },
       })
+      await transaction.commit()
+    } else {
+      // No status change - simple patch without Activity
+      await client.patch(d._id).set(fields).commit()
     }
+
+    // Fetch and return updated lead
+    const result = await readClient.fetch(
+      `*[_type == "lead" && _id == $id][0]`,
+      { id: d._id }
+    )
 
     return NextResponse.json(result)
   } catch (e) {
@@ -329,16 +358,8 @@ export async function DELETE(request: NextRequest) {
 
     const client = getSanityWriteClient()
 
-    // Also delete related activities
-    const activities = await getSanityClient().fetch(
-      `*[_type == "activity" && lead._ref == $id]._id`,
-      { id }
-    )
-
-    // Delete activities first
-    for (const actId of activities) {
-      await client.delete(actId)
-    }
+    // PHASE 3: Activities are immutable - do NOT delete them (DOC-030 § 3.5)
+    // Activities remain as historical audit records even after lead deletion
 
     // Delete lead
     await client.delete(id)

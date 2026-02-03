@@ -47,23 +47,30 @@ export async function POST(request: NextRequest) {
       formId: data.formId || 'contact-page',
     }
 
-    const lead = await client.create(leadDoc)
+    // PHASE 3: Atomic transaction - lead + Activity commit together or not at all (DOC-030, DOC-040)
+    const leadId = `lead.${crypto.randomUUID()}`
+    const activityId = `activity.${crypto.randomUUID()}`
 
-    // Create activity log entry
-    const activityDoc = {
+    const transaction = client.transaction()
+    transaction.create({
+      ...leadDoc,
+      _id: leadId,
+    })
+    transaction.create({
+      _id: activityId,
       _type: 'activity' as const,
       type: 'lead_created_auto',
       description: `Lead auto-created from website contact form`,
       timestamp: now,
-      lead: { _type: 'reference' as const, _ref: lead._id },
+      lead: { _type: 'reference' as const, _ref: leadId },
       performedBy: 'system',
-    }
+    })
 
-    await client.create(activityDoc)
+    await transaction.commit()
 
     return NextResponse.json({
       success: true,
-      leadId: lead._id,
+      leadId: leadId,
       message: 'Thank you! We will be in touch soon.',
     })
   } catch (error) {

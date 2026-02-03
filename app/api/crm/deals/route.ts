@@ -171,23 +171,35 @@ export async function POST(request: NextRequest) {
     const now = new Date().toISOString()
 
     const fields = buildDealFields(d)
-    const doc = {
+
+    // PHASE 3: Atomic transaction - deal + Activity commit together or not at all (DOC-030, DOC-040)
+    const dealId = `deal.${crypto.randomUUID()}`
+    const activityId = `activity.${crypto.randomUUID()}`
+
+    const transaction = client.transaction()
+    transaction.create({
+      _id: dealId,
       _type: 'deal' as const,
       ...fields,
-    }
-
-    const result = await client.create(doc)
-
-    // Create activity log
-    await client.create({
+    })
+    transaction.create({
+      _id: activityId,
       _type: 'activity' as const,
       type: 'deal_created',
       description: `Project "${d.title}" created by ${auth.user.email}`,
       timestamp: now,
-      deal: { _type: 'reference' as const, _ref: result._id },
+      deal: { _type: 'reference' as const, _ref: dealId },
       client: { _type: 'reference' as const, _ref: d.clientId },
       performedBy: auth.user.email,
     })
+
+    await transaction.commit()
+
+    // Fetch and return created deal
+    const result = await readClient.fetch(
+      `*[_type == "deal" && _id == $id][0]`,
+      { id: dealId }
+    )
 
     return NextResponse.json(result)
   } catch (e) {
@@ -236,13 +248,17 @@ export async function PUT(request: NextRequest) {
       { id: d._id }
     )
 
+    const statusChanged = currentDeal && currentDeal.status !== d.status
     const fields = buildDealFields(d)
-    const result = await writeClient.patch(d._id).set(fields).commit()
 
-    // Log activity if status changed
-    if (currentDeal && currentDeal.status !== d.status) {
+    // PHASE 3: Atomic transaction - patch + Activity commit together or not at all (DOC-030, DOC-040)
+    if (statusChanged) {
+      const activityId = `activity.${crypto.randomUUID()}`
       const activityType = d.status === 'completed' ? 'deal_completed' : 'status_changed'
-      await writeClient.create({
+      const transaction = writeClient.transaction()
+      transaction.patch(d._id, { set: fields })
+      transaction.create({
+        _id: activityId,
         _type: 'activity' as const,
         type: activityType,
         description: `Project status changed from "${currentDeal.status}" to "${d.status}"`,
@@ -255,7 +271,17 @@ export async function PUT(request: NextRequest) {
           newStatus: d.status,
         },
       })
+      await transaction.commit()
+    } else {
+      // No status change - simple patch without Activity
+      await writeClient.patch(d._id).set(fields).commit()
     }
+
+    // Fetch and return updated deal
+    const result = await sanityClient.fetch(
+      `*[_type == "deal" && _id == $id][0]`,
+      { id: d._id }
+    )
 
     return NextResponse.json(result)
   } catch (e) {
@@ -280,15 +306,8 @@ export async function DELETE(request: NextRequest) {
     const sanityClient = getSanityClient()
     const writeClient = getSanityWriteClient()
 
-    // Delete related activities
-    const activities = await sanityClient.fetch(
-      `*[_type == "activity" && deal._ref == $id]._id`,
-      { id }
-    )
-
-    for (const actId of activities) {
-      await writeClient.delete(actId)
-    }
+    // PHASE 3: Activities are immutable - do NOT delete them (DOC-030 § 3.5)
+    // Activities remain as historical audit records even after deal deletion
 
     await writeClient.delete(id)
     return NextResponse.json({ success: true })

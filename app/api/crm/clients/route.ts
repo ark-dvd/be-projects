@@ -95,40 +95,84 @@ export async function POST(request: NextRequest) {
     }
 
     const d = v.data
-    const client = getSanityWriteClient()
+    const writeClient = getSanityWriteClient()
+    const readClient = getSanityClient()
     const now = new Date().toISOString()
 
     const fields = buildClientFields(d)
-    const doc = {
+
+    // PHASE 3: Atomic transaction - all entities + Activities commit together or not at all (DOC-030, DOC-040)
+    const clientId = `client.${crypto.randomUUID()}`
+    const clientActivityId = `activity.${crypto.randomUUID()}`
+
+    const transaction = writeClient.transaction()
+
+    // 1. Create client
+    transaction.create({
+      _id: clientId,
       _type: 'client' as const,
       ...fields,
       clientSince: now,
-    }
+    })
 
-    const result = await client.create(doc)
-
-    // Create activity log
-    await client.create({
+    // 2. Create client activity
+    transaction.create({
+      _id: clientActivityId,
       _type: 'activity' as const,
-      type: d.sourceLeadId ? 'converted_to_client' : 'note_added',
+      type: d.sourceLeadId ? 'converted_to_client' : 'client_created_manual',
       description: d.sourceLeadId
         ? `Lead converted to client by ${auth.user.email}`
         : `Client manually created by ${auth.user.email}`,
       timestamp: now,
-      client: { _type: 'reference' as const, _ref: result._id },
+      client: { _type: 'reference' as const, _ref: clientId },
       ...(d.sourceLeadId && { lead: { _type: 'reference' as const, _ref: d.sourceLeadId } }),
       performedBy: auth.user.email,
     })
 
-    // If converting from lead, update the lead's convertedToClient field
+    // If converting from lead, add lead updates + lead activity to same transaction
     if (d.sourceLeadId) {
-      await client.patch(d.sourceLeadId)
-        .set({
-          convertedToClient: { _type: 'reference' as const, _ref: result._id },
+      // Get current lead status for activity metadata
+      const currentLead = await readClient.fetch(
+        `*[_type == "lead" && _id == $id][0]{status}`,
+        { id: d.sourceLeadId }
+      )
+      const previousLeadStatus = currentLead?.status
+
+      const leadActivityId = `activity.${crypto.randomUUID()}`
+
+      // 3. Patch lead status and link to client
+      transaction.patch(d.sourceLeadId, {
+        set: {
+          convertedToClient: { _type: 'reference' as const, _ref: clientId },
           status: 'won'
-        })
-        .commit()
+        }
+      })
+
+      // 4. Create lead activity
+      transaction.create({
+        _id: leadActivityId,
+        _type: 'activity' as const,
+        type: 'lead_converted',
+        description: `Lead converted to client "${d.fullName}" by ${auth.user.email}`,
+        timestamp: now,
+        lead: { _type: 'reference' as const, _ref: d.sourceLeadId },
+        client: { _type: 'reference' as const, _ref: clientId },
+        performedBy: auth.user.email,
+        metadata: {
+          oldStatus: previousLeadStatus,
+          newClientId: clientId,
+        },
+      })
     }
+
+    // Commit all operations atomically
+    await transaction.commit()
+
+    // Fetch and return created client
+    const result = await readClient.fetch(
+      `*[_type == "client" && _id == $id][0]`,
+      { id: clientId }
+    )
 
     return NextResponse.json(result)
   } catch (e) {
@@ -156,9 +200,47 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing _id for update' }, { status: 400 })
     }
 
-    const client = getSanityWriteClient()
+    const readClient = getSanityClient()
+    const writeClient = getSanityWriteClient()
+
+    // PHASE 3: Get current client to detect status change
+    const currentClient = await readClient.fetch(
+      `*[_type == "client" && _id == $id][0]{status}`,
+      { id: d._id }
+    )
+
+    const statusChanged = currentClient && currentClient.status !== d.status
     const fields = buildClientFields(d)
-    const result = await client.patch(d._id).set(fields).commit()
+
+    // PHASE 3: Atomic transaction - patch + Activity commit together or not at all (DOC-030, DOC-040)
+    if (statusChanged) {
+      const activityId = `activity.${crypto.randomUUID()}`
+      const transaction = writeClient.transaction()
+      transaction.patch(d._id, { set: fields })
+      transaction.create({
+        _id: activityId,
+        _type: 'activity' as const,
+        type: 'status_changed',
+        description: `Client status changed from "${currentClient.status}" to "${d.status}"`,
+        timestamp: new Date().toISOString(),
+        client: { _type: 'reference' as const, _ref: d._id },
+        performedBy: auth.user.email,
+        metadata: {
+          oldStatus: currentClient.status,
+          newStatus: d.status,
+        },
+      })
+      await transaction.commit()
+    } else {
+      // No status change - simple patch without Activity
+      await writeClient.patch(d._id).set(fields).commit()
+    }
+
+    // Fetch and return updated client
+    const result = await readClient.fetch(
+      `*[_type == "client" && _id == $id][0]`,
+      { id: d._id }
+    )
 
     return NextResponse.json(result)
   } catch (e) {
@@ -196,15 +278,8 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    // Delete related activities
-    const activities = await sanityClient.fetch(
-      `*[_type == "activity" && client._ref == $id]._id`,
-      { id }
-    )
-
-    for (const actId of activities) {
-      await writeClient.delete(actId)
-    }
+    // PHASE 3: Activities are immutable - do NOT delete them (DOC-030 § 3.5)
+    // Activities remain as historical audit records even after client deletion
 
     await writeClient.delete(id)
     return NextResponse.json({ success: true })
