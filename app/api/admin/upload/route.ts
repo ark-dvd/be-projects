@@ -5,6 +5,20 @@ import { getSanityWriteClient } from '@/lib/sanity'
 // Disable Next.js body parsing - we handle formData manually
 export const runtime = 'nodejs'
 
+// GET endpoint for testing route accessibility
+export async function GET() {
+  console.log('[Upload] GET request - testing route accessibility')
+  return NextResponse.json({
+    status: 'ok',
+    route: '/api/admin/upload',
+    env: {
+      hasProjectId: !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+      hasApiToken: !!process.env.SANITY_API_TOKEN,
+      hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
+    },
+  })
+}
+
 // Simple in-memory rate limiting
 const uploadCounts = new Map<string, { count: number; resetAt: number }>()
 const MAX_UPLOADS_PER_MINUTE = 10
@@ -32,11 +46,22 @@ function checkRateLimit(userId: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('[Upload] ====== UPLOAD REQUEST RECEIVED ======')
+  console.log('[Upload] URL:', request.url)
+  console.log('[Upload] Method:', request.method)
+  console.log('[Upload] Headers:', Object.fromEntries(request.headers.entries()))
+
+  console.log('[Upload] Checking auth...')
   const auth = await requireAdmin(request)
-  if ('error' in auth) return auth.error
+  if ('error' in auth) {
+    console.log('[Upload] Auth FAILED - returning error')
+    return auth.error
+  }
+  console.log('[Upload] Auth SUCCESS - user:', auth.user.email)
 
   // Rate limiting
   if (!checkRateLimit(auth.user.id)) {
+    console.log('[Upload] Rate limit exceeded for user:', auth.user.id)
     return NextResponse.json(
       { error: 'Rate limit exceeded. Max 10 uploads per minute.' },
       { status: 429 }
@@ -44,7 +69,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    console.log('[Upload] Starting file upload request')
+    console.log('[Upload] Starting file processing...')
 
     // Check environment variables first
     const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
