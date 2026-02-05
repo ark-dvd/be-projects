@@ -19,7 +19,7 @@ import SlidePanel from './SlidePanel'
 import StatusBadge from './StatusBadge'
 import SourceTag from './SourceTag'
 import ActivityTimeline from './ActivityTimeline'
-import { Lead, updateLead, deleteLead, convertLeadToClient, fetchCrmSettings, CrmSettings, PipelineStage } from '@/lib/crm-api'
+import { Lead, patchLead, deleteLead, convertLeadToClient, fetchCrmSettings, CrmSettings, PipelineStage } from '@/lib/crm-api'
 
 interface LeadDetailProps {
   lead: Lead | null
@@ -159,7 +159,8 @@ export default function LeadDetail({
     try {
       setSaving(true)
       setError(null)
-      await updateLead({ ...formData, _id: lead._id } as Lead & { _id: string })
+      // Use PATCH for partial updates - works with seeded/legacy leads
+      await patchLead({ ...formData, _id: lead._id } as Partial<Lead> & { _id: string })
       onUpdate()
       onClose()
     } catch (e) {
@@ -255,7 +256,7 @@ export default function LeadDetail({
           <div className="bg-white rounded-xl p-6 max-w-sm mx-4 shadow-xl">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Lead?</h3>
             <p className="text-gray-600 text-sm mb-4">
-              This will permanently delete this lead and all related activities. This action cannot be undone.
+              This lead will be removed from the pipeline. Activity history will be preserved for audit purposes.
             </p>
             <div className="flex gap-3 justify-end">
               <button

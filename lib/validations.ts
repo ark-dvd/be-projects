@@ -156,14 +156,16 @@ export const LeadWebFormSchema = z.object({
   formId: z.string().optional().default('contact-page'),
 })
 
-// Lead Input Schema (for admin CRUD)
+// Lead Input Schema (for admin CRUD - full replacement via PUT)
 // PHASE 2 (A3): status is now z.string() - validated against settings.pipelineStages at API layer
+// FIX: origin is now a string with default, tolerant of legacy/seeded values (not strict enum)
+// This allows updating leads that may have been imported with non-standard origin values
 export const LeadInputSchema = z.object({
   _id: z.string().optional(),
   fullName: z.string().min(1, 'Full name is required'),
   email: z.string().email().optional().or(z.literal('')),
   phone: z.string().optional().default(''),
-  origin: z.enum(['auto_website_form', 'auto_landing_page', 'manual']).default('manual'),
+  origin: z.string().optional().default('manual'),
   source: z.string().optional().default(''),
   serviceType: z.string().optional().default(''),
   estimatedValue: z.number().optional(),
@@ -173,6 +175,26 @@ export const LeadInputSchema = z.object({
   originalMessage: z.string().optional().default(''),
   description: z.string().optional().default(''),
   internalNotes: z.string().optional().default(''),
+})
+
+// Lead Patch Schema (for partial updates via PATCH)
+// Only requires _id - all other fields are optional
+// Allows updating status, priority, estimatedValue, etc. without full payload
+export const LeadPatchSchema = z.object({
+  _id: z.string().min(1, 'Document ID is required'),
+  fullName: z.string().min(1).optional(),
+  email: z.string().email().optional().or(z.literal('')),
+  phone: z.string().optional(),
+  origin: z.string().optional(),
+  source: z.string().optional(),
+  serviceType: z.string().optional(),
+  estimatedValue: z.number().optional().nullable(),
+  priority: z.enum(['high', 'medium', 'low']).optional(),
+  status: z.string().optional(),
+  referredBy: z.string().optional(),
+  originalMessage: z.string().optional(),
+  description: z.string().optional(),
+  internalNotes: z.string().optional(),
 })
 
 // Client Input Schema

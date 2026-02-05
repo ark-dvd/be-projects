@@ -31,13 +31,15 @@ async function handleResponse<T>(res: Response): Promise<T> {
 // ============================================
 
 // PHASE 2 (A3): status is now string - validated against settings.pipelineStages at API layer
+// FIX: origin is now string (tolerant of legacy/seeded values)
+// FIX: Added soft-delete fields (deleted, deletedAt)
 export interface Lead {
   _id: string
   _createdAt?: string
   fullName: string
   email?: string
   phone?: string
-  origin: 'auto_website_form' | 'auto_landing_page' | 'manual'
+  origin?: string // Tolerant: accepts any string including legacy values
   source?: string
   serviceType?: string
   estimatedValue?: number
@@ -49,6 +51,8 @@ export interface Lead {
   internalNotes?: string
   receivedAt: string
   convertedToClient?: { _id: string; fullName: string }
+  deleted?: boolean
+  deletedAt?: string
 }
 
 export interface LeadsResponse {
@@ -81,6 +85,8 @@ export async function createLead(data: Partial<Lead>): Promise<Lead> {
   return handleResponse<Lead>(res)
 }
 
+// PUT: Full replacement - requires complete Lead data (including fullName)
+// Use patchLead() for partial updates instead
 export async function updateLead(data: Partial<Lead> & { _id: string }): Promise<Lead> {
   const res = await fetch('/api/crm/leads', {
     method: 'PUT',
@@ -90,9 +96,23 @@ export async function updateLead(data: Partial<Lead> & { _id: string }): Promise
   return handleResponse<Lead>(res)
 }
 
-export async function deleteLead(id: string): Promise<{ success: boolean }> {
+// PATCH: Partial update - only requires _id, all other fields optional
+// Use this for status changes, priority updates, etc.
+// Works with seeded/legacy leads that may have incomplete data
+export async function patchLead(data: Partial<Lead> & { _id: string }): Promise<Lead> {
+  const res = await fetch('/api/crm/leads', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return handleResponse<Lead>(res)
+}
+
+// DELETE: Soft delete - marks lead as deleted but preserves in database
+// Returns { success: true, deleted: true, deletedAt: string }
+export async function deleteLead(id: string): Promise<{ success: boolean; deleted?: boolean; deletedAt?: string }> {
   const res = await fetch(`/api/crm/leads?id=${id}`, { method: 'DELETE' })
-  return handleResponse<{ success: boolean }>(res)
+  return handleResponse<{ success: boolean; deleted?: boolean; deletedAt?: string }>(res)
 }
 
 // ============================================

@@ -20,7 +20,7 @@ const SOURCE_LABELS: Record<string, string> = {
 }
 
 interface SourceTagProps {
-  origin: 'auto_website_form' | 'auto_landing_page' | 'manual' | string
+  origin?: string // Tolerant: accepts any string or undefined for legacy/seeded leads
   source?: string
   size?: 'sm' | 'md'
   className?: string
@@ -36,7 +36,7 @@ export default function SourceTag({
 
   // Determine display label
   const label = isAuto
-    ? SOURCE_LABELS[origin] || 'Auto'
+    ? SOURCE_LABELS[origin || ''] || 'Auto'
     : SOURCE_LABELS[source || ''] || source || 'Manual'
 
   const sizeClasses = {

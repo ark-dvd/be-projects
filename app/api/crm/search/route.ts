@@ -31,9 +31,9 @@ export async function GET(request: NextRequest) {
     const client = getSanityClient()
     const searchTerm = `${query}*` // Wildcard search
 
-    // Search across all CRM entities
+    // Search across all CRM entities (excluding soft-deleted leads)
     const results = await client.fetch(`{
-      "leads": *[_type == "lead" && (
+      "leads": *[_type == "lead" && deleted != true && (
         fullName match $q ||
         email match $q ||
         phone match $q ||

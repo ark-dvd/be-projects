@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/auth/middleware'
 import { getSanityWriteClient, getSanityClient } from '@/lib/sanity'
-import { validate, LeadInputSchema } from '@/lib/validations'
+import { validate, LeadInputSchema, LeadPatchSchema } from '@/lib/validations'
 import { withRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
 import { z } from 'zod'
 
 type LeadInput = z.output<typeof LeadInputSchema>
+type LeadPatch = z.output<typeof LeadPatchSchema>
 
 // PHASE 2 (A3): Fetch CRM settings for config-driven validation
 const CRM_SETTINGS_ID = 'crmSettings'
@@ -107,9 +108,11 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(url.searchParams.get('offset') || '0')
 
     const statusFilter = status && status !== 'all' ? `&& status == "${status}"` : ''
+    // Soft-delete filter: exclude leads with deleted == true
+    const deletedFilter = '&& deleted != true'
 
     const data = await client.fetch(`
-      *[_type == "lead" ${statusFilter}] | order(receivedAt desc) [$offset...$end] {
+      *[_type == "lead" ${statusFilter} ${deletedFilter}] | order(receivedAt desc) [$offset...$end] {
         _id,
         _createdAt,
         fullName,
@@ -130,20 +133,20 @@ export async function GET(request: NextRequest) {
       }
     `, { offset, end: offset + limit })
 
-    // Get total count for pagination
+    // Get total count for pagination (excluding soft-deleted)
     const totalCount = await client.fetch(`
-      count(*[_type == "lead" ${statusFilter}])
+      count(*[_type == "lead" ${statusFilter} ${deletedFilter}])
     `)
 
     // PHASE 2 (A3): Dynamic statusCounts from settings.pipelineStages
     const settings = await getCrmSettings(client)
     const stages = settings.pipelineStages?.length ? settings.pipelineStages : DEFAULT_PIPELINE_STAGES
 
-    // Build dynamic GROQ query for status counts
-    const statusCountsQuery = stages.map(s => `"${s.key}": count(*[_type == "lead" && status == "${s.key}"])`).join(',\n      ')
+    // Build dynamic GROQ query for status counts (excluding soft-deleted)
+    const statusCountsQuery = stages.map(s => `"${s.key}": count(*[_type == "lead" && status == "${s.key}" && deleted != true])`).join(',\n      ')
     const statusCounts = await client.fetch(`{
       ${statusCountsQuery},
-      "total": count(*[_type == "lead"])
+      "total": count(*[_type == "lead" && deleted != true])
     }`)
 
     return NextResponse.json({
@@ -343,6 +346,106 @@ export async function PUT(request: NextRequest) {
   }
 }
 
+// PATCH: Partial update for status, priority, estimatedValue, etc.
+// Does NOT require full Lead schema - only _id is required
+export async function PATCH(request: NextRequest) {
+  const rateLimitError = withRateLimit(request, RATE_LIMITS.admin)
+  if (rateLimitError) return rateLimitError
+
+  const auth = await requireAdmin(request)
+  if ('error' in auth) return auth.error
+
+  try {
+    const body = await request.json()
+    const v = validate(LeadPatchSchema, body)
+    if (!v.success) {
+      return NextResponse.json({ error: 'Validation failed', details: v.errors }, { status: 400 })
+    }
+
+    const patch = v.data as LeadPatch
+    const { _id, ...fields } = patch
+
+    // Filter out undefined fields - only patch what's provided
+    const patchFields: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(fields)) {
+      if (value !== undefined) {
+        patchFields[key] = value
+      }
+    }
+
+    if (Object.keys(patchFields).length === 0) {
+      return NextResponse.json({ error: 'No fields to update' }, { status: 400 })
+    }
+
+    const readClient = getSanityClient()
+    const client = getSanityWriteClient()
+
+    // Verify lead exists (and is not soft-deleted)
+    const existingLead = await readClient.fetch(
+      `*[_type == "lead" && _id == $id && deleted != true][0]{_id, status, deleted}`,
+      { id: _id }
+    )
+
+    if (!existingLead) {
+      return NextResponse.json({ error: 'Lead not found' }, { status: 404 })
+    }
+
+    // PHASE 2 (A3): Validate status against settings (if status is being patched)
+    if (patchFields.status) {
+      const settings = await getCrmSettings(readClient)
+      const stages = settings.pipelineStages?.length ? settings.pipelineStages : DEFAULT_PIPELINE_STAGES
+      const validStatusKeys = stages.map(s => s.key)
+
+      if (!validStatusKeys.includes(patchFields.status as string)) {
+        return NextResponse.json({
+          error: 'Validation failed',
+          details: [`status: Invalid status "${patchFields.status}". Valid values: ${validStatusKeys.join(', ')}`]
+        }, { status: 400 })
+      }
+    }
+
+    // Check for status change to create Activity
+    const statusChanged = patchFields.status && existingLead.status !== patchFields.status
+
+    // PHASE 3: Atomic transaction if status changed - patch + Activity (DOC-030, DOC-040)
+    if (statusChanged) {
+      const activityId = `activity.${crypto.randomUUID()}`
+      const transaction = client.transaction()
+      transaction.patch(_id, { set: patchFields })
+      transaction.create({
+        _id: activityId,
+        _type: 'activity' as const,
+        type: 'status_changed',
+        description: `Status changed from "${existingLead.status}" to "${patchFields.status}"`,
+        timestamp: new Date().toISOString(),
+        lead: { _type: 'reference' as const, _ref: _id },
+        performedBy: auth.user.email,
+        metadata: {
+          oldStatus: existingLead.status,
+          newStatus: patchFields.status,
+        },
+      })
+      await transaction.commit()
+    } else {
+      // No status change - simple patch
+      await client.patch(_id).set(patchFields).commit()
+    }
+
+    // Fetch and return updated lead
+    const result = await readClient.fetch(
+      `*[_type == "lead" && _id == $id][0]`,
+      { id: _id }
+    )
+
+    return NextResponse.json(result)
+  } catch (e) {
+    console.error('Patch lead error:', e)
+    return NextResponse.json({ error: 'Failed to patch lead' }, { status: 500 })
+  }
+}
+
+// DELETE: Soft delete - sets deleted=true, deletedAt timestamp
+// Does NOT hard-delete from Sanity - preserves referential integrity with Activities
 export async function DELETE(request: NextRequest) {
   const rateLimitError = withRateLimit(request, RATE_LIMITS.admin)
   if (rateLimitError) return rateLimitError
@@ -352,21 +455,63 @@ export async function DELETE(request: NextRequest) {
 
   try {
     const id = new URL(request.url).searchParams.get('id')
-    if (!id || !/^[a-zA-Z0-9._-]+$/.test(id)) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    // Allow alphanumeric, dots, underscores, hyphens, and colons (for draft IDs like "drafts:lead.xxx")
+    // Also allow UUIDs with dashes and any seeded/legacy ID formats
+    if (!id || !/^[a-zA-Z0-9._:\-]+$/.test(id)) {
+      return NextResponse.json({ error: 'Invalid id format' }, { status: 400 })
     }
 
+    const readClient = getSanityClient()
     const client = getSanityWriteClient()
 
-    // PHASE 3: Activities are immutable - do NOT delete them (DOC-030 § 3.5)
-    // Activities remain as historical audit records even after lead deletion
+    // Verify lead exists and is not already soft-deleted
+    const existingLead = await readClient.fetch(
+      `*[_type == "lead" && _id == $id][0]{_id, deleted, fullName}`,
+      { id }
+    )
 
-    // Delete lead
-    await client.delete(id)
+    if (!existingLead) {
+      return NextResponse.json({ error: 'Lead not found' }, { status: 404 })
+    }
 
-    return NextResponse.json({ success: true })
+    if (existingLead.deleted === true) {
+      return NextResponse.json({ error: 'Lead is already deleted' }, { status: 400 })
+    }
+
+    const now = new Date().toISOString()
+
+    // SOFT DELETE: Set deleted flag and timestamp
+    // This preserves referential integrity with Activities (DOC-030 § 3.5)
+    // Activities continue to reference this lead for audit trail purposes
+    const activityId = `activity.${crypto.randomUUID()}`
+    const transaction = client.transaction()
+
+    // Mark lead as soft-deleted
+    transaction.patch(id, {
+      set: {
+        deleted: true,
+        deletedAt: now,
+      }
+    })
+
+    // Create deletion activity for audit trail
+    transaction.create({
+      _id: activityId,
+      _type: 'activity' as const,
+      type: 'lead_deleted',
+      description: `Lead "${existingLead.fullName}" was deleted`,
+      timestamp: now,
+      lead: { _type: 'reference' as const, _ref: id },
+      performedBy: auth.user.email,
+    })
+
+    await transaction.commit()
+
+    console.log(`[Leads API] Soft-deleted lead ${id}`)
+
+    return NextResponse.json({ success: true, deleted: true, deletedAt: now })
   } catch (e) {
-    console.error('Delete lead error:', e)
+    console.error('Delete lead error:', e instanceof Error ? e.message : 'Unknown')
     return NextResponse.json({ error: 'Failed to delete lead' }, { status: 500 })
   }
 }
