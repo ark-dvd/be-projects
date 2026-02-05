@@ -88,7 +88,7 @@ export default async function ContactPage() {
   ])
 
   // Transform services for the form
-  const serviceOptions = services.map((s) => ({
+  const serviceOptions = (services || []).map((s) => ({
     _id: s._id,
     name: s.name,
   }))

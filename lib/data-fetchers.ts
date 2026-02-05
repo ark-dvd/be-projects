@@ -501,15 +501,10 @@ export async function getProjects(): Promise<Project[]> {
       }
     `)
 
-    if (!projects || projects.length === 0) {
-      setDemoMode('No projects in Sanity')
-      return defaultProjects
-    }
-
-    return projects
+    return projects || []
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultProjects
+    console.error('[data-fetchers] getProjects failed:', error)
+    return []
   }
 }
 
@@ -551,19 +546,10 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       }
     `, { slug })
 
-    if (!project) {
-      const demoProject = defaultProjects.find(p => p.slug.current === slug)
-      if (demoProject) {
-        setDemoMode('Project not found in Sanity, using demo')
-        return demoProject
-      }
-      return null
-    }
-
-    return project
+    return project || null
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultProjects.find(p => p.slug.current === slug) || null
+    console.error('[data-fetchers] getProjectBySlug failed:', error)
+    return null
   }
 }
 
@@ -595,15 +581,10 @@ export async function getServices(): Promise<Service[]> {
       }
     `)
 
-    if (!services || services.length === 0) {
-      setDemoMode('No services in Sanity')
-      return defaultServices
-    }
-
-    return services
+    return services || []
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultServices
+    console.error('[data-fetchers] getServices failed:', error)
+    return []
   }
 }
 
@@ -635,19 +616,10 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
       }
     `, { slug })
 
-    if (!service) {
-      const demoService = defaultServices.find(s => s.slug.current === slug)
-      if (demoService) {
-        setDemoMode('Service not found in Sanity, using demo')
-        return demoService
-      }
-      return null
-    }
-
-    return service
+    return service || null
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultServices.find(s => s.slug.current === slug) || null
+    console.error('[data-fetchers] getServiceBySlug failed:', error)
+    return null
   }
 }
 
@@ -679,15 +651,10 @@ export async function getTestimonials(): Promise<Testimonial[]> {
       }
     `)
 
-    if (!testimonials || testimonials.length === 0) {
-      setDemoMode('No testimonials in Sanity')
-      return defaultTestimonials
-    }
-
-    return testimonials
+    return testimonials || []
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultTestimonials
+    console.error('[data-fetchers] getTestimonials failed:', error)
+    return []
   }
 }
 
@@ -719,15 +686,10 @@ export async function getFeaturedTestimonials(): Promise<Testimonial[]> {
       }
     `)
 
-    if (!testimonials || testimonials.length === 0) {
-      setDemoMode('No featured testimonials in Sanity')
-      return defaultTestimonials.filter(t => t.isFeatured)
-    }
-
-    return testimonials
+    return testimonials || []
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultTestimonials.filter(t => t.isFeatured)
+    console.error('[data-fetchers] getFeaturedTestimonials failed:', error)
+    return []
   }
 }
 
@@ -759,16 +721,19 @@ export async function getActiveJobs(): Promise<ActiveJob[]> {
       }
     `)
 
-    if (!jobs) {
-      setDemoMode('No active jobs in Sanity')
-      return defaultActiveJobs
-    }
-
-    return jobs
+    return jobs || []
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultActiveJobs
+    console.error('[data-fetchers] getActiveJobs failed:', error)
+    return []
   }
+}
+
+// Minimal defaults when Sanity returns no settings (not demo data)
+const emptySiteSettings: SiteSettings = {
+  _id: 'siteSettings',
+  _type: 'siteSettings',
+  siteTitle: 'Our Company',
+  contractorName: 'Our Company',
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -823,14 +788,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       }
     `)
 
-    if (!settings) {
-      setDemoMode('No site settings in Sanity')
-      return defaultSiteSettings
-    }
-
-    return settings
+    return settings || emptySiteSettings
   } catch (error) {
-    setDemoMode(`Sanity query failed: ${error}`)
-    return defaultSiteSettings
+    console.error('[data-fetchers] getSiteSettings failed:', error)
+    return emptySiteSettings
   }
 }

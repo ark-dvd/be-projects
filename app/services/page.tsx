@@ -21,8 +21,8 @@ export default async function ServicesPage() {
   ])
 
   // Filter active services and sort by order
-  const activeServices = services
-    .filter((s) => s.isActive !== false)
+  const activeServices = (services || [])
+    .filter((s) => s.isActive !== false && s.slug?.current)
     .sort((a, b) => (a.order || 0) - (b.order || 0))
 
   const companyName = settings.contractorName || 'Contractor'

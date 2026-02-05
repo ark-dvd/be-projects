@@ -69,14 +69,15 @@ export default async function ProjectDetailPage({ params }: Props) {
   const service = services.find((s) => s._id === serviceId)
 
   // Get related projects (same service or random)
-  const relatedProjects = allProjects
+  const safeAllProjects = (allProjects || []).filter((p) => p.slug?.current)
+  const relatedProjects = safeAllProjects
     .filter((p) => p._id !== project._id)
     .filter((p) => (serviceId ? p.service?._ref === serviceId : true))
     .slice(0, 3)
 
   // If not enough related by service, fill with others
   if (relatedProjects.length < 3) {
-    const otherProjects = allProjects
+    const otherProjects = safeAllProjects
       .filter((p) => p._id !== project._id && !relatedProjects.find((r) => r._id === p._id))
       .slice(0, 3 - relatedProjects.length)
     relatedProjects.push(...otherProjects)
@@ -110,7 +111,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   const companyName = settings.contractorName || 'Contractor'
 
   // Status badge color
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     completed: 'bg-green-500',
     'in-progress': 'bg-amber-500',
     upcoming: 'bg-blue-500',
@@ -154,10 +155,10 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <span
                 className={`px-3 py-1 text-white text-sm font-medium rounded-full ${
-                  statusColors[project.status]
+                  statusColors[project.status] || 'bg-gray-500'
                 }`}
               >
-                {project.status === 'in-progress' ? 'In Progress' : project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                {project.status === 'in-progress' ? 'In Progress' : (project.status || 'unknown').charAt(0).toUpperCase() + (project.status || 'unknown').slice(1)}
               </span>
               {project.projectType && (
                 <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full">

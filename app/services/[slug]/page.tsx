@@ -53,8 +53,8 @@ export default async function ServiceDetailPage({ params }: Props) {
   }
 
   // Get projects that reference this service
-  const relatedProjects = allProjects
-    .filter((p) => p.service?._ref === service._id)
+  const relatedProjects = (allProjects || [])
+    .filter((p) => p.slug?.current && p.service?._ref === service._id)
     .slice(0, 6)
 
   // Transform images for gallery

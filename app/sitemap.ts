@@ -21,16 +21,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ])
 
   // Dynamic project pages
-  const projectPages = projects.map((p) => {
-    const slug = typeof p.slug === 'string' ? p.slug : p.slug?.current
-    return `/projects/${slug}`
-  })
+  const projectPages = (projects || [])
+    .map((p) => {
+      const slug = typeof p.slug === 'string' ? p.slug : p.slug?.current
+      return slug ? `/projects/${slug}` : null
+    })
+    .filter((p): p is string => p !== null)
 
   // Dynamic service pages
-  const servicePages = services.map((s) => {
-    const slug = typeof s.slug === 'string' ? s.slug : s.slug?.current
-    return `/services/${slug}`
-  })
+  const servicePages = (services || [])
+    .map((s) => {
+      const slug = typeof s.slug === 'string' ? s.slug : s.slug?.current
+      return slug ? `/services/${slug}` : null
+    })
+    .filter((s): s is string => s !== null)
 
   // Combine all pages
   const allPages = [...staticPages, ...projectPages, ...servicePages]

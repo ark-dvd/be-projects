@@ -21,19 +21,21 @@ export default async function ProjectsPage() {
   ])
 
   // Get unique project types for filtering
-  const projectTypes = Array.from(new Set(projects.map((p) => p.projectType).filter((t): t is string => Boolean(t))))
+  const projectTypes = Array.from(new Set((projects || []).map((p) => p.projectType).filter((t): t is string => Boolean(t))))
 
   // Transform projects for client component
-  const transformedProjects = projects.map((project) => ({
-    _id: project._id,
-    slug: project.slug.current,
-    title: project.title,
-    heroImage: sanityImageUrl(project.heroImage),
-    projectType: project.projectType,
-    shortDescription: project.shortDescription,
-    status: project.status,
-    serviceRef: project.service?._ref,
-  }))
+  const transformedProjects = (projects || [])
+    .filter((project) => project.slug?.current)
+    .map((project) => ({
+      _id: project._id,
+      slug: project.slug.current,
+      title: project.title || 'Untitled Project',
+      heroImage: sanityImageUrl(project.heroImage),
+      projectType: project.projectType,
+      shortDescription: project.shortDescription,
+      status: project.status || 'completed',
+      serviceRef: project.service?._ref,
+    }))
 
   // Transform services for filter
   const serviceOptions = services.map((s) => ({
@@ -61,11 +63,19 @@ export default async function ProjectsPage() {
       {/* Projects Grid with Filters */}
       <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ProjectsFilter
-            projects={transformedProjects}
-            projectTypes={projectTypes}
-            services={serviceOptions}
-          />
+          {transformedProjects.length > 0 ? (
+            <ProjectsFilter
+              projects={transformedProjects}
+              projectTypes={projectTypes}
+              services={serviceOptions}
+            />
+          ) : (
+            <div className="text-center py-16 bg-white rounded-xl">
+              <p className="text-gray-500 text-lg">
+                No projects yet — check back soon for our portfolio of completed work!
+              </p>
+            </div>
+          )}
         </div>
       </section>
 

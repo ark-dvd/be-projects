@@ -28,15 +28,15 @@ export default async function HomePage() {
   ])
 
   // Filter featured projects (take first 6 completed)
-  const featuredProjects = projects
+  const featuredProjects = (projects || [])
     .filter((p) => p.status === 'completed')
     .slice(0, 6)
 
   // Filter active services
-  const activeServices = services.filter((s) => s.isActive !== false)
+  const activeServices = (services || []).filter((s) => s.isActive !== false)
 
   // Filter featured testimonials
-  const featuredTestimonials = testimonials.filter((t) => t.isFeatured)
+  const featuredTestimonials = (testimonials || []).filter((t) => t.isFeatured)
 
   // Parse stats from settings
   const stats = settings.aboutStats || []
@@ -94,6 +94,20 @@ export default async function HomePage() {
         headline={settings.heroHeadline || 'Transform Your Outdoor Living Space'}
         subheadline={settings.heroSubheadline}
       />
+
+      {/* Empty state when no content sections have data */}
+      {featuredProjects.length === 0 && activeServices.length === 0 && featuredTestimonials.length === 0 && (
+        <section className="py-16 lg:py-24 bg-white">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-4 font-heading">
+              Welcome to {companyName}
+            </h2>
+            <p className="text-lg text-secondary">
+              Our portfolio is being updated. Check back soon to see our projects, services, and client testimonials.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Featured Projects Section */}
       {featuredProjects.length > 0 && (

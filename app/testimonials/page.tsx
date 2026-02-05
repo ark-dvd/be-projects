@@ -55,23 +55,26 @@ export default async function TestimonialsPage() {
   ])
 
   // Sort: featured first, then by order
-  const sortedTestimonials = [...testimonials].sort((a, b) => {
+  const safeTestimonials = testimonials || []
+  const sortedTestimonials = [...safeTestimonials].sort((a, b) => {
     if (a.isFeatured && !b.isFeatured) return -1
     if (!a.isFeatured && b.isFeatured) return 1
     return (a.order || 0) - (b.order || 0)
   })
 
   // Calculate stats
-  const totalReviews = testimonials.length
-  const ratingsWithValue = testimonials.filter((t) => t.rating)
+  const totalReviews = safeTestimonials.length
+  const ratingsWithValue = safeTestimonials.filter((t) => t.rating)
   const averageRating = ratingsWithValue.length > 0
     ? ratingsWithValue.reduce((sum, t) => sum + (t.rating || 0), 0) / ratingsWithValue.length
     : 5
-  const fiveStarCount = testimonials.filter((t) => t.rating === 5).length
+  const fiveStarCount = safeTestimonials.filter((t) => t.rating === 5).length
 
   // Create a map of project IDs to slugs for linking
   const projectSlugMap = new Map(
-    projects.map((p) => [p._id, p.slug.current])
+    (projects || [])
+      .filter((p) => p.slug?.current)
+      .map((p) => [p._id, p.slug.current])
   )
 
   const companyName = settings.contractorName || 'Contractor'
