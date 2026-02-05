@@ -273,7 +273,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                       </div>
                     </div>
                   )}
-                  {service && (
+                  {service && service.slug?.current && (
                     <div className="flex items-start gap-3">
                       <FileText className="h-5 w-5 text-gray-400 mt-0.5" />
                       <div>
@@ -283,7 +283,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                             href={`/services/${service.slug.current}`}
                             className="font-medium text-amber-600 hover:text-amber-700"
                           >
-                            {service.name}
+                            {service.name || 'Service'}
                           </Link>
                         </dd>
                       </div>

@@ -33,12 +33,14 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 function InitialsAvatar({ name }: { name: string }) {
-  const initials = name
+  const safeName = (name || '').trim() || '?'
+  const initials = safeName
     .split(' ')
+    .filter((n) => n.length > 0)
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2)
+    .slice(0, 2) || '?'
 
   return (
     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-xl">

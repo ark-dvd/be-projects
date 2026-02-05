@@ -12,12 +12,14 @@ interface TestimonialCardProps {
 
 // Initials Avatar component
 function InitialsAvatar({ name }: { name: string }) {
-  const initials = name
+  const safeName = (name || '').trim() || '?'
+  const initials = safeName
     .split(' ')
+    .filter((n) => n.length > 0)
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2)
+    .slice(0, 2) || '?'
 
   return (
     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-400 to-primary flex items-center justify-center text-white font-semibold text-lg">

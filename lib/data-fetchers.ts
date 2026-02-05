@@ -729,11 +729,14 @@ export async function getActiveJobs(): Promise<ActiveJob[]> {
 }
 
 // Minimal defaults when Sanity returns no settings (not demo data)
+// Every field that page components access must have a safe default here
 const emptySiteSettings: SiteSettings = {
   _id: 'siteSettings',
   _type: 'siteSettings',
   siteTitle: 'Our Company',
   contractorName: 'Our Company',
+  heroMediaType: 'images',
+  aboutStats: [],
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {

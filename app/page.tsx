@@ -27,16 +27,18 @@ export default async function HomePage() {
     getTestimonials(),
   ])
 
-  // Filter featured projects (take first 6 completed)
+  // Filter featured projects (take first 6 completed with valid slugs)
   const featuredProjects = (projects || [])
-    .filter((p) => p.status === 'completed')
+    .filter((p) => p.status === 'completed' && p.slug?.current)
     .slice(0, 6)
 
-  // Filter active services
-  const activeServices = (services || []).filter((s) => s.isActive !== false)
+  // Filter active services with valid slugs
+  const activeServices = (services || [])
+    .filter((s) => s.isActive !== false && s.slug?.current && s.name)
 
   // Filter featured testimonials
-  const featuredTestimonials = (testimonials || []).filter((t) => t.isFeatured)
+  const featuredTestimonials = (testimonials || [])
+    .filter((t) => t.isFeatured && t.clientName && t.quote)
 
   // Parse stats from settings
   const stats = settings.aboutStats || []

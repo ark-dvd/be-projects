@@ -209,7 +209,7 @@ export default async function ServiceDetailPage({ params }: Props) {
                 {/* CTA */}
                 <div className="pt-6 border-t border-gray-100">
                   <p className="text-sm text-gray-600 mb-4">
-                    Ready for your {service.name.toLowerCase()} project?
+                    Ready for your {(service.name || 'next').toLowerCase()} project?
                   </p>
                   <Link
                     href="/contact"

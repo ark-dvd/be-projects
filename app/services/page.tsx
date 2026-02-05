@@ -73,7 +73,7 @@ export default async function ServicesPage() {
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
                           <span className="text-4xl font-bold text-amber-600">
-                            {service.name.charAt(0)}
+                            {(service.name || 'S').charAt(0)}
                           </span>
                         </div>
                       )}
