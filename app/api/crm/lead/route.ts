@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSanityWriteClient } from '@/lib/sanity'
 import { validate, LeadWebFormSchema } from '@/lib/validations'
-import { verifyTurnstileToken } from '@/lib/turnstile'
+import { verifyTurnstileToken, getTurnstileConfigState } from '@/lib/turnstile'
 import {
   checkMultiDimensionRateLimit,
   rateLimitResponse,
@@ -54,41 +54,56 @@ export async function POST(request: NextRequest) {
   }
 
   // Bot verification with Cloudflare Turnstile
-  // REQUIRED: Turnstile verification is mandatory for public lead submissions
-  const turnstileToken = typeof body.turnstileToken === 'string' ? body.turnstileToken : null
+  // Policy depends on configuration state:
+  // - 'disabled': No keys set - skip verification entirely
+  // - 'misconfigured': Exactly one key set - 503 error
+  // - 'enabled': Both keys set - require and verify token
+  const turnstileState = getTurnstileConfigState()
 
-  if (!turnstileToken) {
+  if (turnstileState === 'misconfigured') {
     logAbuseEvent({
-      event: 'bot_verification_failed',
+      event: 'suspicious_pattern',
       timestamp: new Date().toISOString(),
       ip,
       path,
-      reason: 'Missing turnstile token',
+      dimension: 'turnstile_misconfigured',
+      reason: 'Turnstile partially configured (exactly one key set)',
     })
-    return botVerificationFailedResponse('Verification required')
-  }
-
-  const verifyResult = await verifyTurnstileToken(turnstileToken, ip)
-
-  // FAIL-CLOSED: Misconfiguration (missing/empty TURNSTILE_SECRET_KEY) returns 503
-  if (verifyResult.misconfigured) {
-    // Logging already done in verifyTurnstileToken with 'turnstile_misconfigured' dimension
     return NextResponse.json(
       { error: 'Service temporarily unavailable. Please try again later.' },
       { status: 503 }
     )
   }
 
-  if (!verifyResult.success) {
-    logAbuseEvent({
-      event: 'bot_verification_failed',
-      timestamp: new Date().toISOString(),
-      ip,
-      path,
-      reason: verifyResult.error || 'Token verification failed',
-    })
-    return botVerificationFailedResponse(verifyResult.error || 'Verification failed')
+  // Only verify token if Turnstile is enabled (both keys configured)
+  if (turnstileState === 'enabled') {
+    const turnstileToken = typeof body.turnstileToken === 'string' ? body.turnstileToken : null
+
+    if (!turnstileToken) {
+      logAbuseEvent({
+        event: 'bot_verification_failed',
+        timestamp: new Date().toISOString(),
+        ip,
+        path,
+        reason: 'Missing turnstile token',
+      })
+      return botVerificationFailedResponse('Verification required')
+    }
+
+    const verifyResult = await verifyTurnstileToken(turnstileToken, ip)
+
+    if (!verifyResult.success) {
+      logAbuseEvent({
+        event: 'bot_verification_failed',
+        timestamp: new Date().toISOString(),
+        ip,
+        path,
+        reason: verifyResult.error || 'Token verification failed',
+      })
+      return botVerificationFailedResponse(verifyResult.error || 'Verification failed')
+    }
   }
+  // If turnstileState === 'disabled', skip verification - rate limiting still applies
 
   // Validate form data
   const v = validate(LeadWebFormSchema, body)

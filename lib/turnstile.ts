@@ -128,6 +128,28 @@ export function isTurnstileConfigured(): boolean {
 }
 
 /**
+ * Turnstile configuration state for server-side policy decisions
+ * - 'disabled': Neither key is set - Turnstile is OFF, allow submissions without token
+ * - 'misconfigured': Exactly one key is set - fail with 503
+ * - 'enabled': Both keys are set - require and verify token
+ */
+export type TurnstileConfigState = 'disabled' | 'misconfigured' | 'enabled'
+
+export function getTurnstileConfigState(): TurnstileConfigState {
+  const hasSiteKey = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim()
+  const hasSecretKey = !!process.env.TURNSTILE_SECRET_KEY?.trim()
+
+  if (!hasSiteKey && !hasSecretKey) {
+    return 'disabled'
+  }
+  if (hasSiteKey && hasSecretKey) {
+    return 'enabled'
+  }
+  // Exactly one key is set - misconfigured
+  return 'misconfigured'
+}
+
+/**
  * Get the test bypass token (only for testing)
  * Returns null in production
  */
