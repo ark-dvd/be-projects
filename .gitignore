@@ -38,3 +38,8 @@ next-env.d.ts
 
 # claude
 .claude/
+
+# temp debug files
+body.txt
+headers.txt
+nul
