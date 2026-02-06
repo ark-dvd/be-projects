@@ -41,7 +41,9 @@ function buildFileRef(assetId: string | undefined | null) {
 
 function buildFields(d: SiteSettingsInput, includeMedia: boolean = false) {
   const fields: Record<string, unknown> = {
-    siteTitle: d.siteTitle || '',
+    // siteTitle: only include if explicitly provided (admin UI doesn't have this field yet,
+    // so Zod defaults to '' — don't overwrite existing value with empty string)
+    ...(d.siteTitle ? { siteTitle: d.siteTitle } : {}),
     heroHeadline: d.heroHeadline || '',
     heroSubheadline: d.heroSubheadline || '',
     heroMediaType: d.heroMediaType || 'images',
@@ -128,7 +130,7 @@ export async function GET(request: NextRequest) {
   try {
     const client = getSanityClient()
     const data = await client.fetch(`
-      *[_type == "siteSettings"][0] {
+      *[_type == "siteSettings" && _id in [$id, "drafts." + $id]][0] {
         _id,
         _createdAt,
         _updatedAt,
@@ -168,7 +170,7 @@ export async function GET(request: NextRequest) {
         "heroVideoUrl": heroVideo.asset->url,
         "heroVideoAssetId": heroVideo.asset._ref
       }
-    `)
+    `, { id: SETTINGS_ID })
     return NextResponse.json(data || {})
   } catch (e) {
     console.error('Fetch settings error:', e)
@@ -186,29 +188,35 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     console.log('[Settings POST] Received payload:', JSON.stringify(body, null, 2))
-    
+
     const v = validate(SiteSettingsInputSchema, body)
     if (!v.success) {
       return NextResponse.json({ error: 'Validation failed', details: v.errors }, { status: 400 })
     }
 
     const d = v.data
-    
+    const client = getSanityWriteClient()
+
     // Check if any media fields were provided
-    const hasMedia = !!(d.logo || d.favicon || d.contractorPhoto || d.heroVideo || 
+    const hasMedia = !!(d.logo || d.favicon || d.contractorPhoto || d.heroVideo ||
                        (d.heroImages && d.heroImages.length > 0))
-    
+
     const fields = buildFields(d, hasMedia)
     console.log('[Settings POST] Built fields:', JSON.stringify(fields, null, 2))
-    
-    const doc = { _id: SETTINGS_ID, _type: 'siteSettings' as const, ...fields }
-    const result = await getSanityWriteClient().createIfNotExists(doc)
-    
+
+    // FIX (A2): createIfNotExists alone never updates existing documents.
+    // Ensure document exists first, then patch to apply changes.
+    await client.createIfNotExists({
+      _id: SETTINGS_ID,
+      _type: 'siteSettings' as const,
+    })
+    const result = await client.patch(SETTINGS_ID).set(fields).commit()
+
     console.log('[Settings POST] Sanity result:', result._id)
     return NextResponse.json(result)
   } catch (e) {
-    console.error('Create settings error:', e)
-    return NextResponse.json({ error: 'Failed to create settings' }, { status: 500 })
+    console.error('Save settings error:', e)
+    return NextResponse.json({ error: 'Failed to save settings' }, { status: 500 })
   }
 }
 
@@ -222,23 +230,30 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
     console.log('[Settings PUT] Received payload:', JSON.stringify(body, null, 2))
-    
+
     const v = validate(SiteSettingsInputSchema, body)
     if (!v.success) {
       return NextResponse.json({ error: 'Validation failed', details: v.errors }, { status: 400 })
     }
 
     const d = v.data
-    
+    const client = getSanityWriteClient()
+
     // Check if any media fields were provided
-    const hasMedia = !!(d.logo || d.favicon || d.contractorPhoto || d.heroVideo || 
+    const hasMedia = !!(d.logo || d.favicon || d.contractorPhoto || d.heroVideo ||
                        (d.heroImages && d.heroImages.length > 0))
-    
+
     const fields = buildFields(d, hasMedia)
     console.log('[Settings PUT] Built fields with media:', hasMedia, JSON.stringify(fields, null, 2))
-    
-    const result = await getSanityWriteClient().patch(SETTINGS_ID).set(fields).commit()
-    
+
+    // FIX (A2): Ensure document exists before patching — patch on non-existent doc throws 500.
+    // Same pattern as already-fixed CRM settings route.
+    await client.createIfNotExists({
+      _id: SETTINGS_ID,
+      _type: 'siteSettings' as const,
+    })
+    const result = await client.patch(SETTINGS_ID).set(fields).commit()
+
     console.log('[Settings PUT] Sanity result:', result._id)
     return NextResponse.json(result)
   } catch (e) {
