@@ -406,7 +406,7 @@ export default function SiteSettingsTab() {
     setIsLoading(true)
     setError(null)
     try {
-      const data = await adminFetch<SiteSettings>('settings')
+      const data = await adminFetch<Record<string, unknown>>('settings')
       // Check if settings exist (has _id or any meaningful data)
       const exists = !!(data && data._id)
       setSettingsExist(exists)
@@ -415,6 +415,37 @@ export default function SiteSettingsTab() {
       const sanitized = Object.fromEntries(
         Object.entries(data || {}).filter(([, v]) => v !== null && v !== undefined)
       )
+      // Map API response field names to frontend state field names:
+      // API returns computed fields (logoUrl, heroImageUrls, etc.) that don't match
+      // the SiteSettings interface field names (logo, heroImages, etc.)
+      if (sanitized.logoUrl && !sanitized.logo) {
+        sanitized.logo = sanitized.logoUrl
+      }
+      if (sanitized.faviconUrl && !sanitized.favicon) {
+        sanitized.favicon = sanitized.faviconUrl
+      }
+      if (sanitized.contractorPhotoUrl && !sanitized.contractorPhoto) {
+        sanitized.contractorPhoto = sanitized.contractorPhotoUrl
+      }
+      // Map heroImageUrls array → heroImages array with { url, alt } shape
+      if (sanitized.heroImageUrls && Array.isArray(sanitized.heroImageUrls)) {
+        sanitized.heroImages = (sanitized.heroImageUrls as Array<Record<string, string>>).map(
+          (img) => ({
+            url: img?.url || '',
+            alt: img?.alt || '',
+          })
+        ).filter((img) => img.url)
+      }
+      // heroVideoUrl already matches the frontend field name
+      // Normalize aboutStats — Sanity items have _key/_type; ensure value/label are strings
+      if (sanitized.aboutStats && Array.isArray(sanitized.aboutStats)) {
+        sanitized.aboutStats = (sanitized.aboutStats as Array<Record<string, string>>).map(
+          (s) => ({
+            value: s?.value || '',
+            label: s?.label || '',
+          })
+        )
+      }
       const merged = { ...DEFAULT_SETTINGS, ...sanitized }
       setSettings(merged)
       setOriginalSettings(merged)
@@ -841,7 +872,7 @@ export default function SiteSettingsTab() {
                     </div>
                     <input
                       type="text"
-                      value={image.alt}
+                      value={image.alt || ''}
                       onChange={(e) => updateHeroImageAlt(index, e.target.value)}
                       placeholder="Alt text..."
                       className="mt-2 w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
@@ -1071,14 +1102,14 @@ export default function SiteSettingsTab() {
                 </div>
                 <input
                   type="text"
-                  value={stat.value}
+                  value={stat.value || ''}
                   onChange={(e) => updateStat(index, 'value', e.target.value)}
                   placeholder="500+"
                   className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-center font-semibold"
                 />
                 <input
                   type="text"
-                  value={stat.label}
+                  value={stat.label || ''}
                   onChange={(e) => updateStat(index, 'label', e.target.value)}
                   placeholder="Projects Completed"
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"

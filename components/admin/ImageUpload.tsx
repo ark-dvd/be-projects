@@ -58,12 +58,18 @@ export default function ImageUpload({
     setIsDragging(false)
 
     const file = e.dataTransfer.files[0]
-    if (file && file.type.startsWith('image/')) {
+    if (!file) return
+    // Respect the accept prop: allow video/* when accept="video/*", otherwise require image/*
+    const acceptsVideo = accept.includes('video')
+    const isAccepted = acceptsVideo
+      ? file.type.startsWith('video/') || file.type.startsWith('image/')
+      : file.type.startsWith('image/')
+    if (isAccepted) {
       handleFile(file)
     } else {
-      setError('Please drop an image file')
+      setError(acceptsVideo ? 'Please drop a video or image file' : 'Please drop an image file')
     }
-  }, [handleFile])
+  }, [handleFile, accept])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()

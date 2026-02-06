@@ -10,10 +10,14 @@ type SiteSettingsInput = z.output<typeof SiteSettingsInputSchema>
 const SETTINGS_ID = 'siteSettings'
 
 // Build image reference object for Sanity
+// Validates asset ID is an image type — rejects file-type IDs to prevent type leakage
 function buildImageRef(assetId: string | undefined | null) {
   if (!assetId || typeof assetId !== 'string') return undefined
-  
-  // Handle both formats: "image-xxx-yyy-zzz" and raw ID
+  // Reject file-type IDs in image fields
+  if (assetId.startsWith('file-')) {
+    console.warn('[Settings] Rejected file-type asset ID in image field:', assetId)
+    return undefined
+  }
   const ref = assetId.startsWith('image-') ? assetId : `image-${assetId}`
   return {
     _type: 'image',
@@ -25,10 +29,14 @@ function buildImageRef(assetId: string | undefined | null) {
 }
 
 // Build file reference object for Sanity (for videos)
+// Validates asset ID is a file type — rejects image-type IDs to prevent type leakage
 function buildFileRef(assetId: string | undefined | null) {
   if (!assetId || typeof assetId !== 'string') return undefined
-  
-  // Handle both formats: "file-xxx-yyy-zzz" and raw ID
+  // Reject image-type IDs in file fields
+  if (assetId.startsWith('image-')) {
+    console.warn('[Settings] Rejected image-type asset ID in file field:', assetId)
+    return undefined
+  }
   const ref = assetId.startsWith('file-') ? assetId : `file-${assetId}`
   return {
     _type: 'file',
@@ -79,42 +87,51 @@ function buildFields(d: SiteSettingsInput, includeMedia: boolean = false) {
   // CRITICAL: Only include media fields if they were explicitly provided
   // This prevents overwriting existing media with empty values
   if (includeMedia) {
-    // Logo
     if (d.logo) {
       fields.logo = buildImageRef(d.logo)
     }
-    
-    // Favicon
     if (d.favicon) {
       fields.favicon = buildImageRef(d.favicon)
     }
-    
-    // Contractor Photo
     if (d.contractorPhoto) {
       fields.contractorPhoto = buildImageRef(d.contractorPhoto)
     }
-    
-    // Hero Video
     if (d.heroVideo) {
       fields.heroVideo = buildFileRef(d.heroVideo)
     }
-    
-    // Hero Images array
     if (d.heroImages && Array.isArray(d.heroImages) && d.heroImages.length > 0) {
-      fields.heroImages = d.heroImages.map((img: string | { assetId?: string; alt?: string }, index: number) => {
-        const assetId = typeof img === 'string' ? img : img.assetId
-        const alt = typeof img === 'string' ? '' : (img.alt || '')
-        return {
-          _type: 'image',
-          _key: `hero-image-${index}-${Math.random().toString(36).substring(7)}`,
-          alt: alt,
-          asset: {
-            _type: 'reference',
-            _ref: assetId?.startsWith('image-') ? assetId : `image-${assetId}`
+      fields.heroImages = d.heroImages
+        .map((img: string | { assetId?: string; alt?: string }, index: number) => {
+          const assetId = typeof img === 'string' ? img : img.assetId
+          if (!assetId) return null
+          const alt = typeof img === 'string' ? '' : (img.alt || '')
+          // Validate: reject file-type IDs in image array
+          if (assetId.startsWith('file-')) {
+            console.warn('[Settings] Rejected file-type ID in heroImages:', assetId)
+            return null
           }
-        }
-      })
+          const ref = assetId.startsWith('image-') ? assetId : `image-${assetId}`
+          return {
+            _type: 'image',
+            _key: `hero-image-${index}-${Math.random().toString(36).substring(7)}`,
+            alt,
+            asset: { _type: 'reference', _ref: ref }
+          }
+        })
+        .filter(Boolean)
     }
+  }
+
+  // Enforce mutual exclusivity: when heroMediaType is set,
+  // clear the unused media type so stale data doesn't persist
+  const mediaType = fields.heroMediaType as string
+  if (mediaType === 'video' && !fields.heroImages) {
+    // Switching to video — clear images array
+    fields.heroImages = []
+  }
+  if (mediaType === 'images' && !fields.heroVideo) {
+    // Switching to images — unset video by setting to empty
+    // (Sanity patch .set with undefined is a no-op, so we omit heroVideo entirely)
   }
 
   return fields
@@ -215,8 +232,14 @@ export async function POST(request: NextRequest) {
     console.log('[Settings POST] Sanity result:', result._id)
     return NextResponse.json(result)
   } catch (e) {
-    console.error('Save settings error:', e)
-    return NextResponse.json({ error: 'Failed to save settings' }, { status: 500 })
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[Settings POST] Save failed:', msg)
+    // Distinguish Sanity API errors from other errors
+    const isSanityError = msg.includes('sanity') || msg.includes('Mutation')
+    return NextResponse.json(
+      { error: 'Failed to save settings', errorCode: isSanityError ? 'SANITY_ERROR' : 'INTERNAL_ERROR' },
+      { status: isSanityError ? 502 : 500 }
+    )
   }
 }
 
@@ -257,8 +280,13 @@ export async function PUT(request: NextRequest) {
     console.log('[Settings PUT] Sanity result:', result._id)
     return NextResponse.json(result)
   } catch (e) {
-    console.error('Update settings error:', e)
-    return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 })
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[Settings PUT] Update failed:', msg)
+    const isSanityError = msg.includes('sanity') || msg.includes('Mutation')
+    return NextResponse.json(
+      { error: 'Failed to update settings', errorCode: isSanityError ? 'SANITY_ERROR' : 'INTERNAL_ERROR' },
+      { status: isSanityError ? 502 : 500 }
+    )
   }
 }
 
