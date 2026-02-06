@@ -15,23 +15,41 @@ function buildImageRef(value: unknown): { _type: 'image'; asset: { _type: 'refer
 }
 
 function buildFields(d: ServiceInput) {
-  return {
+  const fields: Record<string, unknown> = {
     name: d.name,
     slug: { _type: 'slug' as const, current: d.slug },
     tagline: d.tagline,
     description: d.description,
-    highlights: d.highlights?.map(h => ({
+    highlights: d.highlights?.map((h, i) => ({
       _type: 'object' as const,
+      _key: `highlight-${i}-${Math.random().toString(36).substring(7)}`,
       title: h.title,
       description: h.description,
     })) || [],
     priceRange: d.priceRange || '',
     typicalDuration: d.typicalDuration || '',
-    image: buildImageRef(d.image),
-    gallery: d.gallery?.map((img: unknown) => buildImageRef(img)).filter(Boolean) || [],
     order: d.order ?? 10,
     isActive: d.isActive ?? true,
   }
+
+  // Only include media fields when explicitly provided to prevent clobbering
+  // existing assets on edit (Zod defaults gallery to [] which would clear it)
+  const imageRef = buildImageRef(d.image)
+  if (imageRef) {
+    fields.image = imageRef
+  }
+  const galleryRefs = (d.gallery || [])
+    .map((img: unknown, i: number) => {
+      const ref = buildImageRef(img)
+      if (!ref) return null
+      return { ...ref, _key: `gallery-${i}-${Math.random().toString(36).substring(7)}` }
+    })
+    .filter(Boolean)
+  if (galleryRefs.length > 0) {
+    fields.gallery = galleryRefs
+  }
+
+  return fields
 }
 
 export async function GET(request: NextRequest) {

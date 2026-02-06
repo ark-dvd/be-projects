@@ -262,10 +262,10 @@ export default function ServicesTab() {
   const openEditForm = (service: Service) => {
     setFormData({
       _id: service._id,
-      name: service.name,
+      name: service.name || '',
       slug: service.slug?.current || '',
-      tagline: service.tagline,
-      description: service.description,
+      tagline: service.tagline || '',
+      description: service.description || '',
       highlights: service.highlights || [],
       priceRange: service.priceRange || '',
       typicalDuration: service.typicalDuration || '',
@@ -273,7 +273,7 @@ export default function ServicesTab() {
       imageUrl: service.imageUrl || '',
       gallery: service.galleryImages?.map(img => ({
         assetId: '',
-        url: img.url,
+        url: img.url || '',
         alt: img.alt || '',
       })) || [],
       order: service.order ?? 10,
@@ -347,11 +347,10 @@ export default function ServicesTab() {
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {}
 
-    if (!formData.name.trim()) errors.name = 'Service name is required'
-    if (!formData.slug.trim()) errors.slug = 'Slug is required'
-    if (!formData.tagline.trim()) errors.tagline = 'Tagline is required'
-    if (!formData.description.trim()) errors.description = 'Description is required'
-    if (!formData.image && !formData.imageUrl) errors.image = 'Main image is required'
+    if (!(formData.name || '').trim()) errors.name = 'Service name is required'
+    if (!(formData.slug || '').trim()) errors.slug = 'Slug is required'
+    if (!(formData.tagline || '').trim()) errors.tagline = 'Tagline is required'
+    if (!(formData.description || '').trim()) errors.description = 'Description is required'
 
     setFormErrors(errors)
     return Object.keys(errors).length === 0
@@ -359,10 +358,12 @@ export default function ServicesTab() {
 
   // Save service
   const handleSave = async () => {
-    if (!validateForm()) return
-
     setIsSaving(true)
     try {
+      if (!validateForm()) {
+        setIsSaving(false)
+        return
+      }
       // Build payload WITHOUT image fields - only add them if new uploads occurred
       const payload: Record<string, unknown> = {
         _id: formData._id,
