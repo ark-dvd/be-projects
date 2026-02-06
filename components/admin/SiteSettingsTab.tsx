@@ -278,8 +278,9 @@ function SocialField({
   onChange: (value: string) => void
   placeholder: string
 }) {
-  const isFilled = value.trim().length > 0
-  const isValidUrl = isFilled && (value.startsWith('http://') || value.startsWith('https://'))
+  const safeValue = value || ''
+  const isFilled = safeValue.trim().length > 0
+  const isValidUrl = isFilled && (safeValue.startsWith('http://') || safeValue.startsWith('https://'))
 
   return (
     <div>
@@ -296,14 +297,14 @@ function SocialField({
         </div>
         <input
           type="url"
-          value={value}
+          value={safeValue}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
         />
         {isValidUrl && (
           <a
-            href={value}
+            href={safeValue}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
@@ -409,7 +410,12 @@ export default function SiteSettingsTab() {
       // Check if settings exist (has _id or any meaningful data)
       const exists = !!(data && data._id)
       setSettingsExist(exists)
-      const merged = { ...DEFAULT_SETTINGS, ...data }
+      // Sanity returns null for unset fields — filter them out so DEFAULT_SETTINGS
+      // empty-string values are preserved (prevents null reaching .trim() / inputs)
+      const sanitized = Object.fromEntries(
+        Object.entries(data || {}).filter(([, v]) => v !== null && v !== undefined)
+      )
+      const merged = { ...DEFAULT_SETTINGS, ...sanitized }
       setSettings(merged)
       setOriginalSettings(merged)
       setNewMediaUploads({}) // Reset new uploads tracking
@@ -923,7 +929,7 @@ export default function SiteSettingsTab() {
           </label>
           <input
             type="text"
-            value={settings.heroHeadline}
+            value={settings.heroHeadline || ''}
             onChange={(e) =>
               setSettings((prev) => ({ ...prev, heroHeadline: e.target.value }))
             }
@@ -937,7 +943,7 @@ export default function SiteSettingsTab() {
             Hero Subheadline
           </label>
           <textarea
-            value={settings.heroSubheadline}
+            value={settings.heroSubheadline || ''}
             onChange={(e) =>
               setSettings((prev) => ({ ...prev, heroSubheadline: e.target.value }))
             }
@@ -966,7 +972,7 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="text"
-              value={settings.contractorName}
+              value={settings.contractorName || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, contractorName: e.target.value }))
               }
@@ -981,7 +987,7 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="text"
-              value={settings.contractorTitle}
+              value={settings.contractorTitle || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, contractorTitle: e.target.value }))
               }
@@ -1009,7 +1015,7 @@ export default function SiteSettingsTab() {
           </label>
           <input
             type="text"
-            value={settings.aboutHeadline}
+            value={settings.aboutHeadline || ''}
             onChange={(e) =>
               setSettings((prev) => ({ ...prev, aboutHeadline: e.target.value }))
             }
@@ -1023,7 +1029,7 @@ export default function SiteSettingsTab() {
             About Text
           </label>
           <textarea
-            value={settings.aboutText}
+            value={settings.aboutText || ''}
             onChange={(e) =>
               setSettings((prev) => ({ ...prev, aboutText: e.target.value }))
             }
@@ -1117,7 +1123,7 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="tel"
-              value={settings.phone}
+              value={settings.phone || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, phone: e.target.value }))
               }
@@ -1132,7 +1138,7 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="email"
-              value={settings.email}
+              value={settings.email || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, email: e.target.value }))
               }
@@ -1147,7 +1153,7 @@ export default function SiteSettingsTab() {
             Address
           </label>
           <textarea
-            value={settings.address}
+            value={settings.address || ''}
             onChange={(e) =>
               setSettings((prev) => ({ ...prev, address: e.target.value }))
             }
@@ -1163,7 +1169,7 @@ export default function SiteSettingsTab() {
           </label>
           <input
             type="text"
-            value={settings.serviceArea}
+            value={settings.serviceArea || ''}
             onChange={(e) =>
               setSettings((prev) => ({ ...prev, serviceArea: e.target.value }))
             }
@@ -1177,7 +1183,7 @@ export default function SiteSettingsTab() {
             Office Hours
           </label>
           <textarea
-            value={settings.officeHours}
+            value={settings.officeHours || ''}
             onChange={(e) =>
               setSettings((prev) => ({ ...prev, officeHours: e.target.value }))
             }
@@ -1372,7 +1378,7 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="text"
-              value={settings.licenseNumber}
+              value={settings.licenseNumber || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, licenseNumber: e.target.value }))
               }
@@ -1386,7 +1392,7 @@ export default function SiteSettingsTab() {
               License State
             </label>
             <select
-              value={settings.licenseState}
+              value={settings.licenseState || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, licenseState: e.target.value }))
               }
@@ -1407,7 +1413,7 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="text"
-              value={settings.insuranceInfo}
+              value={settings.insuranceInfo || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, insuranceInfo: e.target.value }))
               }
@@ -1422,7 +1428,7 @@ export default function SiteSettingsTab() {
             </label>
             <input
               type="text"
-              value={settings.bondInfo}
+              value={settings.bondInfo || ''}
               onChange={(e) =>
                 setSettings((prev) => ({ ...prev, bondInfo: e.target.value }))
               }

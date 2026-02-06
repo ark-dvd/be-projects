@@ -484,8 +484,9 @@ export default function TestimonialsTab() {
 
   // Truncate text
   const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text
-    return text.slice(0, maxLength).trim() + '...'
+    const safeText = text || ''
+    if (safeText.length <= maxLength) return safeText
+    return safeText.slice(0, maxLength).trim() + '...'
   }
 
   // Filter counts

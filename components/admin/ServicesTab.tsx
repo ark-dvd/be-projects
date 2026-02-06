@@ -370,7 +370,7 @@ export default function ServicesTab() {
         slug: formData.slug,
         tagline: formData.tagline,
         description: formData.description,
-        highlights: formData.highlights.filter(h => h.title.trim() && h.description.trim()),
+        highlights: formData.highlights.filter(h => (h.title || '').trim() && (h.description || '').trim()),
         priceRange: formData.priceRange,
         typicalDuration: formData.typicalDuration,
         order: formData.order,
