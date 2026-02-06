@@ -78,7 +78,10 @@ export default async function HomePage() {
         }
       : undefined,
     areaServed: settings.serviceArea || undefined,
-    url: process.env.NEXTAUTH_URL || 'https://example.com',
+    url: (() => {
+      const raw = process.env.NEXTAUTH_URL || 'https://example.com'
+      return raw.startsWith('http') ? raw : `https://${raw}`
+    })(),
     logo: logoUrl || undefined,
     image: photoUrl || undefined,
     priceRange: '$$',

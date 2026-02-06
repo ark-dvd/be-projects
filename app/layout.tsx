@@ -13,7 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
   const contractorName = settings.contractorName || 'Professional Contractor'
   const description = settings.aboutText?.slice(0, 160) || 'Professional contractor services'
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://yourdomain.com'
+
+  // Ensure URL has a protocol — NEXTAUTH_URL on Netlify may be bare hostname
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://yourdomain.com'
+  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   return {
     metadataBase: new URL(baseUrl),
