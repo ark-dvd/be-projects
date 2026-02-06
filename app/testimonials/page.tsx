@@ -161,9 +161,9 @@ export default async function TestimonialsPage() {
 
       {/* Testimonials List */}
       <section className="py-12 lg:py-16 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {sortedTestimonials.length > 0 ? (
-            <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {sortedTestimonials.map((testimonial) => {
                 const photoUrl = sanityImageUrl(testimonial.clientPhoto)
                 const projectSlug = testimonial.project?._ref

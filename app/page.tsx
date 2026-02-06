@@ -36,9 +36,10 @@ export default async function HomePage() {
   const activeServices = (services || [])
     .filter((s) => s.isActive !== false && s.slug?.current && s.name)
 
-  // Filter featured testimonials
-  const featuredTestimonials = (testimonials || [])
-    .filter((t) => t.isFeatured && t.clientName && t.quote)
+  // Filter testimonials for preview: prefer featured, fall back to any active
+  const validTestimonials = (testimonials || []).filter((t) => t.clientName && t.quote)
+  const featuredOnly = validTestimonials.filter((t) => t.isFeatured)
+  const featuredTestimonials = featuredOnly.length > 0 ? featuredOnly : validTestimonials
 
   // Parse stats from settings
   const stats = settings.aboutStats || []
