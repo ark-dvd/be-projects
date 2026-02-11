@@ -142,6 +142,16 @@ export const SiteSettingsInputSchema = z.object({
   bondInfo: z.string().optional().default(''),
 })
 
+// FAQ Input Schema
+export const FaqInputSchema = z.object({
+  _id: z.string().optional(),
+  question: z.string().min(1, 'Question is required'),
+  answer: z.string().min(1, 'Answer is required'),
+  category: z.string().optional().default(''),
+  order: z.number().optional().default(0),
+  isActive: z.boolean().optional().default(true),
+})
+
 // ============================================
 // CRM VALIDATION SCHEMAS
 // ============================================

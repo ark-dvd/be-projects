@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   HardHat,
+  HelpCircle,
   Loader2,
   Users,
   UserCheck,
@@ -27,6 +28,7 @@ import ServicesTab from '@/components/admin/ServicesTab'
 import TestimonialsTab from '@/components/admin/TestimonialsTab'
 import ActiveJobsTab from '@/components/admin/ActiveJobsTab'
 import SiteSettingsTab from '@/components/admin/SiteSettingsTab'
+import FaqTab from '@/components/admin/FaqTab'
 
 // CRM Components
 import {
@@ -45,6 +47,7 @@ const WEBSITE_TABS = [
   { id: 'projects', label: 'Projects', icon: FolderKanban },
   { id: 'services', label: 'Services', icon: Wrench },
   { id: 'testimonials', label: 'Testimonials', icon: Star },
+  { id: 'faq', label: 'FAQ', icon: HelpCircle },
   { id: 'jobs', label: 'Active Jobs', icon: ClipboardList },
   { id: 'settings', label: 'Settings', icon: Settings },
 ] as const
@@ -213,6 +216,8 @@ function AdminShell() {
         return <ServicesTab />
       case 'testimonials':
         return <TestimonialsTab />
+      case 'faq':
+        return <FaqTab />
       case 'jobs':
         return <ActiveJobsTab />
       case 'settings':

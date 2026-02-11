@@ -139,6 +139,18 @@ export interface ActiveJob {
   isActive: boolean
 }
 
+export interface Faq {
+  _id: string
+  _type: 'faq'
+  _createdAt?: string
+  _updatedAt?: string
+  question: string
+  answer: string
+  category?: string
+  order: number
+  isActive: boolean
+}
+
 export interface AboutStat {
   value: string
   label: string
@@ -724,6 +736,35 @@ export async function getActiveJobs(): Promise<ActiveJob[]> {
     return jobs || []
   } catch (error) {
     console.error('[data-fetchers] getActiveJobs failed:', error)
+    return []
+  }
+}
+
+export async function getFaqs(): Promise<Faq[]> {
+  if (!isSanityConfigured()) {
+    setDemoMode('Sanity not configured')
+    return []
+  }
+
+  try {
+    const client = getSanityClient()
+    const faqs = await client.fetch<Faq[]>(`
+      *[_type == "faq" && isActive == true] | order(order asc) {
+        _id,
+        _type,
+        _createdAt,
+        _updatedAt,
+        question,
+        answer,
+        category,
+        order,
+        isActive
+      }
+    `)
+
+    return faqs || []
+  } catch (error) {
+    console.error('[data-fetchers] getFaqs failed:', error)
     return []
   }
 }
