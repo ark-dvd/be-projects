@@ -133,6 +133,8 @@ export const SiteSettingsInputSchema = z.object({
     linkedinUrl: z.string().optional().default(''),
     email: z.string().optional().default(''),
   })).optional().default([]),
+  teamClosingHeadline: z.string().optional().default(''),
+  teamClosingText: z.string().optional().default(''),
   phone: z.string().optional().default(''),
   email: z.string().optional().default(''),
   address: z.string().optional().default(''),

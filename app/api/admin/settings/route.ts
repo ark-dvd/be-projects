@@ -59,6 +59,8 @@ function buildFields(d: SiteSettingsInput, includeMedia: boolean = false) {
     contractorTitle: d.contractorTitle || '',
     aboutHeadline: d.aboutHeadline || '',
     aboutSubtitle: d.aboutSubtitle || '',
+    teamClosingHeadline: d.teamClosingHeadline || '',
+    teamClosingText: d.teamClosingText || '',
     aboutText: d.aboutText || '',
     aboutStats: d.aboutStats?.map(s => ({
       _type: 'object' as const,
@@ -197,6 +199,8 @@ export async function GET(request: NextRequest) {
           linkedinUrl,
           email
         },
+        teamClosingHeadline,
+        teamClosingText,
         phone,
         email,
         address,

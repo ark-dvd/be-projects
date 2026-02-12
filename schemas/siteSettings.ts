@@ -76,6 +76,21 @@ export default {
         },
       }],
     },
+    {
+      name: 'teamClosingHeadline',
+      title: 'Team Section Closing Headline',
+      type: 'string',
+      group: 'about',
+      description: 'Headline displayed after the team members grid, e.g., a team motto or standard',
+    },
+    {
+      name: 'teamClosingText',
+      title: 'Team Section Closing Text',
+      type: 'text',
+      rows: 4,
+      group: 'about',
+      description: 'Body text displayed below the closing headline',
+    },
 
     // Contact
     { name: 'phone', title: 'Phone', type: 'string', group: 'contact' },

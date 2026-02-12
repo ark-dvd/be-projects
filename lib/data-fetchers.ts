@@ -184,6 +184,8 @@ export interface SiteSettings {
   aboutText?: string
   aboutStats?: AboutStat[]
   teamMembers?: TeamMember[]
+  teamClosingHeadline?: string
+  teamClosingText?: string
   phone?: string
   email?: string
   address?: string
@@ -833,6 +835,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
           linkedinUrl,
           email
         },
+        teamClosingHeadline,
+        teamClosingText,
         phone,
         email,
         address,

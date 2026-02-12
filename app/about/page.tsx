@@ -223,6 +223,24 @@ export default async function AboutPage() {
         </section>
       )}
 
+      {/* Team Closing Statement */}
+      {(settings.teamClosingHeadline || settings.teamClosingText) && (
+        <section className="py-12 lg:py-16 bg-white">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {settings.teamClosingHeadline && (
+              <h3 className="text-2xl lg:text-3xl font-semibold text-accent italic font-heading mb-4">
+                {settings.teamClosingHeadline}
+              </h3>
+            )}
+            {settings.teamClosingText && (
+              <p className="text-lg text-secondary leading-relaxed">
+                {settings.teamClosingText}
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Why Choose Us Section */}
       {settings.aboutStats && settings.aboutStats.length > 0 && (
         <section className="py-16 lg:py-20 bg-light">

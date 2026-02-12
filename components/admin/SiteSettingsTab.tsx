@@ -68,6 +68,8 @@ interface SiteSettings {
   aboutText: string
   aboutStats: Stat[]
   teamMembers: TeamMember[]
+  teamClosingHeadline: string
+  teamClosingText: string
   // Contact
   phone: string
   email: string
@@ -107,6 +109,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
   aboutText: '',
   aboutStats: [],
   teamMembers: [],
+  teamClosingHeadline: '',
+  teamClosingText: '',
   phone: '',
   email: '',
   address: '',
@@ -520,7 +524,9 @@ export default function SiteSettingsTab() {
             settings.aboutSubtitle !== originalSettings.aboutSubtitle ||
             settings.aboutText !== originalSettings.aboutText ||
             JSON.stringify(settings.aboutStats) !== JSON.stringify(originalSettings.aboutStats) ||
-            JSON.stringify(settings.teamMembers) !== JSON.stringify(originalSettings.teamMembers)
+            JSON.stringify(settings.teamMembers) !== JSON.stringify(originalSettings.teamMembers) ||
+            settings.teamClosingHeadline !== originalSettings.teamClosingHeadline ||
+            settings.teamClosingText !== originalSettings.teamClosingText
           )
         case 'contact':
           return (
@@ -603,6 +609,8 @@ export default function SiteSettingsTab() {
         email: m.email,
         ...(m.photoAssetId ? { photo: { assetId: m.photoAssetId } } : {}),
       })),
+      teamClosingHeadline: settings.teamClosingHeadline,
+      teamClosingText: settings.teamClosingText,
       // Contact
       phone: settings.phone,
       email: settings.email,
@@ -1363,6 +1371,37 @@ export default function SiteSettingsTab() {
             <Plus className="h-4 w-4" />
             Add Team Member
           </button>
+        </div>
+
+        {/* Team Closing Statement */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Team Section Closing Headline
+          </label>
+          <input
+            type="text"
+            value={settings.teamClosingHeadline || ''}
+            onChange={(e) =>
+              setSettings((prev) => ({ ...prev, teamClosingHeadline: e.target.value }))
+            }
+            placeholder="e.g., Built on Trust, Driven by Excellence"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Team Section Closing Text
+          </label>
+          <textarea
+            value={settings.teamClosingText || ''}
+            onChange={(e) =>
+              setSettings((prev) => ({ ...prev, teamClosingText: e.target.value }))
+            }
+            rows={4}
+            placeholder="Body text displayed below the closing headline on the About page"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+          />
         </div>
       </AccordionSection>
 
