@@ -8,9 +8,22 @@ import { FaqAccordion } from './FaqAccordion'
 // Revalidate every 60 seconds (ISR)
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Frequently Asked Questions',
-  description: 'Find answers to common questions about our construction and renovation services, process, pricing, and more.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+
+  return {
+    title: settings.faqPageHeadline || 'Frequently Asked Questions',
+    description: settings.faqPageDescription || 'Find answers to common questions about our landscaping services, process, pricing, and more.',
+    openGraph: {
+      title: `${settings.faqPageHeadline || 'Frequently Asked Questions'} | ${settings.contractorName || 'BE-Project Solutions'}`,
+      description: settings.faqPageDescription || 'Find answers to common questions about our landscaping services, process, pricing, and more.',
+    },
+    alternates: {
+      canonical: `${baseUrl}/faq`,
+    },
+  }
 }
 
 export default async function FaqPage() {

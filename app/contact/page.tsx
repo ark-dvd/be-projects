@@ -5,14 +5,24 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react'
 export const revalidate = 60
 import { getServices, getSiteSettings } from '@/lib/data-fetchers'
 import ContactForm from '@/components/ContactForm'
+import { StructuredData } from '@/components/StructuredData'
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const name = settings.contractorName || 'Contractor'
+  const name = settings.contractorName || 'BE-Project Solutions'
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   return {
     title: `Contact ${name} | Get a Free Quote`,
     description: `Ready to start your landscaping project? Contact ${name} for a free consultation and estimate. We serve the ${settings.serviceArea || 'local area'}.`,
+    openGraph: {
+      title: `Contact ${name} | Get a Free Quote`,
+      description: `Ready to start your landscaping project? Contact ${name} for a free consultation and estimate.`,
+    },
+    alternates: {
+      canonical: `${baseUrl}/contact`,
+    },
   }
 }
 
@@ -95,6 +105,23 @@ export default async function ContactPage() {
 
   const companyName = settings.contractorName || 'Contractor'
 
+  const contactSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: companyName,
+    ...(settings.phone ? { telephone: settings.phone } : {}),
+    ...(settings.email ? { email: settings.email } : {}),
+    ...(settings.address ? { address: settings.address } : {}),
+    contactPoint: {
+      '@type': 'ContactPoint',
+      ...(settings.phone ? { telephone: settings.phone } : {}),
+      ...(settings.email ? { email: settings.email } : {}),
+      contactType: 'customer service',
+      ...(settings.serviceArea ? { areaServed: settings.serviceArea } : {}),
+      availableLanguage: 'English',
+    },
+  }
+
   // Collect social links
   const socialLinks = [
     { url: settings.instagram, icon: InstagramIcon, label: 'Instagram' },
@@ -109,6 +136,8 @@ export default async function ContactPage() {
 
   return (
     <>
+      <StructuredData data={contactSchema} />
+
       {/* Hero Section */}
       <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

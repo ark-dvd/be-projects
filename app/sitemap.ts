@@ -2,7 +2,8 @@ import { MetadataRoute } from 'next'
 import { getProjects, getServices } from '@/lib/data-fetchers'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://yourdomain.com'
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   // Static pages
   const staticPages = [
@@ -12,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/testimonials',
     '/about',
     '/contact',
+    '/faq',
   ]
 
   // Fetch dynamic content

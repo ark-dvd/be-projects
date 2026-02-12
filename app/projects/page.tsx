@@ -8,9 +8,22 @@ import ProjectCard from '@/components/ProjectCard'
 import CTASection from '@/components/CTASection'
 import ProjectsFilter from './ProjectsFilter'
 
-export const metadata: Metadata = {
-  title: 'Our Projects',
-  description: 'Browse our portfolio of completed landscaping and outdoor living projects.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+
+  return {
+    title: settings.projectsPageHeadline || 'Our Projects',
+    description: settings.projectsPageDescription || 'Browse our portfolio of completed landscaping and outdoor living projects.',
+    openGraph: {
+      title: `${settings.projectsPageHeadline || 'Our Projects'} | ${settings.contractorName || 'BE-Project Solutions'}`,
+      description: settings.projectsPageDescription || 'Browse our portfolio of completed landscaping and outdoor living projects.',
+    },
+    alternates: {
+      canonical: `${baseUrl}/projects`,
+    },
+  }
 }
 
 export default async function ProjectsPage() {

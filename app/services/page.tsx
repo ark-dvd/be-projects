@@ -9,9 +9,22 @@ import CTASection from '@/components/CTASection'
 // Revalidate every 60 seconds (ISR)
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Our Services',
-  description: 'Explore our full range of construction and renovation services. From kitchens to bathrooms, decks to whole-home remodels.',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+
+  return {
+    title: settings.servicesPageHeadline || 'Our Services',
+    description: settings.servicesPageDescription || 'Explore our full range of landscaping and outdoor living services.',
+    openGraph: {
+      title: `${settings.servicesPageHeadline || 'Our Services'} | ${settings.contractorName || 'BE-Project Solutions'}`,
+      description: settings.servicesPageDescription || 'Explore our full range of landscaping and outdoor living services.',
+    },
+    alternates: {
+      canonical: `${baseUrl}/services`,
+    },
+  }
 }
 
 export default async function ServicesPage() {

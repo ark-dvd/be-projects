@@ -30,13 +30,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = service.tagline || service.description?.slice(0, 160) || `Learn about our ${service.name} services.`
 
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+
   return {
     title: service.name,
     description,
     openGraph: {
-      title: `${service.name} | ${settings.contractorName || 'Contractor'}`,
+      title: `${service.name} | ${settings.contractorName || 'BE-Project Solutions'}`,
       description,
       type: 'website',
+    },
+    alternates: {
+      canonical: `${baseUrl}/services/${params.slug}`,
     },
   }
 }

@@ -80,12 +80,20 @@ export default async function HomePage() {
       : undefined,
     areaServed: settings.serviceArea || undefined,
     url: (() => {
-      const raw = process.env.NEXTAUTH_URL || 'https://example.com'
+      const raw = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
       return raw.startsWith('http') ? raw : `https://${raw}`
     })(),
     logo: logoUrl || undefined,
     image: photoUrl || undefined,
     priceRange: '$$',
+    sameAs: [
+      settings.facebook,
+      settings.instagram,
+      settings.linkedin,
+      settings.youtube,
+      settings.yelp,
+      settings.google,
+    ].filter(Boolean),
   }
 
   return (
