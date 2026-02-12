@@ -60,8 +60,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        heading: ['Montserrat', 'system-ui', 'sans-serif'],
-        body: ['Open Sans', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-montserrat)', 'Montserrat', 'system-ui', 'sans-serif'],
+        body: ['var(--font-open-sans)', 'Open Sans', 'system-ui', 'sans-serif'],
       },
     },
   },

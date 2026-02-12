@@ -1,14 +1,28 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { Montserrat, Open_Sans } from 'next/font/google'
 import { getSiteSettings } from '@/lib/data-fetchers'
 import { isSanityConfigured } from '@/lib/sanity'
 import PublicLayout from '@/components/PublicLayout'
 import './globals.css'
 
-// Force dynamic rendering for all pages to ensure CSP nonces match
-// Per DOC-040: strict-dynamic CSP requires nonces to match at request time
-// Trade-off: No ISR caching, but guaranteed CSP compliance
-export const dynamic = 'force-dynamic'
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-montserrat',
+  display: 'swap',
+})
+
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-open-sans',
+  display: 'swap',
+})
+
+// ISR: revalidate public pages every 5 minutes
+// Admin routes have their own force-dynamic in app/admin/layout.tsx
+export const revalidate = 300
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -87,7 +101,7 @@ export default async function RootLayout({
   const isDemo = !isSanityConfigured()
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
       <body className="bg-light text-dark antialiased font-body">
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-X13B7WS1E9" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">

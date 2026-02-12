@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { getSanityClient, isSanityConfigured } from './sanity'
 
 // ============================================================================
@@ -499,7 +500,7 @@ const defaultSiteSettings: SiteSettings = {
 // Data Fetchers
 // ============================================================================
 
-export async function getProjects(): Promise<Project[]> {
+export const getProjects = cache(async (): Promise<Project[]> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultProjects
@@ -542,9 +543,9 @@ export async function getProjects(): Promise<Project[]> {
     console.error('[data-fetchers] getProjects failed:', error)
     return []
   }
-}
+})
 
-export async function getProjectBySlug(slug: string): Promise<Project | null> {
+export const getProjectBySlug = cache(async (slug: string): Promise<Project | null> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultProjects.find(p => p.slug.current === slug) || null
@@ -587,9 +588,9 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     console.error('[data-fetchers] getProjectBySlug failed:', error)
     return null
   }
-}
+})
 
-export async function getServices(): Promise<Service[]> {
+export const getServices = cache(async (): Promise<Service[]> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultServices
@@ -622,9 +623,9 @@ export async function getServices(): Promise<Service[]> {
     console.error('[data-fetchers] getServices failed:', error)
     return []
   }
-}
+})
 
-export async function getServiceBySlug(slug: string): Promise<Service | null> {
+export const getServiceBySlug = cache(async (slug: string): Promise<Service | null> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultServices.find(s => s.slug.current === slug) || null
@@ -657,9 +658,9 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
     console.error('[data-fetchers] getServiceBySlug failed:', error)
     return null
   }
-}
+})
 
-export async function getTestimonials(): Promise<Testimonial[]> {
+export const getTestimonials = cache(async (): Promise<Testimonial[]> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultTestimonials
@@ -692,9 +693,9 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     console.error('[data-fetchers] getTestimonials failed:', error)
     return []
   }
-}
+})
 
-export async function getFeaturedTestimonials(): Promise<Testimonial[]> {
+export const getFeaturedTestimonials = cache(async (): Promise<Testimonial[]> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultTestimonials.filter(t => t.isFeatured)
@@ -727,9 +728,9 @@ export async function getFeaturedTestimonials(): Promise<Testimonial[]> {
     console.error('[data-fetchers] getFeaturedTestimonials failed:', error)
     return []
   }
-}
+})
 
-export async function getActiveJobs(): Promise<ActiveJob[]> {
+export const getActiveJobs = cache(async (): Promise<ActiveJob[]> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultActiveJobs
@@ -762,9 +763,9 @@ export async function getActiveJobs(): Promise<ActiveJob[]> {
     console.error('[data-fetchers] getActiveJobs failed:', error)
     return []
   }
-}
+})
 
-export async function getFaqs(): Promise<Faq[]> {
+export const getFaqs = cache(async (): Promise<Faq[]> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return []
@@ -791,7 +792,7 @@ export async function getFaqs(): Promise<Faq[]> {
     console.error('[data-fetchers] getFaqs failed:', error)
     return []
   }
-}
+})
 
 // Minimal defaults when Sanity returns no settings (not demo data)
 // Every field that page components access must have a safe default here
@@ -805,7 +806,7 @@ const emptySiteSettings: SiteSettings = {
   teamMembers: [],
 }
 
-export async function getSiteSettings(): Promise<SiteSettings> {
+export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   if (!isSanityConfigured()) {
     setDemoMode('Sanity not configured')
     return defaultSiteSettings
@@ -884,4 +885,4 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     console.error('[data-fetchers] getSiteSettings failed:', error)
     return emptySiteSettings
   }
-}
+})

@@ -17,7 +17,7 @@ export function getSanityClient(): SanityClient {
       projectId,
       dataset,
       apiVersion,
-      useCdn: false, // CRITICAL: false = fresh data on every request
+      useCdn: true, // Use CDN edge cache for fast reads on public pages
       token: readToken,
     })
   }
