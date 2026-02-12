@@ -156,6 +156,16 @@ export interface AboutStat {
   label: string
 }
 
+export interface TeamMember {
+  name: string
+  title?: string
+  subtitle?: string
+  focus?: string
+  photoUrl?: string
+  linkedinUrl?: string
+  email?: string
+}
+
 export interface SiteSettings {
   _id: string
   _type: 'siteSettings'
@@ -170,8 +180,10 @@ export interface SiteSettings {
   contractorTitle?: string
   contractorPhoto?: SanityImage
   aboutHeadline?: string
+  aboutSubtitle?: string
   aboutText?: string
   aboutStats?: AboutStat[]
+  teamMembers?: TeamMember[]
   phone?: string
   email?: string
   address?: string
@@ -778,6 +790,7 @@ const emptySiteSettings: SiteSettings = {
   contractorName: 'Our Company',
   heroMediaType: 'images',
   aboutStats: [],
+  teamMembers: [],
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -808,8 +821,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         contractorTitle,
         contractorPhoto,
         aboutHeadline,
+        aboutSubtitle,
         aboutText,
         aboutStats,
+        "teamMembers": teamMembers[] {
+          name,
+          title,
+          subtitle,
+          focus,
+          "photoUrl": photo.asset->url,
+          linkedinUrl,
+          email
+        },
         phone,
         email,
         address,

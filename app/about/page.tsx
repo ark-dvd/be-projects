@@ -10,6 +10,8 @@ import {
   CheckCircle,
   MapPin,
   BadgeCheck,
+  Linkedin,
+  Mail,
 } from 'lucide-react'
 import { getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
@@ -91,6 +93,11 @@ export default async function AboutPage() {
                   {settings.aboutHeadline}
                 </p>
               )}
+              {settings.aboutSubtitle && (
+                <p className="text-lg text-secondary/70 leading-relaxed mt-4">
+                  {settings.aboutSubtitle}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -130,6 +137,86 @@ export default async function AboutPage() {
                 >
                   {paragraph}
                 </p>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Team Members Section */}
+      {settings.teamMembers && settings.teamMembers.length > 0 && (
+        <section className="py-16 lg:py-20 bg-light">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-dark text-center mb-12 font-heading">
+              Our Team
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {settings.teamMembers.map((member, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow text-center"
+                >
+                  {/* Photo */}
+                  {member.photoUrl ? (
+                    <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden relative">
+                      <Image
+                        src={member.photoUrl}
+                        alt={member.name}
+                        fill
+                        className="object-cover"
+                        sizes="96px"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary-700 to-primary-900 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-white/80 font-heading">
+                        {member.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Name */}
+                  <h3 className="font-bold text-dark font-heading">{member.name}</h3>
+
+                  {/* Title / Role */}
+                  {member.title && (
+                    <p className="text-primary font-medium text-sm mt-1">{member.title}</p>
+                  )}
+
+                  {/* Subtitle / Credential */}
+                  {member.subtitle && (
+                    <p className="text-secondary/70 text-sm mt-1">{member.subtitle}</p>
+                  )}
+
+                  {/* Focus */}
+                  {member.focus && (
+                    <p className="text-secondary text-sm mt-3 leading-relaxed">{member.focus}</p>
+                  )}
+
+                  {/* Icon Row */}
+                  {(member.linkedinUrl || member.email) && (
+                    <div className="flex items-center justify-center gap-3 mt-4">
+                      {member.linkedinUrl && (
+                        <a
+                          href={member.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 text-secondary hover:text-primary hover:bg-primary-50 rounded-lg transition-colors"
+                        >
+                          <Linkedin className="h-5 w-5" />
+                        </a>
+                      )}
+                      {member.email && (
+                        <a
+                          href={`mailto:${member.email}`}
+                          className="p-2 text-secondary hover:text-primary hover:bg-primary-50 rounded-lg transition-colors"
+                        >
+                          <Mail className="h-5 w-5" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>

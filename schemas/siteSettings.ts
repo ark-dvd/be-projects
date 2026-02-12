@@ -40,6 +40,42 @@ export default {
         { name: 'label', title: 'Label', type: 'string' },
       ], preview: { select: { title: 'value', subtitle: 'label' } } }],
     },
+    {
+      name: 'aboutSubtitle',
+      title: 'About Page Subtitle',
+      type: 'text',
+      rows: 3,
+      group: 'about',
+      description: 'Displayed below the main headline on the About page',
+    },
+    {
+      name: 'teamMembers',
+      title: 'Team Members',
+      type: 'array',
+      group: 'about',
+      description: 'Team/founders displayed on the About page',
+      of: [{
+        type: 'object',
+        name: 'teamMember',
+        title: 'Team Member',
+        fields: [
+          { name: 'name', title: 'Full Name', type: 'string', validation: (Rule: any) => Rule.required() },
+          { name: 'title', title: 'Title / Role', type: 'string', description: 'e.g., Co-Founder & CEO' },
+          { name: 'subtitle', title: 'Subtitle / Credential', type: 'string', description: 'e.g., Mechanical Engineer' },
+          { name: 'focus', title: 'Focus / Description', type: 'text', rows: 3, description: 'What this person focuses on' },
+          { name: 'photo', title: 'Photo', type: 'image', options: { hotspot: true } },
+          { name: 'linkedinUrl', title: 'LinkedIn URL', type: 'url' },
+          { name: 'email', title: 'Email Address', type: 'string', description: 'Optional — displays a mail icon for quick contact' },
+        ],
+        preview: {
+          select: {
+            title: 'name',
+            subtitle: 'title',
+            media: 'photo',
+          },
+        },
+      }],
+    },
 
     // Contact
     { name: 'phone', title: 'Phone', type: 'string', group: 'contact' },

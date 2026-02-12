@@ -58,6 +58,7 @@ function buildFields(d: SiteSettingsInput, includeMedia: boolean = false) {
     contractorName: d.contractorName || '',
     contractorTitle: d.contractorTitle || '',
     aboutHeadline: d.aboutHeadline || '',
+    aboutSubtitle: d.aboutSubtitle || '',
     aboutText: d.aboutText || '',
     aboutStats: d.aboutStats?.map(s => ({
       _type: 'object' as const,
@@ -82,6 +83,31 @@ function buildFields(d: SiteSettingsInput, includeMedia: boolean = false) {
     licenseState: d.licenseState || '',
     insuranceInfo: d.insuranceInfo || '',
     bondInfo: d.bondInfo || '',
+  }
+
+  // Handle teamMembers array with image sub-fields
+  if (d.teamMembers && d.teamMembers.length > 0) {
+    fields.teamMembers = d.teamMembers.map((member: any, index: number) => ({
+      _type: 'teamMember',
+      _key: `team-member-${index}-${Math.random().toString(36).substring(7)}`,
+      name: member.name || '',
+      title: member.title || '',
+      subtitle: member.subtitle || '',
+      focus: member.focus || '',
+      linkedinUrl: member.linkedinUrl || '',
+      email: member.email || '',
+      ...(member.photo && member.photo.assetId ? {
+        photo: {
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: member.photo.assetId.startsWith('image-') ? member.photo.assetId : `image-${member.photo.assetId}`,
+          },
+        },
+      } : {}),
+    }))
+  } else if (d.teamMembers !== undefined) {
+    fields.teamMembers = []
   }
 
   // CRITICAL: Only include media fields if they were explicitly provided
@@ -158,8 +184,19 @@ export async function GET(request: NextRequest) {
         contractorName,
         contractorTitle,
         aboutHeadline,
+        aboutSubtitle,
         aboutText,
         aboutStats,
+        "teamMembers": teamMembers[] {
+          name,
+          title,
+          subtitle,
+          focus,
+          "photoUrl": photo.asset->url,
+          "photoAssetId": photo.asset._ref,
+          linkedinUrl,
+          email
+        },
         phone,
         email,
         address,

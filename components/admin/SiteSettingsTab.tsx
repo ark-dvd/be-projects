@@ -40,6 +40,17 @@ interface Stat {
   label: string
 }
 
+interface TeamMember {
+  name: string
+  title: string
+  subtitle: string
+  focus: string
+  photo?: string // URL for display
+  photoAssetId?: string // Sanity asset ID for saving
+  linkedinUrl: string
+  email: string
+}
+
 interface SiteSettings {
   _id?: string
   // Hero Section
@@ -53,8 +64,10 @@ interface SiteSettings {
   contractorTitle: string
   contractorPhoto?: string
   aboutHeadline: string
+  aboutSubtitle: string
   aboutText: string
   aboutStats: Stat[]
+  teamMembers: TeamMember[]
   // Contact
   phone: string
   email: string
@@ -90,8 +103,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
   contractorTitle: '',
   contractorPhoto: '',
   aboutHeadline: '',
+  aboutSubtitle: '',
   aboutText: '',
   aboutStats: [],
+  teamMembers: [],
   phone: '',
   email: '',
   address: '',
@@ -446,6 +461,21 @@ export default function SiteSettingsTab() {
           })
         )
       }
+      // Normalize teamMembers from API response
+      if (sanitized.teamMembers && Array.isArray(sanitized.teamMembers)) {
+        sanitized.teamMembers = (sanitized.teamMembers as Array<Record<string, string>>).map(
+          (m) => ({
+            name: m?.name || '',
+            title: m?.title || '',
+            subtitle: m?.subtitle || '',
+            focus: m?.focus || '',
+            photo: m?.photoUrl || '',
+            photoAssetId: m?.photoAssetId || '',
+            linkedinUrl: m?.linkedinUrl || '',
+            email: m?.email || '',
+          })
+        )
+      }
       const merged = { ...DEFAULT_SETTINGS, ...sanitized }
       setSettings(merged)
       setOriginalSettings(merged)
@@ -487,8 +517,10 @@ export default function SiteSettingsTab() {
             settings.contractorTitle !== originalSettings.contractorTitle ||
             settings.contractorPhoto !== originalSettings.contractorPhoto ||
             settings.aboutHeadline !== originalSettings.aboutHeadline ||
+            settings.aboutSubtitle !== originalSettings.aboutSubtitle ||
             settings.aboutText !== originalSettings.aboutText ||
-            JSON.stringify(settings.aboutStats) !== JSON.stringify(originalSettings.aboutStats)
+            JSON.stringify(settings.aboutStats) !== JSON.stringify(originalSettings.aboutStats) ||
+            JSON.stringify(settings.teamMembers) !== JSON.stringify(originalSettings.teamMembers)
           )
         case 'contact':
           return (
@@ -559,8 +591,18 @@ export default function SiteSettingsTab() {
       contractorName: settings.contractorName,
       contractorTitle: settings.contractorTitle,
       aboutHeadline: settings.aboutHeadline,
+      aboutSubtitle: settings.aboutSubtitle,
       aboutText: settings.aboutText,
       aboutStats: settings.aboutStats,
+      teamMembers: settings.teamMembers.map((m) => ({
+        name: m.name,
+        title: m.title,
+        subtitle: m.subtitle,
+        focus: m.focus,
+        linkedinUrl: m.linkedinUrl,
+        email: m.email,
+        ...(m.photoAssetId ? { photo: { assetId: m.photoAssetId } } : {}),
+      })),
       // Contact
       phone: settings.phone,
       email: settings.email,
@@ -721,6 +763,39 @@ export default function SiteSettingsTab() {
       ;[newStats[index], newStats[index + 1]] = [newStats[index + 1], newStats[index]]
       return { ...prev, aboutStats: newStats }
     })
+  }
+
+  // Team member management
+  const addTeamMember = () => {
+    setSettings((prev) => ({
+      ...prev,
+      teamMembers: [...prev.teamMembers, {
+        name: '',
+        title: '',
+        subtitle: '',
+        focus: '',
+        photo: '',
+        photoAssetId: '',
+        linkedinUrl: '',
+        email: '',
+      }],
+    }))
+  }
+
+  const removeTeamMember = (index: number) => {
+    setSettings((prev) => ({
+      ...prev,
+      teamMembers: prev.teamMembers.filter((_, i) => i !== index),
+    }))
+  }
+
+  const updateTeamMember = (index: number, field: keyof TeamMember, value: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      teamMembers: prev.teamMembers.map((member, i) =>
+        i === index ? { ...member, [field]: value } : member
+      ),
+    }))
   }
 
   // Loading state
@@ -1057,6 +1132,21 @@ export default function SiteSettingsTab() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
+            About Page Subtitle
+          </label>
+          <textarea
+            value={settings.aboutSubtitle || ''}
+            onChange={(e) =>
+              setSettings((prev) => ({ ...prev, aboutSubtitle: e.target.value }))
+            }
+            rows={3}
+            placeholder="Displayed below the main headline on the About page"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             About Text
           </label>
           <textarea
@@ -1132,6 +1222,146 @@ export default function SiteSettingsTab() {
           >
             <Plus className="h-4 w-4" />
             Add Stat
+          </button>
+        </div>
+
+        {/* Team Members */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Team Members (displayed on About page)
+          </label>
+          <p className="text-xs text-gray-500 mb-4">
+            Add team members or founders with their photo, role, and contact info.
+          </p>
+
+          <div className="space-y-4">
+            {settings.teamMembers.map((member, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="font-medium text-gray-900 text-sm">
+                    {member.name || `Team Member ${index + 1}`}
+                    {member.title && <span className="text-gray-500 font-normal"> — {member.title}</span>}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeTeamMember(index)}
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={member.name || ''}
+                      onChange={(e) => updateTeamMember(index, 'name', e.target.value)}
+                      placeholder="e.g., John Smith"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Title / Role
+                    </label>
+                    <input
+                      type="text"
+                      value={member.title || ''}
+                      onChange={(e) => updateTeamMember(index, 'title', e.target.value)}
+                      placeholder="e.g., Co-Founder & CEO"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Subtitle / Credential
+                    </label>
+                    <input
+                      type="text"
+                      value={member.subtitle || ''}
+                      onChange={(e) => updateTeamMember(index, 'subtitle', e.target.value)}
+                      placeholder="e.g., Mechanical Engineer"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      LinkedIn URL
+                    </label>
+                    <input
+                      type="url"
+                      value={member.linkedinUrl || ''}
+                      onChange={(e) => updateTeamMember(index, 'linkedinUrl', e.target.value)}
+                      placeholder="https://linkedin.com/in/..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={member.email || ''}
+                      onChange={(e) => updateTeamMember(index, 'email', e.target.value)}
+                      placeholder="john@company.com"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Photo
+                    </label>
+                    <ImageUpload
+                      value={member.photo || null}
+                      onUpload={(assetId, url) => {
+                        setSettings((prev) => ({
+                          ...prev,
+                          teamMembers: prev.teamMembers.map((m, i) =>
+                            i === index ? { ...m, photo: url, photoAssetId: assetId } : m
+                          ),
+                        }))
+                      }}
+                      onRemove={() => {
+                        setSettings((prev) => ({
+                          ...prev,
+                          teamMembers: prev.teamMembers.map((m, i) =>
+                            i === index ? { ...m, photo: '', photoAssetId: '' } : m
+                          ),
+                        }))
+                      }}
+                      label="Upload Photo"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-xs font-medium text-gray-600 mb-1">
+                    Focus / Description
+                  </label>
+                  <textarea
+                    value={member.focus || ''}
+                    onChange={(e) => updateTeamMember(index, 'focus', e.target.value)}
+                    rows={3}
+                    placeholder="What this person focuses on..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm resize-none"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={addTeamMember}
+            className="mt-3 flex items-center gap-2 px-4 py-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            Add Team Member
           </button>
         </div>
       </AccordionSection>
