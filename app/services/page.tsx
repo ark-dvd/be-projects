@@ -33,11 +33,10 @@ export default async function ServicesPage() {
       <section className="bg-slate-900 py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            Our Services
+            {settings.servicesPageHeadline || 'Our Services'}
           </h1>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Professional craftsmanship for every aspect of your home. From
-            concept to completion, we bring your vision to life.
+            {settings.servicesPageDescription || 'Professional craftsmanship for every aspect of your home. From concept to completion, we bring your vision to life.'}
           </p>
         </div>
       </section>

@@ -51,11 +51,10 @@ export default async function ProjectsPage() {
       <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
-            Our Projects
+            {settings.projectsPageHeadline || 'Our Projects'}
           </h1>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Browse our portfolio of completed and in-progress landscaping work. Each project
-            represents our commitment to quality craftsmanship.
+            {settings.projectsPageDescription || 'Browse our portfolio of completed and in-progress landscaping work. Each project represents our commitment to quality craftsmanship.'}
           </p>
         </div>
       </section>

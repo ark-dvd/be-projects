@@ -20,6 +20,7 @@ import {
   Palette,
   Share2,
   Shield,
+  FileText,
   ExternalLink,
   Instagram,
   Facebook,
@@ -93,6 +94,17 @@ interface SiteSettings {
   licenseState: string
   insuranceInfo: string
   bondInfo: string
+  // Page Content
+  projectsPageHeadline: string
+  projectsPageDescription: string
+  servicesPageHeadline: string
+  servicesPageDescription: string
+  testimonialsPageHeadline: string
+  testimonialsPageDescription: string
+  faqPageHeadline: string
+  faqPageDescription: string
+  contactPageHeadline: string
+  contactPageDescription: string
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
@@ -130,6 +142,16 @@ const DEFAULT_SETTINGS: SiteSettings = {
   licenseState: '',
   insuranceInfo: '',
   bondInfo: '',
+  projectsPageHeadline: '',
+  projectsPageDescription: '',
+  servicesPageHeadline: '',
+  servicesPageDescription: '',
+  testimonialsPageHeadline: '',
+  testimonialsPageDescription: '',
+  faqPageHeadline: '',
+  faqPageDescription: '',
+  contactPageHeadline: '',
+  contactPageDescription: '',
 }
 
 // US States for license dropdown
@@ -149,6 +171,7 @@ const SECTIONS = [
   { id: 'branding', name: 'Branding', icon: Palette },
   { id: 'social', name: 'Social Media', icon: Share2 },
   { id: 'legal', name: 'Legal / License', icon: Shield },
+  { id: 'pages', name: 'Page Content', icon: FileText },
 ] as const
 
 type SectionId = typeof SECTIONS[number]['id']
@@ -559,6 +582,19 @@ export default function SiteSettingsTab() {
             settings.insuranceInfo !== originalSettings.insuranceInfo ||
             settings.bondInfo !== originalSettings.bondInfo
           )
+        case 'pages':
+          return (
+            settings.projectsPageHeadline !== originalSettings.projectsPageHeadline ||
+            settings.projectsPageDescription !== originalSettings.projectsPageDescription ||
+            settings.servicesPageHeadline !== originalSettings.servicesPageHeadline ||
+            settings.servicesPageDescription !== originalSettings.servicesPageDescription ||
+            settings.testimonialsPageHeadline !== originalSettings.testimonialsPageHeadline ||
+            settings.testimonialsPageDescription !== originalSettings.testimonialsPageDescription ||
+            settings.faqPageHeadline !== originalSettings.faqPageHeadline ||
+            settings.faqPageDescription !== originalSettings.faqPageDescription ||
+            settings.contactPageHeadline !== originalSettings.contactPageHeadline ||
+            settings.contactPageDescription !== originalSettings.contactPageDescription
+          )
         default:
           return false
       }
@@ -631,6 +667,17 @@ export default function SiteSettingsTab() {
       licenseState: settings.licenseState,
       insuranceInfo: settings.insuranceInfo,
       bondInfo: settings.bondInfo,
+      // Page Content
+      projectsPageHeadline: settings.projectsPageHeadline,
+      projectsPageDescription: settings.projectsPageDescription,
+      servicesPageHeadline: settings.servicesPageHeadline,
+      servicesPageDescription: settings.servicesPageDescription,
+      testimonialsPageHeadline: settings.testimonialsPageHeadline,
+      testimonialsPageDescription: settings.testimonialsPageDescription,
+      faqPageHeadline: settings.faqPageHeadline,
+      faqPageDescription: settings.faqPageDescription,
+      contactPageHeadline: settings.contactPageHeadline,
+      contactPageDescription: settings.contactPageDescription,
     }
 
     // CRITICAL: Only include media fields if NEW uploads occurred
@@ -1735,6 +1782,157 @@ export default function SiteSettingsTab() {
               placeholder="e.g., $25,000 surety bond"
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
             />
+          </div>
+        </div>
+      </AccordionSection>
+
+      {/* Section 7: Page Content */}
+      <AccordionSection
+        id="pages"
+        title="Page Content"
+        icon={FileText}
+        isOpen={openSections.has('pages')}
+        onToggle={() => toggleSection('pages')}
+        hasChanges={sectionHasChanges('pages')}
+        isSaving={savingSection === 'pages'}
+        onSave={() => handleSaveSection('pages')}
+      >
+        <p className="text-sm text-gray-500 mb-6">
+          Customize the headline and description shown on each public page. Leave blank to use defaults.
+        </p>
+
+        {/* Projects Page */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">Projects Page</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
+              <input
+                type="text"
+                value={settings.projectsPageHeadline || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, projectsPageHeadline: e.target.value }))}
+                placeholder="Our Projects"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                value={settings.projectsPageDescription || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, projectsPageDescription: e.target.value }))}
+                placeholder="Browse our portfolio of completed construction and renovation projects"
+                rows={2}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Services Page */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">Services Page</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
+              <input
+                type="text"
+                value={settings.servicesPageHeadline || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, servicesPageHeadline: e.target.value }))}
+                placeholder="Our Services"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                value={settings.servicesPageDescription || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, servicesPageDescription: e.target.value }))}
+                placeholder="Professional craftsmanship for every aspect of your home"
+                rows={2}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonials Page */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">Testimonials Page</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
+              <input
+                type="text"
+                value={settings.testimonialsPageHeadline || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, testimonialsPageHeadline: e.target.value }))}
+                placeholder="Client Testimonials"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                value={settings.testimonialsPageDescription || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, testimonialsPageDescription: e.target.value }))}
+                placeholder="Hear from homeowners who trusted us with their projects"
+                rows={2}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* FAQ Page */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">FAQ Page</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
+              <input
+                type="text"
+                value={settings.faqPageHeadline || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, faqPageHeadline: e.target.value }))}
+                placeholder="Frequently Asked Questions"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                value={settings.faqPageDescription || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, faqPageDescription: e.target.value }))}
+                placeholder="Find answers to common questions about our services"
+                rows={2}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Page */}
+        <div>
+          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">Contact Page</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
+              <input
+                type="text"
+                value={settings.contactPageHeadline || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, contactPageHeadline: e.target.value }))}
+                placeholder="Get In Touch"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                value={settings.contactPageDescription || ''}
+                onChange={(e) => setSettings((prev) => ({ ...prev, contactPageDescription: e.target.value }))}
+                placeholder="Ready to start your project? We'd love to hear from you."
+                rows={2}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+              />
+            </div>
           </div>
         </div>
       </AccordionSection>

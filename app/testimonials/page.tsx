@@ -119,10 +119,10 @@ export default async function TestimonialsPage() {
       <section className="bg-slate-900 py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            Client Testimonials
+            {settings.testimonialsPageHeadline || 'Client Testimonials'}
           </h1>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Hear from homeowners who trusted us with their projects
+            {settings.testimonialsPageDescription || 'Hear from homeowners who trusted us with their projects'}
           </p>
         </div>
       </section>

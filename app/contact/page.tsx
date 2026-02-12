@@ -113,10 +113,10 @@ export default async function ContactPage() {
       <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
-            Get In Touch
+            {settings.contactPageHeadline || 'Get In Touch'}
           </h1>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Ready to start your landscaping project? We&apos;d love to hear from you.
+            {settings.contactPageDescription || "Ready to start your landscaping project? We'd love to hear from you."}
           </p>
         </div>
       </section>

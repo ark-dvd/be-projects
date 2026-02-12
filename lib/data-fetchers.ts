@@ -205,6 +205,16 @@ export interface SiteSettings {
   licenseState?: string
   insuranceInfo?: string
   bondInfo?: string
+  projectsPageHeadline?: string
+  projectsPageDescription?: string
+  servicesPageHeadline?: string
+  servicesPageDescription?: string
+  testimonialsPageHeadline?: string
+  testimonialsPageDescription?: string
+  faqPageHeadline?: string
+  faqPageDescription?: string
+  contactPageHeadline?: string
+  contactPageDescription?: string
 }
 
 // ============================================================================
@@ -855,7 +865,17 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         licenseNumber,
         licenseState,
         insuranceInfo,
-        bondInfo
+        bondInfo,
+        projectsPageHeadline,
+        projectsPageDescription,
+        servicesPageHeadline,
+        servicesPageDescription,
+        testimonialsPageHeadline,
+        testimonialsPageDescription,
+        faqPageHeadline,
+        faqPageDescription,
+        contactPageHeadline,
+        contactPageDescription
       }
     `)
 

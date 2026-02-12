@@ -152,6 +152,16 @@ export const SiteSettingsInputSchema = z.object({
   licenseState: z.string().optional().default(''),
   insuranceInfo: z.string().optional().default(''),
   bondInfo: z.string().optional().default(''),
+  projectsPageHeadline: z.string().optional().default(''),
+  projectsPageDescription: z.string().optional().default(''),
+  servicesPageHeadline: z.string().optional().default(''),
+  servicesPageDescription: z.string().optional().default(''),
+  testimonialsPageHeadline: z.string().optional().default(''),
+  testimonialsPageDescription: z.string().optional().default(''),
+  faqPageHeadline: z.string().optional().default(''),
+  faqPageDescription: z.string().optional().default(''),
+  contactPageHeadline: z.string().optional().default(''),
+  contactPageDescription: z.string().optional().default(''),
 })
 
 // FAQ Input Schema

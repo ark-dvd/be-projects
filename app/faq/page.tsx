@@ -63,10 +63,10 @@ export default async function FaqPage() {
       <section className="bg-slate-900 py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            Frequently Asked Questions
+            {settings.faqPageHeadline || 'Frequently Asked Questions'}
           </h1>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Find answers to common questions about our services, process, and what to expect
+            {settings.faqPageDescription || 'Find answers to common questions about our services, process, and what to expect'}
           </p>
         </div>
       </section>
