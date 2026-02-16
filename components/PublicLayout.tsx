@@ -67,6 +67,8 @@ export default function PublicLayout({
         googleBusinessUrl={settings.google}
         houzzUrl={settings.houzz}
         nextdoorUrl={settings.nextdoor}
+        hasTermsOfService={!!(settings.termsOfService && settings.termsOfService.trim())}
+        hasPrivacyPolicy={!!(settings.privacyPolicy && settings.privacyPolicy.trim())}
       />
     </>
   )

@@ -119,6 +119,22 @@ export default {
     { name: 'licenseState', title: 'License State', type: 'string', group: 'legal' },
     { name: 'insuranceInfo', title: 'Insurance Info', type: 'string', group: 'legal' },
     { name: 'bondInfo', title: 'Bond Info', type: 'string', group: 'legal' },
+    {
+      name: 'termsOfService',
+      title: 'Terms of Service',
+      type: 'text',
+      rows: 20,
+      group: 'legal',
+      description: 'Full Terms of Service text. Displayed on /terms page.',
+    },
+    {
+      name: 'privacyPolicy',
+      title: 'Privacy Policy',
+      type: 'text',
+      rows: 20,
+      group: 'legal',
+      description: 'Full Privacy Policy text. Displayed on /privacy page.',
+    },
 
     // Page Content
     {

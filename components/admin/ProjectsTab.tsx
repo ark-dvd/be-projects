@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { adminFetch, adminPost, adminPut, adminDelete } from '@/lib/admin-api'
 import ImageUpload from './ImageUpload'
+import { PageContentSection } from './settings-shared'
 
 // Types
 interface Project {
@@ -475,6 +476,13 @@ export default function ProjectsTab() {
   if (view === 'list') {
     return (
       <div>
+        {/* Page Content */}
+        <PageContentSection
+          headlineField="projectsPageHeadline"
+          descriptionField="projectsPageDescription"
+          pageName="Projects"
+        />
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">

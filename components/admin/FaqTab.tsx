@@ -15,6 +15,7 @@ import {
   Check,
 } from 'lucide-react'
 import { adminFetch, adminPost, adminPut, adminDelete } from '@/lib/admin-api'
+import { PageContentSection } from './settings-shared'
 
 // Types
 interface FaqItem {
@@ -322,6 +323,13 @@ export default function FaqTab() {
   if (view === 'list') {
     return (
       <div>
+        {/* Page Content */}
+        <PageContentSection
+          headlineField="faqPageHeadline"
+          descriptionField="faqPageDescription"
+          pageName="FAQ"
+        />
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">

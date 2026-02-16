@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { adminFetch, adminPost, adminPut, adminDelete } from '@/lib/admin-api'
 import ImageUpload from './ImageUpload'
+import { PageContentSection } from './settings-shared'
 
 // Types
 interface ServiceHighlight {
@@ -427,6 +428,13 @@ export default function ServicesTab() {
   if (view === 'list') {
     return (
       <div>
+        {/* Page Content */}
+        <PageContentSection
+          headlineField="servicesPageHeadline"
+          descriptionField="servicesPageDescription"
+          pageName="Services"
+        />
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">

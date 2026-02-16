@@ -131,6 +131,8 @@ export const SiteSettingsInputSchema = z.object({
   licenseState: z.string().optional().default(''),
   insuranceInfo: z.string().optional().default(''),
   bondInfo: z.string().optional().default(''),
+  termsOfService: z.string().optional().default(''),
+  privacyPolicy: z.string().optional().default(''),
   projectsPageHeadline: z.string().optional().default(''),
   projectsPageDescription: z.string().optional().default(''),
   servicesPageHeadline: z.string().optional().default(''),

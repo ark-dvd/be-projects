@@ -28,6 +28,8 @@ interface FooterProps {
   googleBusinessUrl?: string
   houzzUrl?: string
   nextdoorUrl?: string
+  hasTermsOfService?: boolean
+  hasPrivacyPolicy?: boolean
 }
 
 const NAV_LINKS = [
@@ -94,6 +96,8 @@ export default function Footer({
   googleBusinessUrl,
   houzzUrl,
   nextdoorUrl,
+  hasTermsOfService,
+  hasPrivacyPolicy,
 }: FooterProps) {
   const truncatedAbout = aboutText
     ? aboutText.slice(0, 150) + (aboutText.length > 150 ? '...' : '')
@@ -228,6 +232,22 @@ export default function Footer({
             <div>
               &copy; {currentYear} {companyName}. All rights reserved.
             </div>
+
+            {/* Legal Links */}
+            {(hasTermsOfService || hasPrivacyPolicy) && (
+              <div className="flex items-center gap-4">
+                {hasTermsOfService && (
+                  <Link href="/terms" className="hover:text-accent transition-colors">
+                    Terms of Service
+                  </Link>
+                )}
+                {hasPrivacyPolicy && (
+                  <Link href="/privacy" className="hover:text-accent transition-colors">
+                    Privacy Policy
+                  </Link>
+                )}
+              </div>
+            )}
 
             {/* License Info */}
             {(licenseNumber || licenseState) && (

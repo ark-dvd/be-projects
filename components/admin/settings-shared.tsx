@@ -9,6 +9,7 @@ import {
   X,
   Save,
   ExternalLink,
+  FileText,
 } from 'lucide-react'
 import { adminFetch, adminPost, adminPut } from '@/lib/admin-api'
 
@@ -77,6 +78,8 @@ export interface SiteSettings {
   licenseState: string
   insuranceInfo: string
   bondInfo: string
+  termsOfService: string
+  privacyPolicy: string
   // Page Content
   projectsPageHeadline: string
   projectsPageDescription: string
@@ -125,6 +128,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   licenseState: '',
   insuranceInfo: '',
   bondInfo: '',
+  termsOfService: '',
+  privacyPolicy: '',
   projectsPageHeadline: '',
   projectsPageDescription: '',
   servicesPageHeadline: '',
@@ -571,6 +576,8 @@ export function useSettingsManager() {
       licenseState: settings.licenseState,
       insuranceInfo: settings.insuranceInfo,
       bondInfo: settings.bondInfo,
+      termsOfService: settings.termsOfService,
+      privacyPolicy: settings.privacyPolicy,
       projectsPageHeadline: settings.projectsPageHeadline,
       projectsPageDescription: settings.projectsPageDescription,
       servicesPageHeadline: settings.servicesPageHeadline,
@@ -643,4 +650,136 @@ export function useSettingsManager() {
     fetchSettings,
     handleSave,
   }
+}
+
+// ─── Page Content Section (for individual tabs) ─────────────────────
+
+export function PageContentSection({
+  headlineField,
+  descriptionField,
+  pageName,
+  headlinePlaceholder,
+  descriptionPlaceholder,
+}: {
+  headlineField: keyof SiteSettings
+  descriptionField: keyof SiteSettings
+  pageName: string
+  headlinePlaceholder?: string
+  descriptionPlaceholder?: string
+}) {
+  const {
+    settings,
+    setSettings,
+    originalSettings,
+    handleSave,
+    savingSection,
+    toast,
+    setToast,
+  } = useSettingsManager()
+
+  const [isOpen, setIsOpen] = useState(false)
+
+  const headline = (settings[headlineField] as string) || ''
+  const description = (settings[descriptionField] as string) || ''
+  const origHeadline = (originalSettings[headlineField] as string) || ''
+  const origDescription = (originalSettings[descriptionField] as string) || ''
+  const hasChanges = headline !== origHeadline || description !== origDescription
+
+  return (
+    <>
+      <div
+        className={`bg-white rounded-xl shadow-sm overflow-hidden mb-6 ${
+          hasChanges ? 'ring-2 ring-amber-300' : ''
+        }`}
+      >
+        <button
+          onClick={() => setIsOpen((v) => !v)}
+          className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`p-2 rounded-lg ${
+                isOpen ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-500'
+              }`}
+            >
+              <FileText className="h-5 w-5" />
+            </div>
+            <span className="font-semibold text-gray-900">Page Content</span>
+            {hasChanges && (
+              <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                Unsaved
+              </span>
+            )}
+          </div>
+          <ChevronDown
+            className={`h-5 w-5 text-gray-400 transition-transform ${
+              isOpen ? 'rotate-180' : ''
+            }`}
+          />
+        </button>
+
+        {isOpen && (
+          <div className="px-4 pb-4 space-y-4 border-t border-gray-100 pt-4">
+            <p className="text-sm text-gray-500">
+              Customize the headline and description shown at the top of the {pageName} page.
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Page Headline
+              </label>
+              <input
+                type="text"
+                value={headline}
+                onChange={(e) =>
+                  setSettings((prev) => ({ ...prev, [headlineField]: e.target.value }))
+                }
+                placeholder={headlinePlaceholder || `e.g., Our ${pageName}`}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Page Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) =>
+                  setSettings((prev) => ({ ...prev, [descriptionField]: e.target.value }))
+                }
+                placeholder={
+                  descriptionPlaceholder ||
+                  `Brief description for the ${pageName} page header`
+                }
+                rows={3}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-y"
+              />
+            </div>
+            <div className="flex justify-end pt-2 border-t border-gray-100">
+              <button
+                onClick={() => handleSave('pageContent', 'Page Content')}
+                disabled={savingSection === 'pageContent' || !hasChanges}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {savingSection === 'pageContent' ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4" />
+                    Save Page Content
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
+    </>
+  )
 }

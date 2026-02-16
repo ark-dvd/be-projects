@@ -48,7 +48,7 @@ import {
 // Tab configuration - Website section
 const WEBSITE_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'home', label: 'Home', icon: Home },
+  { id: 'home', label: 'Hero', icon: Home },
   { id: 'about', label: 'About', icon: Building2 },
   { id: 'projects', label: 'Projects', icon: FolderKanban },
   { id: 'services', label: 'Services', icon: Wrench },
@@ -307,7 +307,7 @@ function AdminShell() {
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:flex flex-col w-64 bg-slate-900 min-h-[calc(100vh-4rem)] sticky top-16">
+        <aside className="hidden lg:flex flex-col w-64 bg-slate-900 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {/* Global Search */}
             <div className="mb-4">

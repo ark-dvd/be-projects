@@ -180,6 +180,8 @@ export interface SiteSettings {
   licenseState?: string
   insuranceInfo?: string
   bondInfo?: string
+  termsOfService?: string
+  privacyPolicy?: string
   projectsPageHeadline?: string
   projectsPageDescription?: string
   servicesPageHeadline?: string
@@ -804,6 +806,8 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
         licenseState,
         insuranceInfo,
         bondInfo,
+        termsOfService,
+        privacyPolicy,
         projectsPageHeadline,
         projectsPageDescription,
         servicesPageHeadline,

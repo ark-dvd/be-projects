@@ -6,7 +6,6 @@ import {
   Palette,
   Share2,
   Shield,
-  FileText,
   Instagram,
   Facebook,
   Linkedin,
@@ -32,7 +31,6 @@ const SECTIONS = [
   { id: 'branding', name: 'Branding', icon: Palette },
   { id: 'social', name: 'Social Media', icon: Share2 },
   { id: 'legal', name: 'Legal / License', icon: Shield },
-  { id: 'pages', name: 'Page Headlines', icon: FileText },
 ] as const
 
 type SectionId = typeof SECTIONS[number]['id']
@@ -82,18 +80,9 @@ export default function GlobalSettingsTab() {
             settings.licenseNumber !== originalSettings.licenseNumber ||
             settings.licenseState !== originalSettings.licenseState ||
             settings.insuranceInfo !== originalSettings.insuranceInfo ||
-            settings.bondInfo !== originalSettings.bondInfo
-          )
-        case 'pages':
-          return (
-            settings.projectsPageHeadline !== originalSettings.projectsPageHeadline ||
-            settings.projectsPageDescription !== originalSettings.projectsPageDescription ||
-            settings.servicesPageHeadline !== originalSettings.servicesPageHeadline ||
-            settings.servicesPageDescription !== originalSettings.servicesPageDescription ||
-            settings.testimonialsPageHeadline !== originalSettings.testimonialsPageHeadline ||
-            settings.testimonialsPageDescription !== originalSettings.testimonialsPageDescription ||
-            settings.faqPageHeadline !== originalSettings.faqPageHeadline ||
-            settings.faqPageDescription !== originalSettings.faqPageDescription
+            settings.bondInfo !== originalSettings.bondInfo ||
+            settings.termsOfService !== originalSettings.termsOfService ||
+            settings.privacyPolicy !== originalSettings.privacyPolicy
           )
         default:
           return false
@@ -356,157 +345,36 @@ export default function GlobalSettingsTab() {
             />
           </div>
         </div>
-      </AccordionSection>
 
-      {/* Page Headlines */}
-      <AccordionSection
-        title="Page Headlines"
-        icon={FileText}
-        isOpen={openSections.has('pages')}
-        onToggle={() => toggleSection('pages')}
-        hasChanges={sectionHasChanges('pages')}
-        isSaving={savingSection === 'pages'}
-        onSave={() => handleSave('pages', 'Page Headlines')}
-      >
-        <p className="text-sm text-gray-500 mb-6">
-          Customize the headline and description shown on each public page. Leave blank to use defaults.
-        </p>
-
-        {/* Projects Page */}
-        <div className="mb-8">
-          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">
-            Projects Page
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
-              <input
-                type="text"
-                value={settings.projectsPageHeadline || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, projectsPageHeadline: e.target.value }))
-                }
-                placeholder="Our Projects"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <textarea
-                value={settings.projectsPageDescription || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, projectsPageDescription: e.target.value }))
-                }
-                placeholder="Browse our portfolio of completed construction and renovation projects"
-                rows={2}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
-              />
-            </div>
+        <div className="grid grid-cols-1 gap-6 mt-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Terms of Service
+            </label>
+            <textarea
+              value={settings.termsOfService || ''}
+              onChange={(e) =>
+                setSettings((prev) => ({ ...prev, termsOfService: e.target.value }))
+              }
+              placeholder="Full Terms of Service text. Displayed on /terms page."
+              rows={10}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-y"
+            />
           </div>
-        </div>
 
-        {/* Services Page */}
-        <div className="mb-8">
-          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">
-            Services Page
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
-              <input
-                type="text"
-                value={settings.servicesPageHeadline || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, servicesPageHeadline: e.target.value }))
-                }
-                placeholder="Our Services"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <textarea
-                value={settings.servicesPageDescription || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, servicesPageDescription: e.target.value }))
-                }
-                placeholder="Professional craftsmanship for every aspect of your home"
-                rows={2}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Testimonials Page */}
-        <div className="mb-8">
-          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">
-            Testimonials Page
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
-              <input
-                type="text"
-                value={settings.testimonialsPageHeadline || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    testimonialsPageHeadline: e.target.value,
-                  }))
-                }
-                placeholder="Client Testimonials"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <textarea
-                value={settings.testimonialsPageDescription || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({
-                    ...prev,
-                    testimonialsPageDescription: e.target.value,
-                  }))
-                }
-                placeholder="Hear from homeowners who trusted us with their projects"
-                rows={2}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* FAQ Page */}
-        <div>
-          <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-3">
-            FAQ Page
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Headline</label>
-              <input
-                type="text"
-                value={settings.faqPageHeadline || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, faqPageHeadline: e.target.value }))
-                }
-                placeholder="Frequently Asked Questions"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <textarea
-                value={settings.faqPageDescription || ''}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, faqPageDescription: e.target.value }))
-                }
-                placeholder="Find answers to common questions about our services"
-                rows={2}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Privacy Policy
+            </label>
+            <textarea
+              value={settings.privacyPolicy || ''}
+              onChange={(e) =>
+                setSettings((prev) => ({ ...prev, privacyPolicy: e.target.value }))
+              }
+              placeholder="Full Privacy Policy text. Displayed on /privacy page."
+              rows={10}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-y"
+            />
           </div>
         </div>
       </AccordionSection>
