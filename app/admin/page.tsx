@@ -8,7 +8,6 @@ import {
   FolderKanban,
   Wrench,
   Star,
-  ClipboardList,
   Settings,
   LogOut,
   Menu,
@@ -29,7 +28,6 @@ import AdminDashboard from '@/components/admin/AdminDashboard'
 import ProjectsTab from '@/components/admin/ProjectsTab'
 import ServicesTab from '@/components/admin/ServicesTab'
 import TestimonialsTab from '@/components/admin/TestimonialsTab'
-import ActiveJobsTab from '@/components/admin/ActiveJobsTab'
 import FaqTab from '@/components/admin/FaqTab'
 import HomePageTab from '@/components/admin/HomePageTab'
 import AboutPageTab from '@/components/admin/AboutPageTab'
@@ -57,7 +55,6 @@ const WEBSITE_TABS = [
   { id: 'testimonials', label: 'Testimonials', icon: Star },
   { id: 'faq', label: 'FAQ', icon: HelpCircle },
   { id: 'contact', label: 'Contact', icon: Phone },
-  { id: 'jobs', label: 'Active Jobs', icon: ClipboardList },
   { id: 'global-settings', label: 'Global Settings', icon: Settings },
 ] as const
 
@@ -233,8 +230,6 @@ function AdminShell() {
         return <FaqTab />
       case 'contact':
         return <ContactPageTab />
-      case 'jobs':
-        return <ActiveJobsTab />
       case 'global-settings':
         return <GlobalSettingsTab />
       // CRM tabs

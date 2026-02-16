@@ -114,32 +114,6 @@ export interface Testimonial {
   order: number
 }
 
-export interface KeyDates {
-  estimateDate?: string
-  contractDate?: string
-  startDate?: string
-  expectedCompletion?: string
-  actualCompletion?: string
-}
-
-export interface ActiveJob {
-  _id: string
-  _type: 'activeJob'
-  _createdAt?: string
-  _updatedAt?: string
-  clientName: string
-  clientEmail: string
-  clientPhone?: string
-  jobType?: string
-  service?: { _ref: string }
-  address?: string
-  estimatedBudget?: number
-  jobStage: number
-  keyDates?: KeyDates
-  notes?: string
-  isActive: boolean
-}
-
 export interface Faq {
   _id: string
   _type: 'faq'
@@ -467,8 +441,6 @@ const defaultTestimonials: Testimonial[] = [
   },
 ]
 
-const defaultActiveJobs: ActiveJob[] = []
-
 const defaultSiteSettings: SiteSettings = {
   _id: 'demo-site-settings',
   _type: 'siteSettings',
@@ -726,41 +698,6 @@ export const getFeaturedTestimonials = cache(async (): Promise<Testimonial[]> =>
     return testimonials || []
   } catch (error) {
     console.error('[data-fetchers] getFeaturedTestimonials failed:', error)
-    return []
-  }
-})
-
-export const getActiveJobs = cache(async (): Promise<ActiveJob[]> => {
-  if (!isSanityConfigured()) {
-    setDemoMode('Sanity not configured')
-    return defaultActiveJobs
-  }
-
-  try {
-    const client = getSanityClient()
-    const jobs = await client.fetch<ActiveJob[]>(`
-      *[_type == "activeJob" && isActive == true] | order(jobStage desc) {
-        _id,
-        _type,
-        _createdAt,
-        _updatedAt,
-        clientName,
-        clientEmail,
-        clientPhone,
-        jobType,
-        service,
-        address,
-        estimatedBudget,
-        jobStage,
-        keyDates,
-        notes,
-        isActive
-      }
-    `)
-
-    return jobs || []
-  } catch (error) {
-    console.error('[data-fetchers] getActiveJobs failed:', error)
     return []
   }
 })

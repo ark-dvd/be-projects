@@ -73,27 +73,6 @@ export const TestimonialInputSchema = z.object({
   order: z.number().optional().default(10),
 })
 
-// Active Job Input Schema
-export const ActiveJobInputSchema = z.object({
-  _id: z.string().optional(),
-  clientName: z.string().min(1, 'Client name is required'),
-  clientEmail: z.string().email('Valid email required'),
-  clientPhone: z.string().optional().default(''),
-  jobType: z.string().optional().default(''),
-  address: z.string().optional().default(''),
-  estimatedBudget: z.number().optional(),
-  jobStage: z.number().min(1).max(7).optional().default(1),
-  keyDates: z.object({
-    estimateDate: z.string().optional().default(''),
-    contractDate: z.string().optional().default(''),
-    startDate: z.string().optional().default(''),
-    expectedCompletion: z.string().optional().default(''),
-    actualCompletion: z.string().optional().default(''),
-  }).optional(),
-  notes: z.string().optional().default(''),
-  isActive: z.boolean().optional().default(true),
-})
-
 // Site Settings Input Schema
 // FIXED: Added all media fields (logo, favicon, contractorPhoto, heroVideo, heroImages)
 export const SiteSettingsInputSchema = z.object({

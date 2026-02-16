@@ -5,10 +5,8 @@ import {
   FolderKanban,
   Wrench,
   Star,
-  ClipboardList,
   Plus,
   Calendar,
-  TrendingUp,
   RefreshCw,
 } from 'lucide-react'
 import { adminFetch } from '@/lib/admin-api'
@@ -17,8 +15,6 @@ interface DashboardStats {
   projects: number
   services: number
   testimonials: number
-  activeJobs: number
-  jobsByStage: Record<number, number>
   recentProjects: Array<{ _id: string; title: string; status: string; _createdAt: string }>
   recentTestimonials: Array<{ _id: string; clientName: string; projectType: string; _createdAt: string }>
 }
@@ -26,16 +22,6 @@ interface DashboardStats {
 interface AdminDashboardProps {
   onNavigate: (tab: string) => void
 }
-
-const JOB_STAGES = [
-  { stage: 1, label: 'Estimate', color: 'bg-slate-400' },
-  { stage: 2, label: 'Contract', color: 'bg-blue-400' },
-  { stage: 3, label: 'Permits', color: 'bg-indigo-400' },
-  { stage: 4, label: 'Demo', color: 'bg-purple-400' },
-  { stage: 5, label: 'Build', color: 'bg-orange-400' },
-  { stage: 6, label: 'Finishing', color: 'bg-amber-400' },
-  { stage: 7, label: 'Handoff', color: 'bg-green-400' },
-]
 
 function SkeletonCard() {
   return (
@@ -87,25 +73,16 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
     setError(null)
 
     try {
-      const [projects, services, testimonials, jobs] = await Promise.all([
+      const [projects, services, testimonials] = await Promise.all([
         adminFetch<Array<{ _id: string; title: string; status: string; _createdAt: string }>>('projects'),
         adminFetch<Array<{ _id: string }>>('services'),
         adminFetch<Array<{ _id: string; clientName: string; projectType: string; _createdAt: string }>>('testimonials'),
-        adminFetch<Array<{ _id: string; jobStage: number; isActive: boolean }>>('jobs'),
       ])
-
-      const activeJobs = jobs.filter(j => j.isActive)
-      const jobsByStage: Record<number, number> = {}
-      activeJobs.forEach(job => {
-        jobsByStage[job.jobStage] = (jobsByStage[job.jobStage] || 0) + 1
-      })
 
       setStats({
         projects: projects.length,
         services: services.length,
         testimonials: testimonials.length,
-        activeJobs: activeJobs.length,
-        jobsByStage,
         recentProjects: projects.slice(0, 3),
         recentTestimonials: testimonials.slice(0, 3),
       })
@@ -123,12 +100,8 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
-        </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm animate-pulse">
-          <div className="h-6 w-40 bg-gray-200 rounded mb-4" />
-          <div className="h-24 bg-gray-200 rounded" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
         </div>
       </div>
     )
@@ -154,62 +127,13 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
   if (!stats) return null
 
-  const totalPipelineJobs = Object.values(stats.jobsByStage).reduce((a, b) => a + b, 0)
-
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard label="Total Projects" value={stats.projects} icon={FolderKanban} color="#f59e0b" />
         <StatCard label="Active Services" value={stats.services} icon={Wrench} color="#3b82f6" />
         <StatCard label="Testimonials" value={stats.testimonials} icon={Star} color="#8b5cf6" />
-        <StatCard label="Active Jobs" value={stats.activeJobs} icon={ClipboardList} color="#10b981" />
-      </div>
-
-      {/* Active Jobs Pipeline */}
-      <div className="bg-white rounded-xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-amber-500" />
-            Jobs Pipeline
-          </h3>
-          <span className="text-sm text-gray-500">{totalPipelineJobs} active jobs</span>
-        </div>
-
-        {totalPipelineJobs === 0 ? (
-          <p className="text-gray-500 text-center py-8">No active jobs in the pipeline</p>
-        ) : (
-          <div className="space-y-3">
-            {/* Pipeline visualization */}
-            <div className="flex gap-1 h-8 rounded-lg overflow-hidden">
-              {JOB_STAGES.map(({ stage, color }) => {
-                const count = stats.jobsByStage[stage] || 0
-                const percentage = (count / totalPipelineJobs) * 100
-                if (percentage === 0) return null
-                return (
-                  <div
-                    key={stage}
-                    className={`${color} flex items-center justify-center text-white text-xs font-medium transition-all`}
-                    style={{ width: `${percentage}%`, minWidth: count > 0 ? '2rem' : 0 }}
-                  >
-                    {count}
-                  </div>
-                )
-              })}
-            </div>
-
-            {/* Stage legend */}
-            <div className="flex flex-wrap gap-x-4 gap-y-2 mt-4">
-              {JOB_STAGES.map(({ stage, label, color }) => (
-                <div key={stage} className="flex items-center gap-2 text-sm">
-                  <div className={`w-3 h-3 rounded-full ${color}`} />
-                  <span className="text-gray-600">{label}</span>
-                  <span className="text-gray-400">({stats.jobsByStage[stage] || 0})</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Recent Activity */}
