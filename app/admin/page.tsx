@@ -21,14 +21,20 @@ import {
   Briefcase,
   Kanban,
   Cog,
+  Home,
+  Building2,
+  Phone,
 } from 'lucide-react'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import ProjectsTab from '@/components/admin/ProjectsTab'
 import ServicesTab from '@/components/admin/ServicesTab'
 import TestimonialsTab from '@/components/admin/TestimonialsTab'
 import ActiveJobsTab from '@/components/admin/ActiveJobsTab'
-import SiteSettingsTab from '@/components/admin/SiteSettingsTab'
 import FaqTab from '@/components/admin/FaqTab'
+import HomePageTab from '@/components/admin/HomePageTab'
+import AboutPageTab from '@/components/admin/AboutPageTab'
+import ContactPageTab from '@/components/admin/ContactPageTab'
+import GlobalSettingsTab from '@/components/admin/GlobalSettingsTab'
 
 // CRM Components
 import {
@@ -44,12 +50,15 @@ import {
 // Tab configuration - Website section
 const WEBSITE_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'home', label: 'Home', icon: Home },
+  { id: 'about', label: 'About', icon: Building2 },
   { id: 'projects', label: 'Projects', icon: FolderKanban },
   { id: 'services', label: 'Services', icon: Wrench },
   { id: 'testimonials', label: 'Testimonials', icon: Star },
   { id: 'faq', label: 'FAQ', icon: HelpCircle },
+  { id: 'contact', label: 'Contact', icon: Phone },
   { id: 'jobs', label: 'Active Jobs', icon: ClipboardList },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'global-settings', label: 'Global Settings', icon: Settings },
 ] as const
 
 // Tab configuration - CRM section
@@ -210,6 +219,10 @@ function AdminShell() {
       // Website tabs
       case 'dashboard':
         return <AdminDashboard onNavigate={handleNavigate} />
+      case 'home':
+        return <HomePageTab />
+      case 'about':
+        return <AboutPageTab />
       case 'projects':
         return <ProjectsTab />
       case 'services':
@@ -218,10 +231,12 @@ function AdminShell() {
         return <TestimonialsTab />
       case 'faq':
         return <FaqTab />
+      case 'contact':
+        return <ContactPageTab />
       case 'jobs':
         return <ActiveJobsTab />
-      case 'settings':
-        return <SiteSettingsTab />
+      case 'global-settings':
+        return <GlobalSettingsTab />
       // CRM tabs
       case 'crm-dashboard':
         return <CrmDashboard onNavigate={handleNavigate} />
