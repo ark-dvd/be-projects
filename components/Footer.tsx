@@ -262,12 +262,16 @@ export default function Footer({
             <div className="flex items-center gap-2">
               <span>Website by</span>
               <a
-                href="https://daflash.co.il"
+                href="https://www.daflash.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-accent hover:text-accent-400 transition-colors"
               >
-                daflash
+                <img
+                  src="/images/daflash-logo.png"
+                  alt="daflash"
+                  className="h-5 inline-block align-middle"
+                />
               </a>
             </div>
           </div>

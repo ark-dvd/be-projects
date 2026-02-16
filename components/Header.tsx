@@ -32,6 +32,7 @@ export default function Header({ logo, companyName, phone, isTransparent = false
       setIsScrolled(window.scrollY > 50)
     }
     window.addEventListener('scroll', handleScroll)
+    handleScroll() // Check initial position
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -57,7 +58,7 @@ export default function Header({ logo, companyName, phone, isTransparent = false
   }, [isMenuOpen])
 
   // Determine header styling based on transparency and scroll state
-  const showSolidBg = !isTransparent || isScrolled
+  const showSolidBg = !isTransparent || isScrolled || isMenuOpen
   const headerBg = showSolidBg
     ? 'bg-white shadow-md'
     : 'bg-transparent'
