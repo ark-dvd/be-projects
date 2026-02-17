@@ -194,6 +194,24 @@ export default function ContactForm({ services }: ContactFormProps) {
         return
       }
 
+      // Also submit to Netlify Forms (best-effort, non-blocking)
+      try {
+        const netlifyFormData = new FormData()
+        netlifyFormData.append('form-name', 'contact')
+        netlifyFormData.append('name', formData.name)
+        netlifyFormData.append('email', formData.email)
+        netlifyFormData.append('phone', formData.phone || '')
+        netlifyFormData.append('service', formData.service || '')
+        netlifyFormData.append('message', formData.message)
+
+        await fetch('/', {
+          method: 'POST',
+          body: netlifyFormData,
+        })
+      } catch {
+        // Netlify Forms submission is best-effort — don't fail the main flow
+      }
+
       setSubmitStatus('success')
       setFormData({
         name: '',

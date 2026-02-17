@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
-import Script from 'next/script'
 import { Montserrat, Open_Sans } from 'next/font/google'
 import { getSiteSettings } from '@/lib/data-fetchers'
+import { sanityImageUrl } from '@/lib/sanity-helpers'
 import { isSanityConfigured } from '@/lib/sanity'
 import PublicLayout from '@/components/PublicLayout'
 import './globals.css'
@@ -39,6 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const contractorPhotoUrl = typeof photoVal === 'string' && photoVal.startsWith('http')
     ? photoVal
     : undefined
+
+  const faviconUrl = sanityImageUrl(settings.favicon) || sanityImageUrl(settings.logo)
 
   return {
     metadataBase: new URL(baseUrl),
@@ -90,6 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: baseUrl,
     },
+    ...(faviconUrl ? { icons: { icon: faviconUrl } } : {}),
   }
 }
 
@@ -105,16 +108,33 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
+      <head>
+        <script
+          nonce={nonce}
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-X13B7WS1E9"
+        />
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-X13B7WS1E9');
+            `,
+          }}
+        />
+      </head>
       <body className="bg-light text-dark antialiased font-body">
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-X13B7WS1E9" strategy="afterInteractive" nonce={nonce} />
-        <Script id="google-analytics" strategy="afterInteractive" nonce={nonce}>
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-X13B7WS1E9');
-          `}
-        </Script>
+        {/* Hidden form for Netlify Forms detection */}
+        <form name="contact" data-netlify="true" hidden>
+          <input type="text" name="name" />
+          <input type="email" name="email" />
+          <input type="tel" name="phone" />
+          <input type="text" name="service" />
+          <textarea name="message" />
+        </form>
         <PublicLayout settings={settings} isDemo={isDemo}>
           {children}
         </PublicLayout>

@@ -32,6 +32,7 @@ function generateCSP(nonce: string): string {
   const nextjsStyleHashes = [
     "'sha256-HrvAPhJHDMpEBcplBvvwyxAYUF0koC1/uv7HLEC0aqg='", // position: absolute
     "'sha256-2v0wUgRiMnQqfAAERz6WCRNJ9EZeUWOvHSCDVMftC6Q='", // full announcer style
+    "'sha256-ZDrxqUOB4m/L0JWL/+gS52g1CRH01/qwMhjTw5Z/Fsc='", // next-route-announcer alt
   ]
 
   // Base CSP directives
@@ -42,7 +43,7 @@ function generateCSP(nonce: string): string {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com${isDev ? " 'unsafe-eval'" : ''}`,
     // style-src: Use nonce + hashes for Next.js internal styles (no unsafe-inline)
     // Google Fonts CSS requires explicit allow (loaded via <link>)
-    `style-src 'self' 'nonce-${nonce}' ${nextjsStyleHashes.join(' ')} https://fonts.googleapis.com`,
+    `style-src 'self' 'nonce-${nonce}' 'unsafe-hashes' ${nextjsStyleHashes.join(' ')} https://fonts.googleapis.com`,
     "img-src 'self' data: https://cdn.sanity.io https://images.unsplash.com https://lh3.googleusercontent.com",
     "font-src 'self' https://fonts.gstatic.com",
     // connect-src: Sanity API + Cloudflare Turnstile verification
