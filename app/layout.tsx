@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { headers } from 'next/headers'
 import { Montserrat, Open_Sans } from 'next/font/google'
 import { getSiteSettings } from '@/lib/data-fetchers'
 import { isSanityConfigured } from '@/lib/sanity'
@@ -97,14 +98,17 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const headersList = await headers()
+  const nonce = headersList.get('x-nonce') || ''
+
   const settings = await getSiteSettings()
   const isDemo = !isSanityConfigured()
 
   return (
     <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
       <body className="bg-light text-dark antialiased font-body">
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-X13B7WS1E9" strategy="afterInteractive" />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-X13B7WS1E9" strategy="afterInteractive" nonce={nonce} />
+        <Script id="google-analytics" strategy="afterInteractive" nonce={nonce}>
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
