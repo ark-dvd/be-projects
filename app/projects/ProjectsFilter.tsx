@@ -87,8 +87,9 @@ export default function ProjectsFilter({
         <div className="flex flex-wrap gap-4">
           {projectTypes.length > 0 && (
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">Type:</label>
+              <label htmlFor="project-type-filter" className="text-sm text-gray-600">Type:</label>
               <select
+                id="project-type-filter"
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
@@ -105,8 +106,9 @@ export default function ProjectsFilter({
 
           {services.length > 0 && (
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">Service:</label>
+              <label htmlFor="project-service-filter" className="text-sm text-gray-600">Service:</label>
               <select
+                id="project-service-filter"
                 value={serviceFilter}
                 onChange={(e) => setServiceFilter(e.target.value)}
                 className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"

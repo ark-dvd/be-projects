@@ -75,6 +75,7 @@ export default async function ProjectsPage() {
       {/* Projects Grid with Filters */}
       <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="sr-only">Project Portfolio</h2>
           {transformedProjects.length > 0 ? (
             <ProjectsFilter
               projects={transformedProjects}

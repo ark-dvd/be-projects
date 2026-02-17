@@ -137,7 +137,7 @@ export default async function AboutPage() {
                 </p>
               )}
               {settings.aboutSubtitle && (
-                <p className="text-lg text-secondary/70 leading-relaxed mt-4">
+                <p className="text-lg text-secondary leading-relaxed mt-4">
                   {settings.aboutSubtitle}
                 </p>
               )}
@@ -228,7 +228,7 @@ export default async function AboutPage() {
 
                   {/* Subtitle / Credential */}
                   {member.subtitle && (
-                    <p className="text-secondary/70 text-sm mt-1">{member.subtitle}</p>
+                    <p className="text-secondary text-sm mt-1">{member.subtitle}</p>
                   )}
 
                   {/* Focus */}

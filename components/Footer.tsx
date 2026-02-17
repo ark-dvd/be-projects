@@ -234,20 +234,21 @@ export default function Footer({
             </div>
 
             {/* Legal Links */}
-            {(hasTermsOfService || hasPrivacyPolicy) && (
-              <div className="flex items-center gap-4">
-                {hasTermsOfService && (
-                  <Link href="/terms" className="hover:text-accent transition-colors">
-                    Terms of Service
-                  </Link>
-                )}
-                {hasPrivacyPolicy && (
-                  <Link href="/privacy" className="hover:text-accent transition-colors">
-                    Privacy Policy
-                  </Link>
-                )}
-              </div>
-            )}
+            <div className="flex items-center gap-4">
+              {hasTermsOfService && (
+                <Link href="/terms" className="hover:text-accent transition-colors">
+                  Terms of Service
+                </Link>
+              )}
+              {hasPrivacyPolicy && (
+                <Link href="/privacy" className="hover:text-accent transition-colors">
+                  Privacy Policy
+                </Link>
+              )}
+              <Link href="/accessibility" className="hover:text-accent transition-colors">
+                Accessibility
+              </Link>
+            </div>
 
             {/* License Info */}
             {(licenseNumber || licenseState) && (

@@ -172,86 +172,86 @@ export default async function ContactPage() {
                 <dl className="space-y-6">
                   {/* Phone */}
                   {settings.phone && (
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <dt className="text-sm text-secondary mb-1">Phone</dt>
-                        <dd>
-                          <a
-                            href={`tel:${settings.phone.replace(/\D/g, '')}`}
-                            className="text-lg font-medium text-dark hover:text-primary transition-colors"
-                          >
-                            {settings.phone}
-                          </a>
-                        </dd>
-                      </div>
+                    <div>
+                      <dt className="flex items-start gap-4 text-sm text-secondary mb-1">
+                        <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Phone className="h-5 w-5 text-primary" />
+                        </div>
+                        Phone
+                      </dt>
+                      <dd className="ml-14">
+                        <a
+                          href={`tel:${settings.phone.replace(/\D/g, '')}`}
+                          className="text-lg font-medium text-dark hover:text-primary transition-colors"
+                        >
+                          {settings.phone}
+                        </a>
+                      </dd>
                     </div>
                   )}
 
                   {/* Email */}
                   {settings.email && (
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Mail className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <dt className="text-sm text-secondary mb-1">Email</dt>
-                        <dd>
-                          <a
-                            href={`mailto:${settings.email}`}
-                            className="text-lg font-medium text-dark hover:text-primary transition-colors break-all"
-                          >
-                            {settings.email}
-                          </a>
-                        </dd>
-                      </div>
+                    <div>
+                      <dt className="flex items-start gap-4 text-sm text-secondary mb-1">
+                        <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Mail className="h-5 w-5 text-primary" />
+                        </div>
+                        Email
+                      </dt>
+                      <dd className="ml-14">
+                        <a
+                          href={`mailto:${settings.email}`}
+                          className="text-lg font-medium text-dark hover:text-primary transition-colors break-all"
+                        >
+                          {settings.email}
+                        </a>
+                      </dd>
                     </div>
                   )}
 
                   {/* Address */}
                   {settings.address && (
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <dt className="text-sm text-secondary mb-1">Address</dt>
-                        <dd className="text-lg font-medium text-dark whitespace-pre-line">
-                          {settings.address}
-                        </dd>
-                      </div>
+                    <div>
+                      <dt className="flex items-start gap-4 text-sm text-secondary mb-1">
+                        <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <MapPin className="h-5 w-5 text-primary" />
+                        </div>
+                        Address
+                      </dt>
+                      <dd className="ml-14 text-lg font-medium text-dark whitespace-pre-line">
+                        {settings.address}
+                      </dd>
                     </div>
                   )}
 
                   {/* Service Area */}
                   {settings.serviceArea && (
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <dt className="text-sm text-secondary mb-1">Service Area</dt>
-                        <dd className="text-lg font-medium text-dark">
-                          {settings.serviceArea}
-                        </dd>
-                      </div>
+                    <div>
+                      <dt className="flex items-start gap-4 text-sm text-secondary mb-1">
+                        <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <MapPin className="h-5 w-5 text-primary" />
+                        </div>
+                        Service Area
+                      </dt>
+                      <dd className="ml-14 text-lg font-medium text-dark">
+                        {settings.serviceArea}
+                      </dd>
                     </div>
                   )}
 
                   {/* Office Hours */}
                   {settings.officeHours && (
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <dt className="text-sm text-secondary mb-1">Office Hours</dt>
-                        <dd className="text-dark whitespace-pre-line">
-                          {settings.officeHours}
-                        </dd>
-                      </div>
+                    <div>
+                      <dt className="flex items-start gap-4 text-sm text-secondary mb-1">
+                        <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Clock className="h-5 w-5 text-primary" />
+                        </div>
+                        Office Hours
+                      </dt>
+                      <dd className="ml-14 text-dark whitespace-pre-line">
+                        {settings.officeHours}
+                      </dd>
                     </div>
                   )}
                 </dl>

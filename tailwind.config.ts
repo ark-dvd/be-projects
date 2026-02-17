@@ -25,7 +25,7 @@ const config: Config = {
           950: '#06100A',
         },
         secondary: {
-          DEFAULT: '#8B7355', // Earthy brown
+          DEFAULT: '#7B6548', // Earthy brown (darkened for WCAG AA contrast)
           50: '#F5F2EF',
           100: '#EBE5DF',
           200: '#D7CBC0',
