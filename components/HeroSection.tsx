@@ -83,7 +83,7 @@ export default function HeroSection({
             >
               <Image
                 src={image.url}
-                alt={image.alt || `Hero image ${index + 1}`}
+                alt={image.alt || headline || 'Professional landscaping services'}
                 fill
                 className="object-cover"
                 priority={index === 0}

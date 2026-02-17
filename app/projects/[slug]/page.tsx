@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = project.seoTitle || project.title
   const description = project.seoDescription || project.shortDescription || `View our ${project.title} project.`
 
-  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   return {

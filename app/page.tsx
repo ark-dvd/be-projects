@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
@@ -17,6 +18,21 @@ import ServiceCard from '@/components/ServiceCard'
 import TestimonialCard from '@/components/TestimonialCard'
 import CTASection from '@/components/CTASection'
 import { StructuredData } from '@/components/StructuredData'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const name = settings.contractorName || 'BE-Project Solutions'
+  const description = settings.aboutText?.slice(0, 160) || 'Professional landscaping and outdoor services'
+
+  return {
+    title: { absolute: settings.siteTitle || name },
+    description,
+    openGraph: {
+      title: settings.siteTitle || name,
+      description,
+    },
+  }
+}
 
 export default async function HomePage() {
   // Fetch all data in parallel
@@ -80,7 +96,7 @@ export default async function HomePage() {
       : undefined,
     areaServed: settings.serviceArea || undefined,
     url: (() => {
-      const raw = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+      const raw = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
       return raw.startsWith('http') ? raw : `https://${raw}`
     })(),
     logo: logoUrl || undefined,

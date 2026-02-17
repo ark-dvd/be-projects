@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { getProjects, getServices } from '@/lib/data-fetchers'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   // Static pages
@@ -14,6 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/about',
     '/contact',
     '/faq',
+    '/terms',
+    '/privacy',
   ]
 
   // Fetch dynamic content
@@ -44,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return allPages.map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
-    changeFrequency: path === '' ? 'weekly' : 'monthly',
-    priority: path === '' ? 1 : path.split('/').length === 2 ? 0.8 : 0.7,
+    changeFrequency: path === '' ? 'weekly' : (path === '/terms' || path === '/privacy') ? 'yearly' : 'monthly',
+    priority: path === '' ? 1 : (path === '/terms' || path === '/privacy') ? 0.3 : path.split('/').length === 2 ? 0.8 : 0.7,
   }))
 }

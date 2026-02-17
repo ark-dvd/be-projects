@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
+import Script from 'next/script'
 import { Montserrat, Open_Sans } from 'next/font/google'
 import { getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = settings.aboutText?.slice(0, 160) || 'Professional landscaping and outdoor services in North Austin'
 
   // Ensure URL has a protocol — NEXTAUTH_URL on Netlify may be bare hostname
-  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   // Extract OG image from contractor photo if available as a URL string
@@ -103,30 +103,19 @@ export default async function RootLayout({
 }) {
   const settings = await getSiteSettings()
   const isDemo = !isSanityConfigured()
-  const headersList = await headers()
-  const nonce = headersList.get('x-nonce') || ''
 
   return (
     <html lang="en" className={`${montserrat.variable} ${openSans.variable}`}>
-      <head>
-        <script
-          nonce={nonce}
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-X13B7WS1E9"
-        />
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-X13B7WS1E9');
-            `,
-          }}
-        />
-      </head>
       <body className="bg-light text-dark antialiased font-body">
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-X13B7WS1E9" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-X13B7WS1E9');
+          `}
+        </Script>
         {/* Hidden form for Netlify Forms detection */}
         <form name="contact" data-netlify="true" hidden>
           <input type="text" name="name" />

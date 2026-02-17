@@ -5,7 +5,7 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   return {

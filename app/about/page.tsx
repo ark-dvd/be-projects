@@ -24,11 +24,11 @@ export const revalidate = 60
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
   const name = settings.contractorName || 'BE-Project Solutions'
-  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   return {
-    title: `About ${name} | Our Story`,
+    title: 'About Us | Our Story',
     description: settings.aboutHeadline || `Learn about ${name} and our commitment to quality landscaping and exceptional service.`,
     openGraph: {
       title: `About ${name} | Our Story`,
@@ -58,7 +58,7 @@ export default async function AboutPage() {
   const contractorPhotoUrl = sanityImageUrl(settings.contractorPhoto)
   const companyName = settings.contractorName || 'Contractor'
 
-  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   const organizationSchema = {
