@@ -143,6 +143,12 @@ export const SiteSettingsInputSchema = z.object({
   faqPageDescription: z.string().optional().default(''),
   contactPageHeadline: z.string().optional().default(''),
   contactPageDescription: z.string().optional().default(''),
+  heroCtaPrimaryText: z.string().max(30).optional().default(''),
+  heroCtaSecondaryText: z.string().max(30).optional().default(''),
+  ctaSectionHeadline: z.string().max(80).optional().default(''),
+  ctaSectionDescription: z.string().max(150).optional().default(''),
+  ctaSectionButtonText: z.string().max(30).optional().default(''),
+  headerCtaText: z.string().max(30).optional().default(''),
 })
 
 // FAQ Input Schema

@@ -124,7 +124,13 @@ export default async function FaqPage() {
       </section>
 
       {/* CTA Section */}
-      <CTASection companyName={companyName} phone={settings.phone} />
+      <CTASection
+        companyName={companyName}
+        phone={settings.phone}
+        headline={settings.ctaSectionHeadline}
+        description={settings.ctaSectionDescription}
+        buttonText={settings.ctaSectionButtonText}
+      />
     </>
   )
 }

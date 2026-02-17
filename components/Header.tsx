@@ -10,6 +10,7 @@ interface HeaderProps {
   companyName: string
   phone?: string
   isTransparent?: boolean
+  ctaText?: string
 }
 
 const NAV_LINKS = [
@@ -22,7 +23,7 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ]
 
-export default function Header({ logo, companyName, phone, isTransparent = false }: HeaderProps) {
+export default function Header({ logo, companyName, phone, isTransparent = false, ctaText }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -118,7 +119,7 @@ export default function Header({ logo, companyName, phone, isTransparent = false
               href="/contact"
               className="px-5 py-2.5 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-colors shadow-sm"
             >
-              Get a Free Quote
+              {ctaText || 'Get a Free Quote'}
             </Link>
           </div>
 
@@ -211,7 +212,7 @@ export default function Header({ logo, companyName, phone, isTransparent = false
               onClick={() => setIsMenuOpen(false)}
               className="block w-full py-3 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-colors text-center"
             >
-              Get a Free Quote
+              {ctaText || 'Get a Free Quote'}
             </Link>
           </div>
         </div>

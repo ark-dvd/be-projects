@@ -192,6 +192,12 @@ export interface SiteSettings {
   faqPageDescription?: string
   contactPageHeadline?: string
   contactPageDescription?: string
+  heroCtaPrimaryText?: string
+  heroCtaSecondaryText?: string
+  ctaSectionHeadline?: string
+  ctaSectionDescription?: string
+  ctaSectionButtonText?: string
+  headerCtaText?: string
 }
 
 // ============================================================================
@@ -817,7 +823,13 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
         faqPageHeadline,
         faqPageDescription,
         contactPageHeadline,
-        contactPageDescription
+        contactPageDescription,
+        heroCtaPrimaryText,
+        heroCtaSecondaryText,
+        ctaSectionHeadline,
+        ctaSectionDescription,
+        ctaSectionButtonText,
+        headerCtaText
       }
     `)
 

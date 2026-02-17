@@ -15,6 +15,8 @@ interface HeroSectionProps {
   videoUrl?: string
   headline: string
   subheadline?: string
+  ctaPrimaryText?: string
+  ctaSecondaryText?: string
 }
 
 export default function HeroSection({
@@ -23,6 +25,8 @@ export default function HeroSection({
   videoUrl,
   headline,
   subheadline,
+  ctaPrimaryText,
+  ctaSecondaryText,
 }: HeroSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -113,13 +117,13 @@ export default function HeroSection({
                 href="/projects"
                 className="w-full sm:w-auto px-8 py-4 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-all shadow-lg hover:shadow-xl hover:scale-105 text-center"
               >
-                View Our Projects
+                {ctaPrimaryText || 'View Our Projects'}
               </Link>
               <Link
                 href="/contact"
                 className="w-full sm:w-auto px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white hover:text-dark transition-all shadow-lg hover:shadow-xl text-center"
               >
-                Get a Free Quote
+                {ctaSecondaryText || 'Get a Free Quote'}
               </Link>
             </div>
           </div>

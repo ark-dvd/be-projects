@@ -42,7 +42,6 @@ import {
   DealTable,
   PipelineView,
   CrmSettings,
-  GlobalSearch,
 } from '@/components/admin/crm'
 
 // Tab configuration - Website section
@@ -309,15 +308,6 @@ function AdminShell() {
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex flex-col w-64 bg-slate-900 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {/* Global Search */}
-            <div className="mb-4">
-              <GlobalSearch
-                onSelectLead={() => setActiveTab('crm-leads')}
-                onSelectClient={() => setActiveTab('crm-clients')}
-                onSelectDeal={() => setActiveTab('crm-deals')}
-              />
-            </div>
-
             {/* Website Section */}
             <div className="mb-2">
               <span className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">

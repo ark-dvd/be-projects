@@ -45,6 +45,7 @@ export default function PublicLayout({
         companyName={companyName}
         phone={settings.phone}
         isTransparent={isHomePage}
+        ctaText={settings.headerCtaText}
       />
       <main id="main-content" className={isHomePage ? '' : 'pt-16 lg:pt-20 min-h-screen'} role="main">
         {children}

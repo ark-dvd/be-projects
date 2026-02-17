@@ -6,6 +6,7 @@ import {
   Palette,
   Share2,
   Shield,
+  MousePointerClick,
   Instagram,
   Facebook,
   Linkedin,
@@ -29,6 +30,7 @@ import ImageUpload from './ImageUpload'
 
 const SECTIONS = [
   { id: 'branding', name: 'Branding', icon: Palette },
+  { id: 'cta', name: 'CTA & Buttons', icon: MousePointerClick },
   { id: 'social', name: 'Social Media', icon: Share2 },
   { id: 'legal', name: 'Legal / License', icon: Shield },
 ] as const
@@ -63,6 +65,13 @@ export default function GlobalSettingsTab() {
           return (
             settings.logo !== originalSettings.logo ||
             settings.favicon !== originalSettings.favicon
+          )
+        case 'cta':
+          return (
+            settings.headerCtaText !== originalSettings.headerCtaText ||
+            settings.ctaSectionHeadline !== originalSettings.ctaSectionHeadline ||
+            settings.ctaSectionDescription !== originalSettings.ctaSectionDescription ||
+            settings.ctaSectionButtonText !== originalSettings.ctaSectionButtonText
           )
         case 'social':
           return (
@@ -172,6 +181,99 @@ export default function GlobalSettingsTab() {
                 <span className="text-xs text-gray-500">32px preview</span>
               </div>
             )}
+          </div>
+        </div>
+      </AccordionSection>
+
+      {/* CTA & Buttons */}
+      <AccordionSection
+        title="CTA & Buttons"
+        icon={MousePointerClick}
+        isOpen={openSections.has('cta')}
+        onToggle={() => toggleSection('cta')}
+        hasChanges={sectionHasChanges('cta')}
+        isSaving={savingSection === 'cta'}
+        onSave={() => handleSave('cta', 'CTA & Buttons')}
+      >
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <p className="text-sm text-blue-800">
+            Customize CTA button labels across the site. Leave blank to use defaults.
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Header CTA Button Text
+            </label>
+            <input
+              type="text"
+              value={settings.headerCtaText || ''}
+              onChange={(e) =>
+                setSettings((prev) => ({ ...prev, headerCtaText: e.target.value }))
+              }
+              placeholder="Get a Free Quote"
+              maxLength={30}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+            />
+            <p className="text-xs text-gray-400 mt-1">Max 30 characters. Appears in header navigation</p>
+          </div>
+
+          <div className="border-t border-gray-100 pt-6">
+            <h4 className="text-sm font-semibold text-gray-900 mb-4">CTA Banner Section</h4>
+            <p className="text-xs text-gray-500 mb-4">
+              The call-to-action banner displayed at the bottom of most pages.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Headline
+                </label>
+                <input
+                  type="text"
+                  value={settings.ctaSectionHeadline || ''}
+                  onChange={(e) =>
+                    setSettings((prev) => ({ ...prev, ctaSectionHeadline: e.target.value }))
+                  }
+                  placeholder="Ready to Transform Your Outdoor Space?"
+                  maxLength={80}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+                />
+                <p className="text-xs text-gray-400 mt-1">Max 80 characters</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={settings.ctaSectionDescription || ''}
+                  onChange={(e) =>
+                    setSettings((prev) => ({ ...prev, ctaSectionDescription: e.target.value }))
+                  }
+                  placeholder="Let us help bring your vision to life. Get in touch for a free consultation."
+                  maxLength={150}
+                  rows={2}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all resize-none"
+                />
+                <p className="text-xs text-gray-400 mt-1">Max 150 characters</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Button Text
+                </label>
+                <input
+                  type="text"
+                  value={settings.ctaSectionButtonText || ''}
+                  onChange={(e) =>
+                    setSettings((prev) => ({ ...prev, ctaSectionButtonText: e.target.value }))
+                  }
+                  placeholder="Contact Us"
+                  maxLength={30}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+                />
+                <p className="text-xs text-gray-400 mt-1">Max 30 characters. Links to /contact</p>
+              </div>
+            </div>
           </div>
         </div>
       </AccordionSection>

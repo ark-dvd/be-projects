@@ -91,6 +91,13 @@ export interface SiteSettings {
   faqPageDescription: string
   contactPageHeadline: string
   contactPageDescription: string
+  // CTA Buttons
+  heroCtaPrimaryText: string
+  heroCtaSecondaryText: string
+  ctaSectionHeadline: string
+  ctaSectionDescription: string
+  ctaSectionButtonText: string
+  headerCtaText: string
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -140,6 +147,12 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   faqPageDescription: '',
   contactPageHeadline: '',
   contactPageDescription: '',
+  heroCtaPrimaryText: '',
+  heroCtaSecondaryText: '',
+  ctaSectionHeadline: '',
+  ctaSectionDescription: '',
+  ctaSectionButtonText: '',
+  headerCtaText: '',
 }
 
 export const US_STATES = [
@@ -588,6 +601,12 @@ export function useSettingsManager() {
       faqPageDescription: settings.faqPageDescription,
       contactPageHeadline: settings.contactPageHeadline,
       contactPageDescription: settings.contactPageDescription,
+      heroCtaPrimaryText: settings.heroCtaPrimaryText,
+      heroCtaSecondaryText: settings.heroCtaSecondaryText,
+      ctaSectionHeadline: settings.ctaSectionHeadline,
+      ctaSectionDescription: settings.ctaSectionDescription,
+      ctaSectionButtonText: settings.ctaSectionButtonText,
+      headerCtaText: settings.headerCtaText,
     }
 
     // CRITICAL: Only include media fields if NEW uploads occurred

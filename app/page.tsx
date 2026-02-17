@@ -107,6 +107,8 @@ export default async function HomePage() {
         videoUrl={heroVideoUrl}
         headline={settings.heroHeadline || 'Transform Your Outdoor Living Space'}
         subheadline={settings.heroSubheadline}
+        ctaPrimaryText={settings.heroCtaPrimaryText}
+        ctaSecondaryText={settings.heroCtaSecondaryText}
       />
 
       {/* Empty state when no content sections have data */}
@@ -309,7 +311,13 @@ export default async function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <CTASection companyName={companyName} phone={settings.phone} />
+      <CTASection
+        companyName={companyName}
+        phone={settings.phone}
+        headline={settings.ctaSectionHeadline}
+        description={settings.ctaSectionDescription}
+        buttonText={settings.ctaSectionButtonText}
+      />
     </>
   )
 }

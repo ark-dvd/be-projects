@@ -97,6 +97,12 @@ function buildFields(d: SiteSettingsInput, includeMedia: boolean = false) {
     faqPageDescription: d.faqPageDescription || '',
     contactPageHeadline: d.contactPageHeadline || '',
     contactPageDescription: d.contactPageDescription || '',
+    heroCtaPrimaryText: d.heroCtaPrimaryText || '',
+    heroCtaSecondaryText: d.heroCtaSecondaryText || '',
+    ctaSectionHeadline: d.ctaSectionHeadline || '',
+    ctaSectionDescription: d.ctaSectionDescription || '',
+    ctaSectionButtonText: d.ctaSectionButtonText || '',
+    headerCtaText: d.headerCtaText || '',
   }
 
   // Handle teamMembers array with image sub-fields
@@ -242,6 +248,12 @@ export async function GET(request: NextRequest) {
         faqPageDescription,
         contactPageHeadline,
         contactPageDescription,
+        heroCtaPrimaryText,
+        heroCtaSecondaryText,
+        ctaSectionHeadline,
+        ctaSectionDescription,
+        ctaSectionButtonText,
+        headerCtaText,
         "logoUrl": logo.asset->url,
         "logoAssetId": logo.asset._ref,
         "faviconUrl": favicon.asset->url,
