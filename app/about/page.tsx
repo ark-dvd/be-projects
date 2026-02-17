@@ -159,7 +159,7 @@ export default async function AboutPage() {
                     <p className="text-4xl lg:text-5xl font-bold text-dark mb-2 font-heading">
                       {stat.value}
                     </p>
-                    <p className="text-secondary font-medium">{stat.label}</p>
+                    <p className="text-primary-700 font-medium">{stat.label}</p>
                   </div>
                 )
               })}

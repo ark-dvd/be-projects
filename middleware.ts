@@ -45,8 +45,8 @@ function generateCSP(nonce: string): string {
     `style-src 'self' 'nonce-${nonce}' ${nextjsStyleHashes.join(' ')} https://fonts.googleapis.com`,
     "img-src 'self' data: https://cdn.sanity.io https://images.unsplash.com https://lh3.googleusercontent.com",
     "font-src 'self' https://fonts.gstatic.com",
-    // connect-src: Sanity API + Cloudflare Turnstile verification
-    "connect-src 'self' https://*.sanity.io https://challenges.cloudflare.com",
+    // connect-src: Sanity API + Cloudflare Turnstile verification + Google Analytics
+    "connect-src 'self' https://*.sanity.io https://challenges.cloudflare.com https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
     "media-src 'self' https://cdn.sanity.io",
     // frame-src: Cloudflare Turnstile uses an iframe for the challenge widget
     "frame-src https://challenges.cloudflare.com",
