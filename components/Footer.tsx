@@ -271,6 +271,8 @@ export default function Footer({
                 <img
                   src="/images/daflash-logo.png"
                   alt="daflash"
+                  width={46}
+                  height={32}
                   className="h-8 inline-block align-middle"
                 />
               </a>

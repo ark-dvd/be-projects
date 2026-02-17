@@ -134,7 +134,7 @@ export default function ProjectsFilter({
       {/* Projects Grid */}
       {filteredProjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {filteredProjects.map((project) => (
+          {filteredProjects.map((project, index) => (
             <ProjectCard
               key={project._id}
               slug={project.slug}
@@ -142,6 +142,7 @@ export default function ProjectsFilter({
               heroImage={project.heroImage}
               projectType={project.projectType}
               shortDescription={project.shortDescription}
+              priority={index === 0}
             />
           ))}
         </div>

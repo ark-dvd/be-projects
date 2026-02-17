@@ -8,6 +8,7 @@ interface ProjectCardProps {
   heroImage?: string
   projectType?: string
   shortDescription?: string
+  priority?: boolean
 }
 
 export default function ProjectCard({
@@ -16,6 +17,7 @@ export default function ProjectCard({
   heroImage,
   projectType,
   shortDescription,
+  priority = false,
 }: ProjectCardProps) {
   const truncatedDescription = shortDescription
     ? shortDescription.slice(0, 120) + (shortDescription.length > 120 ? '...' : '')
@@ -35,6 +37,7 @@ export default function ProjectCard({
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={priority}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">

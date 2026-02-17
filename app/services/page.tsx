@@ -59,7 +59,7 @@ export default async function ServicesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {activeServices.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {activeServices.map((service) => {
+              {activeServices.map((service, index) => {
                 const imageUrl = sanityImageUrl(service.image)
                 const truncatedDescription = service.description
                   ? service.description.slice(0, 150) +
@@ -81,6 +81,7 @@ export default async function ServicesPage() {
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          priority={index === 0}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
