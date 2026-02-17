@@ -40,9 +40,14 @@ function generateCSP(nonce: string): string {
     // script-src: Use nonce + strict-dynamic (no unsafe-inline, no unsafe-eval in prod)
     // Cloudflare Turnstile scripts loaded dynamically will be allowed by strict-dynamic
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://challenges.cloudflare.com${isDev ? " 'unsafe-eval'" : ''}`,
+    // script-src-elem: Explicit domain allowlist for <script> elements (strict-dynamic ignores domains)
+    // Allows GA gtag script + Turnstile script loads by domain
+    `script-src-elem 'self' 'nonce-${nonce}' https://www.googletagmanager.com https://www.google-analytics.com https://challenges.cloudflare.com`,
     // style-src: Use nonce + hashes for Next.js internal styles (no unsafe-inline)
     // Google Fonts CSS requires explicit allow (loaded via <link>)
     `style-src 'self' 'nonce-${nonce}' ${nextjsStyleHashes.join(' ')} https://fonts.googleapis.com`,
+    // style-src-attr: Allow inline style attributes (Turnstile injects dynamic positioning styles)
+    "style-src-attr 'unsafe-inline'",
     "img-src 'self' data: https://cdn.sanity.io https://images.unsplash.com https://lh3.googleusercontent.com",
     "font-src 'self' https://fonts.gstatic.com",
     // connect-src: Sanity API + Cloudflare Turnstile verification + Google Analytics
