@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import Header from './Header'
 import Footer from './Footer'
 import DemoModeBanner from './DemoModeBanner'
+import GpcGuard from './GpcGuard'
 import { SiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
 
@@ -32,6 +33,7 @@ export default function PublicLayout({
 
   return (
     <>
+      <GpcGuard />
       {/* Skip to content link for accessibility */}
       <a
         href="#main-content"
