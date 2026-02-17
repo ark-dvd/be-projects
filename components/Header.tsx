@@ -27,38 +27,21 @@ export default function Header({ logo, companyName, phone, isTransparent = false
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
-  // Detect scroll via IntersectionObserver (immune to CSP/hydration issues)
+  // Detect scroll position for transparent-to-solid header transition
   useEffect(() => {
     if (!isTransparent) {
-      // Non-home pages: always show solid background
       setIsScrolled(true)
       return
     }
 
-    // Create a sentinel div at the very top of the page
-    const sentinel = document.createElement('div')
-    sentinel.style.position = 'absolute'
-    sentinel.style.top = '0'
-    sentinel.style.left = '0'
-    sentinel.style.width = '1px'
-    sentinel.style.height = '1px'
-    sentinel.style.pointerEvents = 'none'
-    document.body.prepend(sentinel)
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When sentinel is NOT visible (scrolled past top), show solid bg
-        setIsScrolled(!entry.isIntersecting)
-      },
-      { threshold: 0 }
-    )
-
-    observer.observe(sentinel)
-
-    return () => {
-      observer.disconnect()
-      sentinel.remove()
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
     }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [isTransparent])
 
   // Close menu on escape key
