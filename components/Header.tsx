@@ -27,27 +27,39 @@ export default function Header({ logo, companyName, phone, isTransparent = false
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
-  // Handle scroll for background change
+  // Detect scroll via IntersectionObserver (immune to CSP/hydration issues)
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = Math.max(
-        window.scrollY || 0,
-        window.pageYOffset || 0,
-        document.documentElement.scrollTop || 0,
-        document.body.scrollTop || 0
-      )
-      setIsScrolled(scrollTop > 50)
+    if (!isTransparent) {
+      // Non-home pages: always show solid background
+      setIsScrolled(true)
+      return
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    document.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
+    // Create a sentinel div at the very top of the page
+    const sentinel = document.createElement('div')
+    sentinel.style.position = 'absolute'
+    sentinel.style.top = '0'
+    sentinel.style.left = '0'
+    sentinel.style.width = '1px'
+    sentinel.style.height = '1px'
+    sentinel.style.pointerEvents = 'none'
+    document.body.prepend(sentinel)
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When sentinel is NOT visible (scrolled past top), show solid bg
+        setIsScrolled(!entry.isIntersecting)
+      },
+      { threshold: 0 }
+    )
+
+    observer.observe(sentinel)
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-      document.removeEventListener('scroll', handleScroll)
+      observer.disconnect()
+      sentinel.remove()
     }
-  }, [])
+  }, [isTransparent])
 
   // Close menu on escape key
   useEffect(() => {
