@@ -40,7 +40,7 @@ function generateCSP(nonce: string): string {
     "default-src 'self'",
     // script-src: Use nonce + strict-dynamic (no unsafe-inline, no unsafe-eval in prod)
     // Cloudflare Turnstile scripts loaded dynamically will be allowed by strict-dynamic
-    `script-src 'self' 'nonce-${nonce}' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com${isDev ? " 'unsafe-eval'" : ''}`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com${isDev ? " 'unsafe-eval'" : ''}`,
     // style-src: Use nonce + hashes for Next.js internal styles (no unsafe-inline)
     // Google Fonts CSS requires explicit allow (loaded via <link>)
     `style-src 'self' 'nonce-${nonce}' 'unsafe-hashes' ${nextjsStyleHashes.join(' ')} https://fonts.googleapis.com`,
