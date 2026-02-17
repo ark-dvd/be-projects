@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 import { Montserrat, Open_Sans } from 'next/font/google'
 import { getSiteSettings } from '@/lib/data-fetchers'
-import { sanityImageUrl } from '@/lib/sanity-helpers'
 import { isSanityConfigured } from '@/lib/sanity'
 import PublicLayout from '@/components/PublicLayout'
 import './globals.css'
@@ -31,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = settings.aboutText?.slice(0, 160) || 'Professional landscaping and outdoor services in North Austin'
 
   // Ensure URL has a protocol — NEXTAUTH_URL on Netlify may be bare hostname
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
+  const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   // Extract OG image from contractor photo if available as a URL string
@@ -39,8 +38,6 @@ export async function generateMetadata(): Promise<Metadata> {
   const contractorPhotoUrl = typeof photoVal === 'string' && photoVal.startsWith('http')
     ? photoVal
     : undefined
-
-  const faviconUrl = sanityImageUrl(settings.favicon) || sanityImageUrl(settings.logo)
 
   return {
     metadataBase: new URL(baseUrl),
@@ -92,7 +89,6 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: baseUrl,
     },
-    ...(faviconUrl ? { icons: { icon: faviconUrl } } : {}),
   }
 }
 
@@ -116,14 +112,6 @@ export default async function RootLayout({
             gtag('config', 'G-X13B7WS1E9');
           `}
         </Script>
-        {/* Hidden form for Netlify Forms detection */}
-        <form name="contact" data-netlify="true" hidden>
-          <input type="text" name="name" />
-          <input type="email" name="email" />
-          <input type="tel" name="phone" />
-          <input type="text" name="service" />
-          <textarea name="message" />
-        </form>
         <PublicLayout settings={settings} isDemo={isDemo}>
           {children}
         </PublicLayout>
