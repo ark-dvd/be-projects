@@ -30,11 +30,23 @@ export default function Header({ logo, companyName, phone, isTransparent = false
   // Handle scroll for background change
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      const scrollTop = Math.max(
+        window.scrollY || 0,
+        window.pageYOffset || 0,
+        document.documentElement.scrollTop || 0,
+        document.body.scrollTop || 0
+      )
+      setIsScrolled(scrollTop > 50)
     }
-    window.addEventListener('scroll', handleScroll)
-    handleScroll() // Check initial position
-    return () => window.removeEventListener('scroll', handleScroll)
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    document.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   // Close menu on escape key

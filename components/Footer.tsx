@@ -270,7 +270,7 @@ export default function Footer({
                 <img
                   src="/images/daflash-logo.png"
                   alt="daflash"
-                  className="h-5 inline-block align-middle"
+                  className="h-8 inline-block align-middle"
                 />
               </a>
             </div>
