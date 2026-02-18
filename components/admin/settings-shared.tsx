@@ -34,6 +34,7 @@ export interface TeamMember {
   photoAssetId?: string
   linkedinUrl: string
   email: string
+  displayOrder?: number
 }
 
 export interface SiteSettings {

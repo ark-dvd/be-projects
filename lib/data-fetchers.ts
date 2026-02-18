@@ -139,6 +139,7 @@ export interface TeamMember {
   photoUrl?: string
   linkedinUrl?: string
   email?: string
+  displayOrder?: number
 }
 
 export interface SiteSettings {
@@ -789,8 +790,9 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
           focus,
           "photoUrl": photo.asset->url,
           linkedinUrl,
-          email
-        },
+          email,
+          displayOrder
+        } | order(coalesce(displayOrder, 9999) asc),
         teamClosingHeadline,
         teamClosingText,
         phone,

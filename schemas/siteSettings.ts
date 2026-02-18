@@ -67,6 +67,7 @@ export default {
           { name: 'photo', title: 'Photo', type: 'image', options: { hotspot: true } },
           { name: 'linkedinUrl', title: 'LinkedIn URL', type: 'url' },
           { name: 'email', title: 'Email Address', type: 'string', description: 'Optional — displays a mail icon for quick contact' },
+          { name: 'displayOrder', title: 'Display Order', type: 'number', description: 'Controls the display sequence on the About page (lower numbers appear first)' },
         ],
         preview: {
           select: {

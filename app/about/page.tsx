@@ -193,74 +193,87 @@ export default async function AboutPage() {
             <h2 className="text-3xl font-bold text-dark text-center mb-12 font-heading">
               Our Team
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {settings.teamMembers.map((member, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow text-center"
-                >
-                  {/* Photo */}
-                  {member.photoUrl ? (
-                    <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden relative">
-                      <Image
-                        src={member.photoUrl}
-                        alt={member.name}
-                        fill
-                        className="object-cover"
-                        sizes="96px"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary-700 to-primary-900 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white/80 font-heading">
-                        {member.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Name */}
-                  <h3 className="font-bold text-dark font-heading">{member.name}</h3>
-
-                  {/* Title / Role */}
-                  {member.title && (
-                    <p className="text-primary font-medium text-sm mt-1">{member.title}</p>
-                  )}
-
-                  {/* Subtitle / Credential */}
-                  {member.subtitle && (
-                    <p className="text-secondary text-sm mt-1">{member.subtitle}</p>
-                  )}
-
-                  {/* Focus */}
-                  {member.focus && (
-                    <p className="text-secondary text-sm mt-3 leading-relaxed">{member.focus}</p>
-                  )}
-
-                  {/* Icon Row */}
-                  {(member.linkedinUrl || member.email) && (
-                    <div className="flex items-center justify-center gap-3 mt-4">
-                      {member.linkedinUrl && (
-                        <a
-                          href={member.linkedinUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 text-secondary hover:text-primary hover:bg-primary-50 rounded-lg transition-colors"
-                        >
-                          <Linkedin className="h-5 w-5" />
-                        </a>
-                      )}
-                      {member.email && (
-                        <a
-                          href={`mailto:${member.email}`}
-                          className="p-2 text-secondary hover:text-primary hover:bg-primary-50 rounded-lg transition-colors"
-                        >
-                          <Mail className="h-5 w-5" />
-                        </a>
+            <div className="space-y-12 lg:space-y-16">
+              {settings.teamMembers.map((member, index) => {
+                const isEven = index % 2 === 0
+                return (
+                  <div
+                    key={index}
+                    className={`flex flex-col lg:flex-row items-center gap-8 lg:gap-12 ${
+                      !isEven ? 'lg:flex-row-reverse' : ''
+                    }`}
+                  >
+                    {/* Photo */}
+                    <div className="flex-shrink-0">
+                      {member.photoUrl ? (
+                        <div className="w-48 h-48 lg:w-60 lg:h-60 rounded-full overflow-hidden relative shadow-lg">
+                          <Image
+                            src={member.photoUrl}
+                            alt={member.name}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 192px, 240px"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-48 h-48 lg:w-60 lg:h-60 rounded-full bg-gradient-to-br from-primary-700 to-primary-900 flex items-center justify-center shadow-lg">
+                          <span className="text-5xl lg:text-6xl font-bold text-white/80 font-heading">
+                            {member.name.charAt(0)}
+                          </span>
+                        </div>
                       )}
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    {/* Text Block */}
+                    <div className="flex-1 text-center lg:text-left">
+                      <h3 className="text-2xl lg:text-3xl font-bold text-dark font-heading">
+                        {member.name}
+                      </h3>
+
+                      {member.title && (
+                        <p className="text-primary font-semibold text-lg mt-1">
+                          {member.title}
+                        </p>
+                      )}
+
+                      {member.subtitle && (
+                        <p className="text-secondary font-medium mt-1">
+                          {member.subtitle}
+                        </p>
+                      )}
+
+                      {member.focus && (
+                        <p className="text-secondary leading-relaxed mt-4">
+                          {member.focus}
+                        </p>
+                      )}
+
+                      {(member.linkedinUrl || member.email) && (
+                        <div className="flex items-center justify-center lg:justify-start gap-3 mt-4">
+                          {member.linkedinUrl && (
+                            <a
+                              href={member.linkedinUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 text-secondary hover:text-primary hover:bg-primary-50 rounded-lg transition-colors"
+                            >
+                              <Linkedin className="h-5 w-5" />
+                            </a>
+                          )}
+                          {member.email && (
+                            <a
+                              href={`mailto:${member.email}`}
+                              className="p-2 text-secondary hover:text-primary hover:bg-primary-50 rounded-lg transition-colors"
+                            >
+                              <Mail className="h-5 w-5" />
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </section>

@@ -149,7 +149,7 @@ export default function AboutPageTab() {
     }))
   }
 
-  const updateTeamMember = (index: number, field: keyof TeamMember, value: string) => {
+  const updateTeamMember = (index: number, field: keyof TeamMember, value: string | number | undefined) => {
     setSettings((prev) => ({
       ...prev,
       teamMembers: prev.teamMembers.map((member, i) =>
@@ -416,6 +416,18 @@ export default function AboutPageTab() {
                       value={member.email || ''}
                       onChange={(e) => updateTeamMember(index, 'email', e.target.value)}
                       placeholder="john@company.com"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Display Order
+                    </label>
+                    <input
+                      type="number"
+                      value={member.displayOrder ?? ''}
+                      onChange={(e) => updateTeamMember(index, 'displayOrder', e.target.value ? Number(e.target.value) : undefined)}
+                      placeholder="e.g., 1, 2, 3"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm"
                     />
                   </div>
