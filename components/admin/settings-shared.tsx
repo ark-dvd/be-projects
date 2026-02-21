@@ -81,6 +81,9 @@ export interface SiteSettings {
   bondInfo: string
   termsOfService: string
   privacyPolicy: string
+  // Display Options
+  showProjectFilters: boolean
+  showReviewStats: boolean
   // Page Content
   projectsPageHeadline: string
   projectsPageDescription: string
@@ -138,6 +141,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   bondInfo: '',
   termsOfService: '',
   privacyPolicy: '',
+  showProjectFilters: true,
+  showReviewStats: true,
   projectsPageHeadline: '',
   projectsPageDescription: '',
   servicesPageHeadline: '',
@@ -592,6 +597,8 @@ export function useSettingsManager() {
       bondInfo: settings.bondInfo,
       termsOfService: settings.termsOfService,
       privacyPolicy: settings.privacyPolicy,
+      showProjectFilters: settings.showProjectFilters,
+      showReviewStats: settings.showReviewStats,
       projectsPageHeadline: settings.projectsPageHeadline,
       projectsPageDescription: settings.projectsPageDescription,
       servicesPageHeadline: settings.servicesPageHeadline,

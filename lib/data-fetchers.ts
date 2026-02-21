@@ -183,6 +183,8 @@ export interface SiteSettings {
   bondInfo?: string
   termsOfService?: string
   privacyPolicy?: string
+  showProjectFilters?: boolean
+  showReviewStats?: boolean
   projectsPageHeadline?: string
   projectsPageDescription?: string
   servicesPageHeadline?: string
@@ -816,6 +818,8 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
         bondInfo,
         termsOfService,
         privacyPolicy,
+        showProjectFilters,
+        showReviewStats,
         projectsPageHeadline,
         projectsPageDescription,
         servicesPageHeadline,

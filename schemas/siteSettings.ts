@@ -137,6 +137,24 @@ export default {
       description: 'Full Privacy Policy text. Displayed on /privacy page.',
     },
 
+    // Display Options
+    {
+      name: 'showProjectFilters',
+      title: 'Show Project Filters',
+      type: 'boolean',
+      description: 'Show or hide the filter controls (status, type, service) on the Projects page',
+      initialValue: true,
+      group: 'pages',
+    },
+    {
+      name: 'showReviewStats',
+      title: 'Show Review Statistics',
+      type: 'boolean',
+      description: 'Show or hide the review statistics summary (average rating, total reviews, 5-star count) on the Testimonials page',
+      initialValue: true,
+      group: 'pages',
+    },
+
     // Page Content
     {
       name: 'projectsPageHeadline',

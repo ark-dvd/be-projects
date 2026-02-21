@@ -81,6 +81,7 @@ export default async function ProjectsPage() {
               projects={transformedProjects}
               projectTypes={projectTypes}
               services={serviceOptions}
+              showFilters={settings.showProjectFilters !== false}
             />
           ) : (
             <div className="text-center py-16 bg-white rounded-xl">

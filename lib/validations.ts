@@ -133,6 +133,8 @@ export const SiteSettingsInputSchema = z.object({
   bondInfo: z.string().optional().default(''),
   termsOfService: z.string().optional().default(''),
   privacyPolicy: z.string().optional().default(''),
+  showProjectFilters: z.boolean().optional(),
+  showReviewStats: z.boolean().optional(),
   projectsPageHeadline: z.string().optional().default(''),
   projectsPageDescription: z.string().optional().default(''),
   servicesPageHeadline: z.string().optional().default(''),

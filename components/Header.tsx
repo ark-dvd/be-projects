@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { href: '/testimonials', label: 'Testimonials' },
   { href: '/faq', label: 'FAQ' },
   { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/contact', label: 'Contact Us' },
 ]
 
 export default function Header({ logo, companyName, phone, isTransparent = false, ctaText }: HeaderProps) {

@@ -141,9 +141,48 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Services Overview Section */}
+      {activeServices.length > 0 && (
+        <section className="py-16 lg:py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-4 font-heading">
+                Our Services
+              </h2>
+              <p className="text-lg text-secondary max-w-2xl mx-auto">
+                From design to installation, we offer a full range of landscaping
+                and outdoor living services.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {activeServices.map((service) => (
+                <ServiceCard
+                  key={service._id}
+                  slug={service.slug.current}
+                  title={service.name}
+                  image={sanityImageUrl(service.image)}
+                  tagline={service.tagline}
+                />
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                View All Services
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Featured Projects Section */}
       {featuredProjects.length > 0 && (
-        <section className="py-16 lg:py-24 bg-white">
+        <section className="py-16 lg:py-24 bg-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-4 font-heading">
@@ -174,45 +213,6 @@ export default async function HomePage() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
               >
                 View All Projects
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Services Overview Section */}
-      {activeServices.length > 0 && (
-        <section className="py-16 lg:py-24 bg-light">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-dark mb-4 font-heading">
-                Our Services
-              </h2>
-              <p className="text-lg text-secondary max-w-2xl mx-auto">
-                From design to installation, we offer a full range of landscaping
-                and outdoor living services.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {activeServices.map((service) => (
-                <ServiceCard
-                  key={service._id}
-                  slug={service.slug.current}
-                  title={service.name}
-                  image={sanityImageUrl(service.image)}
-                  tagline={service.tagline}
-                />
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
-              <Link
-                href="/services"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                View All Services
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </div>

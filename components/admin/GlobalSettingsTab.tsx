@@ -7,6 +7,7 @@ import {
   Share2,
   Shield,
   MousePointerClick,
+  Eye,
   Instagram,
   Facebook,
   Linkedin,
@@ -29,6 +30,7 @@ import {
 import ImageUpload from './ImageUpload'
 
 const SECTIONS = [
+  { id: 'display', name: 'Display Options', icon: Eye },
   { id: 'branding', name: 'Branding', icon: Palette },
   { id: 'cta', name: 'CTA & Buttons', icon: MousePointerClick },
   { id: 'social', name: 'Social Media', icon: Share2 },
@@ -55,12 +57,17 @@ export default function GlobalSettingsTab() {
   } = useSettingsManager()
 
   const [openSections, setOpenSections] = useState<Set<SectionId>>(
-    () => new Set<SectionId>(['branding'])
+    () => new Set<SectionId>(['display'])
   )
 
   const sectionHasChanges = useCallback(
     (sectionId: SectionId): boolean => {
       switch (sectionId) {
+        case 'display':
+          return (
+            settings.showProjectFilters !== originalSettings.showProjectFilters ||
+            settings.showReviewStats !== originalSettings.showReviewStats
+          )
         case 'branding':
           return (
             settings.logo !== originalSettings.logo ||
@@ -116,6 +123,65 @@ export default function GlobalSettingsTab() {
 
   return (
     <div className="space-y-4 pb-24">
+      {/* Display Options */}
+      <AccordionSection
+        title="Display Options"
+        icon={Eye}
+        isOpen={openSections.has('display')}
+        onToggle={() => toggleSection('display')}
+        hasChanges={sectionHasChanges('display')}
+        isSaving={savingSection === 'display'}
+        onSave={() => handleSave('display', 'Display Options')}
+      >
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <p className="text-sm text-blue-800">
+            Control the visibility of specific sections on your public website. Changes take effect immediately after saving.
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+            <div>
+              <p className="font-medium text-gray-900">Show Project Filters</p>
+              <p className="text-sm text-gray-500">
+                Display status, type, and service filter controls on the Projects page
+              </p>
+            </div>
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={settings.showProjectFilters}
+                onChange={(e) =>
+                  setSettings((prev) => ({ ...prev, showProjectFilters: e.target.checked }))
+                }
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-amber-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500" />
+            </div>
+          </label>
+
+          <label className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+            <div>
+              <p className="font-medium text-gray-900">Show Review Statistics</p>
+              <p className="text-sm text-gray-500">
+                Display the average rating, total reviews, and 5-star count on the Testimonials page
+              </p>
+            </div>
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={settings.showReviewStats}
+                onChange={(e) =>
+                  setSettings((prev) => ({ ...prev, showReviewStats: e.target.checked }))
+                }
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-amber-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500" />
+            </div>
+          </label>
+        </div>
+      </AccordionSection>
+
       {/* Branding */}
       <AccordionSection
         title="Branding"
