@@ -130,18 +130,26 @@ export default function Header({ logo, companyName, phone, isTransparent = false
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`lg:hidden p-2 transition-colors ${textColor} ${textHover}`}
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          >
-            {isMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+          {/* Mobile CTA + Menu Button */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <Link
+              href="/contact"
+              className="px-3 py-1.5 bg-accent text-dark text-sm font-semibold rounded-lg hover:bg-accent-600 transition-colors shadow-sm"
+            >
+              {ctaText || 'Get a Quote'}
+            </Link>
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`p-2 transition-colors ${textColor} ${textHover}`}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
       </nav>
 

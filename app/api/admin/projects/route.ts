@@ -15,31 +15,42 @@ function buildImageRef(value: unknown): { _type: 'image'; asset: { _type: 'refer
 }
 
 function buildFields(d: ProjectInput) {
+  // Collect fields that must be explicitly unset in Sanity when cleared.
+  // Sanity's .set() silently ignores undefined values, so cleared date fields
+  // would never actually be removed without an explicit .unset() call.
+  const unsetFields: string[] = []
+  if (!d.completionDate) {
+    unsetFields.push('completionDate')
+  }
+
   return {
-    title: d.title,
-    slug: { _type: 'slug' as const, current: d.slug },
-    status: d.status,
-    projectType: d.projectType || '',
-    location: d.location ? {
-      city: d.location.city || '',
-      state: d.location.state || '',
-      neighborhood: d.location.neighborhood || '',
-    } : undefined,
-    completionDate: d.completionDate || undefined,
-    duration: d.duration || '',
-    budgetRange: d.budgetRange || '',
-    scope: d.scope || [],
-    permitNumber: d.permitNumber || '',
-    shortDescription: d.shortDescription || '',
-    description: d.description || '',
-    clientTestimonial: d.clientTestimonial || '',
-    clientName: d.clientName || '',
-    heroImage: buildImageRef(d.heroImage),
-    beforeImage: buildImageRef(d.beforeImage),
-    gallery: d.gallery?.map((img: unknown) => buildImageRef(img)).filter(Boolean) || [],
-    videoUrl: d.videoUrl || '',
-    seoTitle: d.seoTitle || '',
-    seoDescription: d.seoDescription || '',
+    fields: {
+      title: d.title,
+      slug: { _type: 'slug' as const, current: d.slug },
+      status: d.status,
+      projectType: d.projectType || '',
+      location: d.location ? {
+        city: d.location.city || '',
+        state: d.location.state || '',
+        neighborhood: d.location.neighborhood || '',
+      } : undefined,
+      ...(d.completionDate ? { completionDate: d.completionDate } : {}),
+      duration: d.duration || '',
+      budgetRange: d.budgetRange || '',
+      scope: d.scope || [],
+      permitNumber: d.permitNumber || '',
+      shortDescription: d.shortDescription || '',
+      description: d.description || '',
+      clientTestimonial: d.clientTestimonial || '',
+      clientName: d.clientName || '',
+      heroImage: buildImageRef(d.heroImage),
+      beforeImage: buildImageRef(d.beforeImage),
+      gallery: d.gallery?.map((img: unknown) => buildImageRef(img)).filter(Boolean) || [],
+      videoUrl: d.videoUrl || '',
+      seoTitle: d.seoTitle || '',
+      seoDescription: d.seoDescription || '',
+    },
+    unsetFields,
   }
 }
 
@@ -101,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
 
     const d = v.data
-    const fields = buildFields(d)
+    const { fields } = buildFields(d)
     const doc = { _type: 'project' as const, ...fields }
     const result = await getSanityWriteClient().create(doc)
     return NextResponse.json(result)
@@ -130,8 +141,12 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing _id for update' }, { status: 400 })
     }
 
-    const fields = buildFields(d)
-    const result = await getSanityWriteClient().patch(d._id).set(fields).commit()
+    const { fields, unsetFields } = buildFields(d)
+    let patch = getSanityWriteClient().patch(d._id).set(fields)
+    if (unsetFields.length > 0) {
+      patch = patch.unset(unsetFields)
+    }
+    const result = await patch.commit()
     return NextResponse.json(result)
   } catch (e) {
     console.error('Update project error:', e)
