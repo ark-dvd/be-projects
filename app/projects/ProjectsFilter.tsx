@@ -78,8 +78,8 @@ export default function ProjectsFilter({
                   onClick={() => setStatusFilter(option.value)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     statusFilter === option.value
-                      ? 'bg-amber-500 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                      ? 'bg-accent text-dark'
+                      : 'bg-white text-secondary hover:bg-light border border-gray-200'
                   }`}
                 >
                   {option.label}
@@ -91,12 +91,12 @@ export default function ProjectsFilter({
             <div className="flex flex-wrap gap-4">
               {projectTypes.length > 0 && (
                 <div className="flex items-center gap-2">
-                  <label htmlFor="project-type-filter" className="text-sm text-gray-600">Type:</label>
+                  <label htmlFor="project-type-filter" className="text-sm text-secondary">Type:</label>
                   <select
                     id="project-type-filter"
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-accent focus:border-accent outline-none"
                   >
                     <option value="all">All Types</option>
                     {projectTypes.map((type) => (
@@ -110,12 +110,12 @@ export default function ProjectsFilter({
 
               {services.length > 0 && (
                 <div className="flex items-center gap-2">
-                  <label htmlFor="project-service-filter" className="text-sm text-gray-600">Service:</label>
+                  <label htmlFor="project-service-filter" className="text-sm text-secondary">Service:</label>
                   <select
                     id="project-service-filter"
                     value={serviceFilter}
                     onChange={(e) => setServiceFilter(e.target.value)}
-                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-accent focus:border-accent outline-none"
                   >
                     <option value="all">All Services</option>
                     {services.map((service) => (
@@ -130,7 +130,7 @@ export default function ProjectsFilter({
           </div>
 
           {/* Project Count */}
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-secondary mb-6">
             Showing {filteredProjects.length} project
             {filteredProjects.length !== 1 ? 's' : ''}
           </p>
@@ -154,14 +154,14 @@ export default function ProjectsFilter({
         </div>
       ) : (
         <div className="text-center py-16 bg-white rounded-xl">
-          <p className="text-gray-500 text-lg mb-2">No projects match your filters</p>
+          <p className="text-secondary text-lg mb-2">No projects match your filters</p>
           <button
             onClick={() => {
               setStatusFilter('all')
               setTypeFilter('all')
               setServiceFilter('all')
             }}
-            className="text-amber-600 font-medium hover:underline"
+            className="text-accent font-medium hover:underline"
           >
             Clear all filters
           </button>

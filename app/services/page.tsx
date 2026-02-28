@@ -43,19 +43,19 @@ export default async function ServicesPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-slate-900 py-16 lg:py-24">
+      <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
             {settings.servicesPageHeadline || 'Our Services'}
           </h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
             {settings.servicesPageDescription || 'Professional craftsmanship for every aspect of your home. From concept to completion, we bring your vision to life.'}
           </p>
         </div>
       </section>
 
       {/* Services Grid */}
-      <section className="py-12 lg:py-16 bg-gray-50">
+      <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {activeServices.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -84,8 +84,8 @@ export default async function ServicesPage() {
                           priority={index === 0}
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
-                          <span className="text-4xl font-bold text-amber-600">
+                        <div className="w-full h-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+                          <span className="text-4xl font-bold text-primary">
                             {(service.name || 'S').charAt(0)}
                           </span>
                         </div>
@@ -94,25 +94,25 @@ export default async function ServicesPage() {
 
                     {/* Content */}
                     <div className="p-6">
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
+                      <h2 className="text-xl font-semibold text-dark mb-2 group-hover:text-accent transition-colors font-heading">
                         {service.name}
                       </h2>
                       {service.tagline && (
-                        <p className="text-amber-600 font-medium text-sm mb-3">
+                        <p className="text-accent font-medium text-sm mb-3">
                           {service.tagline}
                         </p>
                       )}
                       {truncatedDescription && (
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                        <p className="text-secondary text-sm mb-4 line-clamp-3">
                           {truncatedDescription}
                         </p>
                       )}
                       {service.priceRange && (
-                        <p className="text-sm text-gray-500 mb-4">
+                        <p className="text-sm text-secondary mb-4">
                           Typical range: {service.priceRange}
                         </p>
                       )}
-                      <span className="inline-flex items-center gap-1 text-amber-600 font-medium text-sm group-hover:gap-2 transition-all">
+                      <span className="inline-flex items-center gap-1 text-accent font-medium text-sm group-hover:gap-2 transition-all">
                         Learn More
                         <ArrowRight className="h-4 w-4" />
                       </span>
@@ -123,7 +123,7 @@ export default async function ServicesPage() {
             </div>
           ) : (
             <div className="text-center py-16 bg-white rounded-xl">
-              <p className="text-gray-500 text-lg">
+              <p className="text-secondary text-lg">
                 Services coming soon — check back for our full range of offerings!
               </p>
             </div>

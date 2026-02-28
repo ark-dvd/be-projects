@@ -27,14 +27,14 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
           >
             <button
               onClick={() => toggle(faq._id)}
-              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-light transition-colors"
               aria-expanded={isOpen}
             >
-              <span className="text-lg font-medium text-gray-900">
+              <span className="text-lg font-medium text-dark">
                 {faq.question}
               </span>
               <ChevronDown
-                className={`h-5 w-5 text-gray-400 flex-shrink-0 transition-transform duration-200 ${
+                className={`h-5 w-5 text-secondary flex-shrink-0 transition-transform duration-200 ${
                   isOpen ? 'rotate-180' : ''
                 }`}
               />
@@ -46,7 +46,7 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
             >
               <div className="overflow-hidden">
                 <div className="px-6 pb-5">
-                  <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  <p className="text-secondary leading-relaxed whitespace-pre-line">
                     {faq.answer}
                   </p>
                 </div>

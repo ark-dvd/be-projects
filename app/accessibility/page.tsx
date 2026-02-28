@@ -19,22 +19,22 @@ export default function AccessibilityPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-slate-900 py-16 lg:py-24">
+      <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
             Accessibility Statement
           </h1>
-          <p className="text-lg text-gray-300">
+          <p className="text-lg text-white/80">
             BE Project Solutions LLC
           </p>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-12 lg:py-16 bg-gray-50">
+      <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-xl shadow-sm p-6 lg:p-10">
-            <div className="prose prose-gray max-w-none text-gray-700 leading-relaxed space-y-6">
+            <div className="prose max-w-none text-secondary leading-relaxed space-y-6">
               <p>
                 BE Project Solutions LLC is committed to ensuring digital accessibility
                 for people with disabilities. We continually improve the user experience

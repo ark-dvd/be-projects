@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    /* Landscaping Contractor Color Palette */
-    --color-primary: #2D5A3D;
-    --color-primary-dark: #1E3D29;
-    --color-secondary: #7B6548;
-    --color-accent: #D4A84B;
-    --color-light: #F5F5F0;
-    --color-dark: #1A1A1A;
+    /* BE Project Solutions Brand Colors */
+    --color-primary: #1E3A22;
+    --color-primary-dark: #152B19;
+    --color-secondary: #5B5B5C;
+    --color-accent: #8DBE23;
+    --color-light: #F4F4F4;
+    --color-dark: #1E3A22;
   }
 
   html {

@@ -73,19 +73,19 @@ export default async function FaqPage() {
       {structuredData && <StructuredData data={structuredData} />}
 
       {/* Hero Section */}
-      <section className="bg-slate-900 py-16 lg:py-24">
+      <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
             {settings.faqPageHeadline || 'Frequently Asked Questions'}
           </h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
             {settings.faqPageDescription || 'Find answers to common questions about our services, process, and what to expect'}
           </p>
         </div>
       </section>
 
       {/* FAQ Content */}
-      <section className="py-12 lg:py-16 bg-gray-50">
+      <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {safeFaqs.length > 0 ? (
             hasCategories ? (
@@ -93,7 +93,7 @@ export default async function FaqPage() {
               <div className="space-y-10">
                 {categoryEntries.map(([category, items]) => (
                   <div key={category}>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-2xl font-bold text-dark mb-4 font-heading">
                       {category}
                     </h2>
                     <FaqAccordion items={items} />
@@ -101,7 +101,7 @@ export default async function FaqPage() {
                 ))}
                 {uncategorized.length > 0 && (
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-2xl font-bold text-dark mb-4 font-heading">
                       Other
                     </h2>
                     <FaqAccordion items={uncategorized} />
@@ -114,8 +114,8 @@ export default async function FaqPage() {
             )
           ) : (
             <div className="text-center py-16 bg-white rounded-xl">
-              <HelpCircle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">
+              <HelpCircle className="h-12 w-12 text-secondary mx-auto mb-4" />
+              <p className="text-secondary text-lg">
                 FAQ coming soon — check back for answers to common questions!
               </p>
             </div>

@@ -9,54 +9,54 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Landscaping Contractor Branding - Earthy, Natural, Professional
+        // BE Project Solutions Brand Colors
         primary: {
-          DEFAULT: '#2D5A3D', // Forest green
-          50: '#E8F0EB',
-          100: '#D1E1D7',
-          200: '#A3C4AF',
-          300: '#75A687',
-          400: '#47895F',
-          500: '#2D5A3D',
-          600: '#244B32',
-          700: '#1E3D29', // Primary dark - hover
-          800: '#152E1E',
-          900: '#0C1F13',
-          950: '#06100A',
+          DEFAULT: '#1E3A22', // Dark green - dominant brand color
+          50: '#f0f5f1',
+          100: '#d1e2d5',
+          200: '#a3c5ab',
+          300: '#75a881',
+          400: '#4f8a5d',
+          500: '#367040',
+          600: '#2a5630',
+          700: '#152B19', // Darker for hover states
+          800: '#0F2012',
+          900: '#0A170C',
+          950: '#050C06',
         },
         secondary: {
-          DEFAULT: '#7B6548', // Earthy brown (darkened for WCAG AA contrast)
-          50: '#F5F2EF',
-          100: '#EBE5DF',
-          200: '#D7CBC0',
-          300: '#C3B1A0',
-          400: '#AF9780',
-          500: '#8B7355',
-          600: '#6F5C44',
-          700: '#534533',
-          800: '#372E22',
-          900: '#1B1711',
-          950: '#0E0B09',
+          DEFAULT: '#5B5B5C', // Neutral dark gray - body text, icons
+          50: '#f5f5f5',
+          100: '#e5e5e5',
+          200: '#cccccc',
+          300: '#b2b2b3',
+          400: '#999999',
+          500: '#5B5B5C',
+          600: '#4a4a4b',
+          700: '#393939',
+          800: '#272728',
+          900: '#161616',
+          950: '#0b0b0b',
         },
         accent: {
-          DEFAULT: '#D4A84B', // Golden/amber for CTAs
-          50: '#FBF6EB',
-          100: '#F7EDD7',
-          200: '#EFD9AF',
-          300: '#E7C687',
-          400: '#DFB35F',
-          500: '#D4A84B',
-          600: '#B8893A',
-          700: '#8C692C',
-          800: '#60491E',
-          900: '#342810',
-          950: '#1A1408',
+          DEFAULT: '#8DBE23', // Bright green - CTAs, buttons, highlights
+          50: '#f7fae9',
+          100: '#ecf3cc',
+          200: '#d9e89b',
+          300: '#c5dc69',
+          400: '#a9ce3e',
+          500: '#8DBE23',
+          600: '#71981C', // Hover state
+          700: '#557216',
+          800: '#394c0f',
+          900: '#1d2608',
+          950: '#0f1304',
         },
         light: {
-          DEFAULT: '#F5F5F0', // Off-white/cream background
+          DEFAULT: '#F4F4F4', // Off-white background
         },
         dark: {
-          DEFAULT: '#1A1A1A', // Near black for text
+          DEFAULT: '#1E3A22', // Dark green for headings & primary text
         },
       },
       fontFamily: {

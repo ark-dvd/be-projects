@@ -24,12 +24,12 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         {/* Heading */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl font-bold text-dark mb-4 font-heading">
           Something Went Wrong
         </h1>
 
         {/* Description */}
-        <p className="text-lg text-gray-600 mb-8">
+        <p className="text-lg text-secondary mb-8">
           We&apos;re sorry — an unexpected error occurred. Please try again or
           contact us if the problem persists.
         </p>
@@ -38,14 +38,14 @@ export default function Error({ error, reset }: ErrorProps) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-colors"
           >
             <RefreshCw className="h-5 w-5" />
             Try Again
           </button>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-light text-secondary font-semibold rounded-lg hover:bg-secondary/10 transition-colors"
           >
             <Home className="h-5 w-5" />
             Go Home
@@ -55,7 +55,7 @@ export default function Error({ error, reset }: ErrorProps) {
         {/* Error Details (development only) */}
         {process.env.NODE_ENV === 'development' && error.message && (
           <div className="mt-8 p-4 bg-gray-100 rounded-lg text-left">
-            <p className="text-sm font-mono text-gray-600 break-all">
+            <p className="text-sm font-mono text-secondary break-all">
               {error.message}
             </p>
           </div>

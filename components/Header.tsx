@@ -68,11 +68,11 @@ export default function Header({ logo, companyName, phone, isTransparent = false
   // Determine header styling based on transparency and scroll state
   const showSolidBg = !isTransparent || isScrolled || isMenuOpen
   const headerBg = showSolidBg
-    ? 'bg-white shadow-md'
+    ? 'bg-primary shadow-md'
     : 'bg-transparent'
-  const textColor = showSolidBg ? 'text-dark' : 'text-white'
-  const textHover = showSolidBg ? 'hover:text-primary' : 'hover:text-accent'
-  const logoFilter = showSolidBg ? '' : 'brightness-0 invert'
+  const textColor = 'text-white'
+  const textHover = 'hover:text-accent'
+  const logoFilter = 'brightness-0 invert'
 
   return (
     <header

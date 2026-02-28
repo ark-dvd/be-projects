@@ -85,7 +85,7 @@ export default async function ProjectsPage() {
             />
           ) : (
             <div className="text-center py-16 bg-white rounded-xl">
-              <p className="text-gray-500 text-lg">
+              <p className="text-secondary text-lg">
                 No projects yet — check back soon for our portfolio of completed work!
               </p>
             </div>

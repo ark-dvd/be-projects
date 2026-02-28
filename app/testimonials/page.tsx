@@ -36,8 +36,8 @@ function StarRating({ rating }: { rating: number }) {
           key={i}
           className={`h-5 w-5 ${
             i < rating
-              ? 'text-amber-400 fill-amber-400'
-              : 'text-gray-300'
+              ? 'text-accent fill-accent'
+              : 'text-secondary/30'
           }`}
         />
       ))}
@@ -56,7 +56,7 @@ function InitialsAvatar({ name }: { name: string }) {
     .slice(0, 2) || '?'
 
   return (
-    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-xl">
+    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-primary flex items-center justify-center text-white font-bold text-xl">
       {initials}
     </div>
   )
@@ -129,12 +129,12 @@ export default async function TestimonialsPage() {
       <StructuredData data={structuredData} />
 
       {/* Hero Section */}
-      <section className="bg-slate-900 py-16 lg:py-24">
+      <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 font-heading">
             {settings.testimonialsPageHeadline || 'Client Testimonials'}
           </h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-white/80 max-w-2xl mx-auto">
             {settings.testimonialsPageDescription || 'Hear from homeowners who trusted us with their projects'}
           </p>
         </div>
@@ -142,30 +142,30 @@ export default async function TestimonialsPage() {
 
       {/* Stats Bar */}
       {totalReviews > 0 && settings.showReviewStats !== false && (
-        <section className="bg-amber-50 py-8 border-b border-amber-100">
+        <section className="bg-primary-50 py-8 border-b border-primary-100">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16">
               {/* Average Rating */}
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
-                  <span className="text-4xl font-bold text-gray-900">
+                  <span className="text-4xl font-bold text-dark">
                     {averageRating.toFixed(1)}
                   </span>
-                  <Star className="h-8 w-8 text-amber-400 fill-amber-400" />
+                  <Star className="h-8 w-8 text-accent fill-accent" />
                 </div>
-                <p className="text-sm text-gray-600">Average Rating</p>
+                <p className="text-sm text-secondary">Average Rating</p>
               </div>
 
               {/* Total Reviews */}
               <div className="text-center">
-                <p className="text-4xl font-bold text-gray-900">{totalReviews}</p>
-                <p className="text-sm text-gray-600">Total Reviews</p>
+                <p className="text-4xl font-bold text-dark">{totalReviews}</p>
+                <p className="text-sm text-secondary">Total Reviews</p>
               </div>
 
               {/* 5-Star Reviews */}
               <div className="text-center">
-                <p className="text-4xl font-bold text-gray-900">{fiveStarCount}</p>
-                <p className="text-sm text-gray-600">5-Star Reviews</p>
+                <p className="text-4xl font-bold text-dark">{fiveStarCount}</p>
+                <p className="text-sm text-secondary">5-Star Reviews</p>
               </div>
             </div>
           </div>
@@ -173,7 +173,7 @@ export default async function TestimonialsPage() {
       )}
 
       {/* Testimonials List */}
-      <section className="py-12 lg:py-16 bg-gray-50">
+      <section className="py-12 lg:py-16 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {sortedTestimonials.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -197,7 +197,7 @@ export default async function TestimonialsPage() {
                     {/* Featured Badge */}
                     {testimonial.isFeatured && (
                       <div className="absolute -top-3 left-6">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 text-white text-xs font-semibold rounded-full shadow">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-accent text-dark text-xs font-semibold rounded-full shadow">
                           <Star className="h-3 w-3 fill-current" />
                           Featured
                         </span>
@@ -205,10 +205,10 @@ export default async function TestimonialsPage() {
                     )}
 
                     {/* Quote Icon */}
-                    <Quote className="h-10 w-10 text-amber-200 mb-4" />
+                    <Quote className="h-10 w-10 text-accent/30 mb-4" />
 
                     {/* Quote Text */}
-                    <blockquote className="text-lg lg:text-xl text-gray-700 leading-relaxed mb-6">
+                    <blockquote className="text-lg lg:text-xl text-secondary leading-relaxed mb-6">
                       &ldquo;{testimonial.quote}&rdquo;
                     </blockquote>
 
@@ -236,22 +236,22 @@ export default async function TestimonialsPage() {
 
                       {/* Details */}
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900">
+                        <p className="font-semibold text-dark">
                           {testimonial.clientName}
                         </p>
                         {testimonial.clientLocation && (
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-secondary">
                             {testimonial.clientLocation}
                           </p>
                         )}
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                           {testimonial.projectType && (
-                            <span className="text-sm text-amber-600 font-medium">
+                            <span className="text-sm text-accent font-medium">
                               {testimonial.projectType}
                             </span>
                           )}
                           {formattedDate && (
-                            <span className="text-sm text-gray-400">
+                            <span className="text-sm text-secondary">
                               {formattedDate}
                             </span>
                           )}
@@ -264,7 +264,7 @@ export default async function TestimonialsPage() {
                       <div className="mt-6 pt-6 border-t border-gray-100">
                         <Link
                           href={`/projects/${projectSlug}`}
-                          className="inline-flex items-center gap-2 text-amber-600 font-medium hover:text-amber-700 transition-colors"
+                          className="inline-flex items-center gap-2 text-accent font-medium hover:text-accent-600 transition-colors"
                         >
                           View Project
                           <ArrowRight className="h-4 w-4" />
@@ -277,8 +277,8 @@ export default async function TestimonialsPage() {
             </div>
           ) : (
             <div className="text-center py-16 bg-white rounded-xl">
-              <Quote className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">
+              <Quote className="h-12 w-12 text-secondary mx-auto mb-4" />
+              <p className="text-secondary text-lg">
                 Testimonials coming soon!
               </p>
             </div>

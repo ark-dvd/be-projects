@@ -153,7 +153,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             sizes="100vw"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-700 to-primary-900" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-12">
@@ -188,7 +188,7 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Before & After */}
               {beforeImageUrl && heroImageUrl && (
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-2xl font-bold text-dark mb-6 font-heading">
                     Before & After
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -212,7 +212,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 50vw"
                       />
-                      <div className="absolute top-4 left-4 px-3 py-1 bg-amber-500 text-white text-sm font-medium rounded-full">
+                      <div className="absolute top-4 left-4 px-3 py-1 bg-accent text-dark text-sm font-medium rounded-full">
                         After
                       </div>
                     </div>
@@ -223,10 +223,10 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Description */}
               {project.description && (
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-2xl font-bold text-dark mb-6 font-heading">
                     About This Project
                   </h2>
-                  <div className="prose prose-lg text-gray-600 max-w-none">
+                  <div className="prose prose-lg text-secondary max-w-none">
                     {project.description.split('\n\n').map((paragraph, index) => (
                       <p key={index}>{paragraph}</p>
                     ))}
@@ -237,7 +237,7 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Gallery */}
               {galleryImages.length > 0 && (
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-2xl font-bold text-dark mb-6 font-heading">
                     Project Gallery
                   </h2>
                   <ProjectGallery images={galleryImages} />
@@ -246,13 +246,13 @@ export default async function ProjectDetailPage({ params }: Props) {
 
               {/* Client Testimonial */}
               {project.clientTestimonial && (
-                <div className="bg-amber-50 rounded-2xl p-8">
-                  <Quote className="h-10 w-10 text-amber-400 mb-4" />
-                  <blockquote className="text-xl text-gray-800 italic mb-4">
+                <div className="bg-primary-50 rounded-2xl p-8">
+                  <Quote className="h-10 w-10 text-accent/50 mb-4" />
+                  <blockquote className="text-xl text-dark italic mb-4">
                     &ldquo;{project.clientTestimonial}&rdquo;
                   </blockquote>
                   {project.clientName && (
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-dark">
                       — {project.clientName}
                     </p>
                   )}
@@ -264,16 +264,16 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="space-y-6">
               {/* Project Details Card */}
               <div className="bg-white rounded-xl shadow-sm p-6 lg:sticky lg:top-24">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="text-lg font-semibold text-dark mb-4">
                   Project Details
                 </h3>
                 <dl className="space-y-4">
                   {project.projectType && (
                     <div className="flex items-start gap-3">
-                      <FileText className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <FileText className="h-5 w-5 text-secondary mt-0.5" />
                       <div>
-                        <dt className="text-sm text-gray-500">Project Type</dt>
-                        <dd className="font-medium text-gray-900">
+                        <dt className="text-sm text-secondary">Project Type</dt>
+                        <dd className="font-medium text-dark">
                           {project.projectType}
                         </dd>
                       </div>
@@ -281,13 +281,13 @@ export default async function ProjectDetailPage({ params }: Props) {
                   )}
                   {service && service.slug?.current && (
                     <div className="flex items-start gap-3">
-                      <FileText className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <FileText className="h-5 w-5 text-secondary mt-0.5" />
                       <div>
-                        <dt className="text-sm text-gray-500">Service</dt>
+                        <dt className="text-sm text-secondary">Service</dt>
                         <dd>
                           <Link
                             href={`/services/${service.slug.current}`}
-                            className="font-medium text-amber-600 hover:text-amber-700"
+                            className="font-medium text-accent hover:text-accent-600"
                           >
                             {service.name || 'Service'}
                           </Link>
@@ -297,19 +297,19 @@ export default async function ProjectDetailPage({ params }: Props) {
                   )}
                   {location && (
                     <div className="flex items-start gap-3">
-                      <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <MapPin className="h-5 w-5 text-secondary mt-0.5" />
                       <div>
-                        <dt className="text-sm text-gray-500">Location</dt>
-                        <dd className="font-medium text-gray-900">{location}</dd>
+                        <dt className="text-sm text-secondary">Location</dt>
+                        <dd className="font-medium text-dark">{location}</dd>
                       </div>
                     </div>
                   )}
                   {completionDate && (
                     <div className="flex items-start gap-3">
-                      <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <Calendar className="h-5 w-5 text-secondary mt-0.5" />
                       <div>
-                        <dt className="text-sm text-gray-500">Completed</dt>
-                        <dd className="font-medium text-gray-900">
+                        <dt className="text-sm text-secondary">Completed</dt>
+                        <dd className="font-medium text-dark">
                           {completionDate}
                         </dd>
                       </div>
@@ -317,10 +317,10 @@ export default async function ProjectDetailPage({ params }: Props) {
                   )}
                   {project.duration && (
                     <div className="flex items-start gap-3">
-                      <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <Clock className="h-5 w-5 text-secondary mt-0.5" />
                       <div>
-                        <dt className="text-sm text-gray-500">Duration</dt>
-                        <dd className="font-medium text-gray-900">
+                        <dt className="text-sm text-secondary">Duration</dt>
+                        <dd className="font-medium text-dark">
                           {project.duration}
                         </dd>
                       </div>
@@ -328,10 +328,10 @@ export default async function ProjectDetailPage({ params }: Props) {
                   )}
                   {project.budgetRange && (
                     <div className="flex items-start gap-3">
-                      <DollarSign className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <DollarSign className="h-5 w-5 text-secondary mt-0.5" />
                       <div>
-                        <dt className="text-sm text-gray-500">Budget Range</dt>
-                        <dd className="font-medium text-gray-900">
+                        <dt className="text-sm text-secondary">Budget Range</dt>
+                        <dd className="font-medium text-dark">
                           {project.budgetRange}
                         </dd>
                       </div>
@@ -339,10 +339,10 @@ export default async function ProjectDetailPage({ params }: Props) {
                   )}
                   {project.permitNumber && (
                     <div className="flex items-start gap-3">
-                      <FileText className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <FileText className="h-5 w-5 text-secondary mt-0.5" />
                       <div>
-                        <dt className="text-sm text-gray-500">Permit #</dt>
-                        <dd className="font-medium text-gray-900">
+                        <dt className="text-sm text-secondary">Permit #</dt>
+                        <dd className="font-medium text-dark">
                           {project.permitNumber}
                         </dd>
                       </div>
@@ -353,14 +353,14 @@ export default async function ProjectDetailPage({ params }: Props) {
                 {/* Scope of Work */}
                 {project.scope && project.scope.length > 0 && (
                   <div className="mt-6 pt-6 border-t border-gray-100">
-                    <h4 className="font-semibold text-gray-900 mb-3">
+                    <h4 className="font-semibold text-dark mb-3">
                       Scope of Work
                     </h4>
                     <ul className="space-y-2">
                       {project.scope.map((item, index) => (
                         <li key={index} className="flex items-start gap-2">
                           <Check className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                          <span className="text-gray-700">{item}</span>
+                          <span className="text-secondary">{item}</span>
                         </li>
                       ))}
                     </ul>
@@ -369,19 +369,19 @@ export default async function ProjectDetailPage({ params }: Props) {
 
                 {/* Contact CTA */}
                 <div className="mt-6 pt-6 border-t border-gray-100">
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-secondary mb-4">
                     Interested in a similar project?
                   </p>
                   <Link
                     href="/contact"
-                    className="block w-full py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors text-center"
+                    className="block w-full py-3 bg-accent text-dark font-semibold rounded-lg hover:bg-accent-600 transition-colors text-center"
                   >
                     Get a Free Quote
                   </Link>
                   {settings.phone && (
                     <a
                       href={`tel:${settings.phone.replace(/\D/g, '')}`}
-                      className="flex items-center justify-center gap-2 mt-3 py-2 text-gray-700 hover:text-gray-900 font-medium"
+                      className="flex items-center justify-center gap-2 mt-3 py-2 text-secondary hover:text-dark font-medium"
                     >
                       <Phone className="h-4 w-4" />
                       {settings.phone}
@@ -396,9 +396,9 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       {/* Related Projects */}
       {relatedProjects.length > 0 && (
-        <section className="py-12 lg:py-16 bg-gray-50">
+        <section className="py-12 lg:py-16 bg-light">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+            <h2 className="text-2xl font-bold text-dark mb-8 font-heading">
               More Projects
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -416,7 +416,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="text-center mt-8">
               <Link
                 href="/projects"
-                className="inline-flex items-center gap-2 text-amber-600 font-semibold hover:text-amber-700 transition-colors"
+                className="inline-flex items-center gap-2 text-accent font-semibold hover:text-accent-600 transition-colors"
               >
                 View All Projects
                 <ArrowRight className="h-5 w-5" />
