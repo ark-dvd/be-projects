@@ -280,17 +280,6 @@ export default async function ContactPage() {
                 )}
               </div>
 
-              {/* Map Placeholder */}
-              <div className="bg-primary-100 rounded-xl p-8 min-h-[200px] flex flex-col items-center justify-center text-center">
-                <MapPin className="h-12 w-12 text-primary mb-4" />
-                <p className="text-dark font-medium mb-1">Map</p>
-                <p className="text-sm text-primary-800">
-                  Service Area: {settings.serviceArea || companyName}
-                </p>
-                <p className="text-xs text-primary-800 mt-2">
-                  Google Maps integration coming soon
-                </p>
-              </div>
             </div>
           </div>
         </div>
