@@ -23,7 +23,7 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const name = settings.contractorName || 'BE-Project Solutions'
+  const name = settings.contractorName || 'BE Project Solutions'
   const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 

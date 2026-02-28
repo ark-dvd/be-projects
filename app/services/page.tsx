@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: settings.servicesPageHeadline || 'Our Services',
     description: settings.servicesPageDescription || 'Explore our full range of landscaping and outdoor living services.',
     openGraph: {
-      title: `${settings.servicesPageHeadline || 'Our Services'} | ${settings.contractorName || 'BE-Project Solutions'}`,
+      title: `${settings.servicesPageHeadline || 'Our Services'} | ${settings.contractorName || 'BE Project Solutions'}`,
       description: settings.servicesPageDescription || 'Explore our full range of landscaping and outdoor living services.',
     },
     alternates: {

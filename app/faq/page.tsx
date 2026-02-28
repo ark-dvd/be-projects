@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: settings.faqPageHeadline || 'Frequently Asked Questions',
     description: settings.faqPageDescription || 'Find answers to common questions about our landscaping services, process, pricing, and more.',
     openGraph: {
-      title: `${settings.faqPageHeadline || 'Frequently Asked Questions'} | ${settings.contractorName || 'BE-Project Solutions'}`,
+      title: `${settings.faqPageHeadline || 'Frequently Asked Questions'} | ${settings.contractorName || 'BE Project Solutions'}`,
       description: settings.faqPageDescription || 'Find answers to common questions about our landscaping services, process, pricing, and more.',
     },
     alternates: {

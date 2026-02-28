@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: service.name,
     description,
     openGraph: {
-      title: `${service.name} | ${settings.contractorName || 'BE-Project Solutions'}`,
+      title: `${service.name} | ${settings.contractorName || 'BE Project Solutions'}`,
       description,
       type: 'website',
     },

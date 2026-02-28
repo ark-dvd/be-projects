@@ -21,7 +21,7 @@ import { StructuredData } from '@/components/StructuredData'
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const name = settings.contractorName || 'BE-Project Solutions'
+  const name = settings.contractorName || 'BE Project Solutions'
   const description = settings.aboutText?.slice(0, 160) || 'Professional landscaping and outdoor services'
 
   return {

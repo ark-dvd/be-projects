@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: settings.testimonialsPageHeadline || 'Client Testimonials',
     description: settings.testimonialsPageDescription || 'Read testimonials from homeowners who trusted us with their landscaping projects. See why our clients recommend us.',
     openGraph: {
-      title: `${settings.testimonialsPageHeadline || 'Client Testimonials'} | ${settings.contractorName || 'BE-Project Solutions'}`,
+      title: `${settings.testimonialsPageHeadline || 'Client Testimonials'} | ${settings.contractorName || 'BE Project Solutions'}`,
       description: settings.testimonialsPageDescription || 'Read testimonials from homeowners who trusted us with their landscaping projects. See why our clients recommend us.',
     },
     alternates: {

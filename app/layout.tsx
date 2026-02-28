@@ -27,7 +27,7 @@ export const revalidate = 300
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
-  const siteName = settings.contractorName || 'BE-Project Solutions'
+  const siteName = settings.contractorName || 'BE Project Solutions'
   const description = settings.aboutText?.slice(0, 160) || 'Professional landscaping and outdoor services in North Austin'
 
   // Ensure URL has a protocol — NEXTAUTH_URL on Netlify may be bare hostname
