@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { getProjectBySlug, getProjects, getServices, getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
+import { buildOgBase, getBaseUrl } from '@/lib/seo'
 import ProjectCard from '@/components/ProjectCard'
 import ProjectGallery from './ProjectGallery'
 import { StructuredData } from '@/components/StructuredData'
@@ -27,9 +28,10 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const [project, settings] = await Promise.all([
+  const [project, settings, ogBase] = await Promise.all([
     getProjectBySlug(params.slug),
     getSiteSettings(),
+    buildOgBase(`/projects/${params.slug}`),
   ])
 
   if (!project) {
@@ -41,19 +43,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = project.seoTitle || project.title
   const description = project.seoDescription || project.shortDescription || `View our ${project.title} project.`
 
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
-
   return {
     title,
     description,
     openGraph: {
+      ...ogBase,
       title: `${title} | ${settings.contractorName || 'BE Project Solutions'}`,
       description,
       type: 'article',
     },
     alternates: {
-      canonical: `${baseUrl}/projects/${params.slug}`,
+      canonical: ogBase.url,
     },
   }
 }
@@ -123,6 +123,8 @@ export default async function ProjectDetailPage({ params }: Props) {
     upcoming: 'bg-blue-500',
   }
 
+  const baseUrl = getBaseUrl()
+
   // Structured data for SEO
   const structuredData = {
     '@context': 'https://schema.org',
@@ -137,9 +139,20 @@ export default async function ProjectDetailPage({ params }: Props) {
     },
   }
 
+  const breadcrumbData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+      { '@type': 'ListItem', position: 2, name: 'Projects', item: `${baseUrl}/projects` },
+      { '@type': 'ListItem', position: 3, name: project.title },
+    ],
+  }
+
   return (
     <>
       <StructuredData data={structuredData} />
+      <StructuredData data={breadcrumbData} />
 
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] max-h-[600px]">

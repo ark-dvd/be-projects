@@ -4,24 +4,24 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react'
 // Revalidate every 60 seconds (ISR)
 export const revalidate = 60
 import { getServices, getSiteSettings } from '@/lib/data-fetchers'
+import { buildOgBase } from '@/lib/seo'
 import ContactForm from '@/components/ContactForm'
 import { StructuredData } from '@/components/StructuredData'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/contact')])
   const name = settings.contractorName || 'BE Project Solutions'
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   return {
     title: 'Contact Us | Get a Free Quote',
     description: `Ready to start your landscaping project? Contact ${name} for a free consultation and estimate. We serve the ${settings.serviceArea || 'local area'}.`,
     openGraph: {
+      ...ogBase,
       title: `Contact ${name} | Get a Free Quote`,
       description: `Ready to start your landscaping project? Contact ${name} for a free consultation and estimate.`,
     },
     alternates: {
-      canonical: `${baseUrl}/contact`,
+      canonical: ogBase.url,
     },
   }
 }

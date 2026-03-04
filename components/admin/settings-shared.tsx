@@ -39,6 +39,8 @@ export interface TeamMember {
 
 export interface SiteSettings {
   _id?: string
+  // Business Identity
+  siteTitle: string
   // Hero Section
   heroMediaType: 'images' | 'video'
   heroImages: HeroImage[]
@@ -105,6 +107,7 @@ export interface SiteSettings {
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
+  siteTitle: '',
   heroMediaType: 'images',
   heroImages: [],
   heroVideoUrl: '',
@@ -558,6 +561,7 @@ export function useSettingsManager() {
   const buildPayload = () => {
     const payload: Record<string, unknown> = {
       _id: settings._id,
+      siteTitle: settings.siteTitle,
       heroMediaType: settings.heroMediaType,
       heroHeadline: settings.heroHeadline,
       heroSubheadline: settings.heroSubheadline,

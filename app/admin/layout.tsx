@@ -1,6 +1,12 @@
+import type { Metadata } from 'next'
+
 // Force dynamic rendering for all admin routes
 // This ensures CSP nonces are applied at request time
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 export default function AdminLayout({
   children,

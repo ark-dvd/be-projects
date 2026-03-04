@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Quote, Star, ArrowRight } from 'lucide-react'
 import { getTestimonials, getProjects, getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
+import { buildOgBase } from '@/lib/seo'
 import CTASection from '@/components/CTASection'
 import { StructuredData } from '@/components/StructuredData'
 
@@ -11,19 +12,18 @@ import { StructuredData } from '@/components/StructuredData'
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/testimonials')])
 
   return {
     title: settings.testimonialsPageHeadline || 'Client Testimonials',
     description: settings.testimonialsPageDescription || 'Read testimonials from homeowners who trusted us with their landscaping projects. See why our clients recommend us.',
     openGraph: {
+      ...ogBase,
       title: `${settings.testimonialsPageHeadline || 'Client Testimonials'} | ${settings.contractorName || 'BE Project Solutions'}`,
       description: settings.testimonialsPageDescription || 'Read testimonials from homeowners who trusted us with their landscaping projects. See why our clients recommend us.',
     },
     alternates: {
-      canonical: `${baseUrl}/testimonials`,
+      canonical: ogBase.url,
     },
   }
 }

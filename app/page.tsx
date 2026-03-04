@@ -12,6 +12,7 @@ import {
   getTestimonials,
 } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
+import { buildOgBase } from '@/lib/seo'
 import HeroSection from '@/components/HeroSection'
 import ProjectCard from '@/components/ProjectCard'
 import ServiceCard from '@/components/ServiceCard'
@@ -20,7 +21,7 @@ import CTASection from '@/components/CTASection'
 import { StructuredData } from '@/components/StructuredData'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/')])
   const name = settings.contractorName || 'BE Project Solutions'
   const description = settings.aboutText?.slice(0, 160) || 'Professional landscaping and outdoor services'
 
@@ -28,6 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { absolute: settings.siteTitle || name },
     description,
     openGraph: {
+      ...ogBase,
       title: settings.siteTitle || name,
       description,
     },

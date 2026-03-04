@@ -26,3 +26,12 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Redirect Netlify subdomain to primary domain (SEO canonicalization)
+# The 301 fires at the CDN edge before any content is served,
+# which tells search engines the canonical URL is the primary domain.
+[[redirects]]
+  from = "https://be-projects.netlify.app/*"
+  to = "https://www.beprojectsolutions.com/:splat"
+  status = 301
+  force = true

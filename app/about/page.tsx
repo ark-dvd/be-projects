@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
+import { buildOgBase } from '@/lib/seo'
 import CTASection from '@/components/CTASection'
 import { StructuredData } from '@/components/StructuredData'
 
@@ -22,20 +23,19 @@ import { StructuredData } from '@/components/StructuredData'
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/about')])
   const name = settings.contractorName || 'BE Project Solutions'
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
   return {
     title: 'About Us | Our Story',
     description: settings.aboutHeadline || `Learn about ${name} and our commitment to quality landscaping and exceptional service.`,
     openGraph: {
+      ...ogBase,
       title: `About ${name} | Our Story`,
       description: settings.aboutHeadline || `Learn about ${name} and our commitment to quality landscaping and exceptional service.`,
     },
     alternates: {
-      canonical: `${baseUrl}/about`,
+      canonical: ogBase.url,
     },
   }
 }

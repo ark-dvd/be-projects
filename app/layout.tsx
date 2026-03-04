@@ -34,11 +34,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const rawUrl = process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
   const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
 
-  // Extract OG image from contractor photo if available as a URL string
-  const photoVal = settings.contractorPhoto as unknown
-  const contractorPhotoUrl = typeof photoVal === 'string' && photoVal.startsWith('http')
-    ? photoVal
-    : undefined
+  // Use the logo from Sanity as the OG image for social previews
+  const ogImageUrl = settings.logoUrl || undefined
 
   return {
     metadataBase: new URL(baseUrl),
@@ -64,16 +61,16 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName,
       title: settings.siteTitle || siteName,
       description,
-      ...(contractorPhotoUrl ? {
-        images: [{ url: contractorPhotoUrl, width: 1200, height: 630, alt: siteName }],
+      ...(ogImageUrl ? {
+        images: [{ url: ogImageUrl, width: 1200, height: 630, alt: siteName }],
       } : {}),
     },
     twitter: {
       card: 'summary_large_image',
       title: settings.siteTitle || siteName,
       description,
-      ...(contractorPhotoUrl ? {
-        images: [contractorPhotoUrl],
+      ...(ogImageUrl ? {
+        images: [ogImageUrl],
       } : {}),
     },
     robots: {

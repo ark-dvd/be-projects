@@ -1,16 +1,21 @@
 import { Metadata } from 'next'
+import { buildOgBase } from '@/lib/seo'
 
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+  const ogBase = await buildOgBase('/accessibility')
 
   return {
     title: 'Accessibility Statement',
     description: 'Accessibility commitment and WCAG 2.1 Level AA conformance statement for BE Project Solutions LLC.',
+    openGraph: {
+      ...ogBase,
+      title: 'Accessibility Statement | BE Project Solutions',
+      description: 'Accessibility commitment and WCAG 2.1 Level AA conformance statement for BE Project Solutions LLC.',
+    },
     alternates: {
-      canonical: `${baseUrl}/accessibility`,
+      canonical: ogBase.url,
     },
   }
 }

@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { HelpCircle } from 'lucide-react'
 import { getFaqs, getSiteSettings } from '@/lib/data-fetchers'
+import { buildOgBase } from '@/lib/seo'
 import CTASection from '@/components/CTASection'
 import { StructuredData } from '@/components/StructuredData'
 import { FaqAccordion } from './FaqAccordion'
@@ -9,19 +10,18 @@ import { FaqAccordion } from './FaqAccordion'
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/faq')])
 
   return {
     title: settings.faqPageHeadline || 'Frequently Asked Questions',
     description: settings.faqPageDescription || 'Find answers to common questions about our landscaping services, process, pricing, and more.',
     openGraph: {
+      ...ogBase,
       title: `${settings.faqPageHeadline || 'Frequently Asked Questions'} | ${settings.contractorName || 'BE Project Solutions'}`,
       description: settings.faqPageDescription || 'Find answers to common questions about our landscaping services, process, pricing, and more.',
     },
     alternates: {
-      canonical: `${baseUrl}/faq`,
+      canonical: ogBase.url,
     },
   }
 }

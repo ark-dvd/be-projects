@@ -168,6 +168,7 @@ export interface SiteSettings {
   serviceArea?: string
   officeHours?: string
   logo?: SanityImage
+  logoUrl?: string
   favicon?: SanityImage
   instagram?: string
   facebook?: string
@@ -803,6 +804,7 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
         serviceArea,
         officeHours,
         logo,
+        "logoUrl": logo.asset->url,
         favicon,
         instagram,
         facebook,

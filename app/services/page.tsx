@@ -4,25 +4,26 @@ import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { getServices, getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
+import { buildOgBase, getBaseUrl } from '@/lib/seo'
+import { StructuredData } from '@/components/StructuredData'
 import CTASection from '@/components/CTASection'
 
 // Revalidate every 60 seconds (ISR)
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/services')])
 
   return {
     title: settings.servicesPageHeadline || 'Our Services',
     description: settings.servicesPageDescription || 'Explore our full range of landscaping and outdoor living services.',
     openGraph: {
+      ...ogBase,
       title: `${settings.servicesPageHeadline || 'Our Services'} | ${settings.contractorName || 'BE Project Solutions'}`,
       description: settings.servicesPageDescription || 'Explore our full range of landscaping and outdoor living services.',
     },
     alternates: {
-      canonical: `${baseUrl}/services`,
+      canonical: ogBase.url,
     },
   }
 }
@@ -39,9 +40,24 @@ export default async function ServicesPage() {
     .sort((a, b) => (a.order || 0) - (b.order || 0))
 
   const companyName = settings.contractorName || 'Contractor'
+  const baseUrl = getBaseUrl()
+
+  // ItemList structured data for SEO
+  const itemListData = activeServices.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: activeServices.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${baseUrl}/services/${s.slug.current}`,
+      name: s.name,
+    })),
+  } : null
 
   return (
     <>
+      {itemListData && <StructuredData data={itemListData} />}
+
       {/* Hero Section */}
       <section className="bg-primary py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

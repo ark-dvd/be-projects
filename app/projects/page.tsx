@@ -4,24 +4,24 @@ import { getProjects, getServices, getSiteSettings } from '@/lib/data-fetchers'
 // Revalidate every 60 seconds (ISR)
 export const revalidate = 60
 import { sanityImageUrl } from '@/lib/sanity-helpers'
+import { buildOgBase } from '@/lib/seo'
 import ProjectCard from '@/components/ProjectCard'
 import CTASection from '@/components/CTASection'
 import ProjectsFilter from './ProjectsFilter'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/projects')])
 
   return {
     title: settings.projectsPageHeadline || 'Our Projects',
     description: settings.projectsPageDescription || 'Browse our portfolio of completed landscaping and outdoor living projects.',
     openGraph: {
+      ...ogBase,
       title: `${settings.projectsPageHeadline || 'Our Projects'} | ${settings.contractorName || 'BE Project Solutions'}`,
       description: settings.projectsPageDescription || 'Browse our portfolio of completed landscaping and outdoor living projects.',
     },
     alternates: {
-      canonical: `${baseUrl}/projects`,
+      canonical: ogBase.url,
     },
   }
 }

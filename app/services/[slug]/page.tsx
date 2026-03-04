@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Clock, DollarSign, Phone, ArrowRight } from 'lucide-react'
 import { getServiceBySlug, getServices, getProjects, getSiteSettings } from '@/lib/data-fetchers'
 import { sanityImageUrl } from '@/lib/sanity-helpers'
+import { buildOgBase, getBaseUrl } from '@/lib/seo'
 import ProjectCard from '@/components/ProjectCard'
 import ServiceGallery from './ServiceGallery'
 import { StructuredData } from '@/components/StructuredData'
@@ -17,9 +18,10 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const [service, settings] = await Promise.all([
+  const [service, settings, ogBase] = await Promise.all([
     getServiceBySlug(params.slug),
     getSiteSettings(),
+    buildOgBase(`/services/${params.slug}`),
   ])
 
   if (!service) {
@@ -30,19 +32,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = service.tagline || service.description?.slice(0, 160) || `Learn about our ${service.name} services.`
 
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
-
   return {
     title: service.name,
     description,
     openGraph: {
+      ...ogBase,
       title: `${service.name} | ${settings.contractorName || 'BE Project Solutions'}`,
       description,
       type: 'website',
     },
     alternates: {
-      canonical: `${baseUrl}/services/${params.slug}`,
+      canonical: ogBase.url,
     },
   }
 }
@@ -73,6 +73,8 @@ export default async function ServiceDetailPage({ params }: Props) {
   const mainImageUrl = sanityImageUrl(service.image)
   const companyName = settings.contractorName || 'Contractor'
 
+  const baseUrl = getBaseUrl()
+
   // Structured data for SEO
   const structuredData = {
     '@context': 'https://schema.org',
@@ -86,9 +88,20 @@ export default async function ServiceDetailPage({ params }: Props) {
     areaServed: settings.serviceArea || undefined,
   }
 
+  const breadcrumbData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: `${baseUrl}/services` },
+      { '@type': 'ListItem', position: 3, name: service.name },
+    ],
+  }
+
   return (
     <>
       <StructuredData data={structuredData} />
+      <StructuredData data={breadcrumbData} />
 
       {/* Hero Section */}
       <section className="relative h-[40vh] min-h-[300px] max-h-[500px]">

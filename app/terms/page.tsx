@@ -1,18 +1,22 @@
 import { Metadata } from 'next'
 import { getSiteSettings } from '@/lib/data-fetchers'
+import { buildOgBase } from '@/lib/seo'
 
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
-  const rawUrl = process.env.SITE_URL || process.env.NEXTAUTH_URL || 'https://www.beprojectsolutions.com'
-  const baseUrl = rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`
+  const [settings, ogBase] = await Promise.all([getSiteSettings(), buildOgBase('/terms')])
 
   return {
     title: 'Terms of Service',
     description: `Terms of Service for ${settings.contractorName || 'our company'}.`,
+    openGraph: {
+      ...ogBase,
+      title: `Terms of Service | ${settings.contractorName || 'BE Project Solutions'}`,
+      description: `Terms of Service for ${settings.contractorName || 'our company'}.`,
+    },
     alternates: {
-      canonical: `${baseUrl}/terms`,
+      canonical: ogBase.url,
     },
   }
 }
